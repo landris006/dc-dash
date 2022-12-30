@@ -16,6 +16,7 @@ export const guildMemberRouter = router({
         },
       });
     }),
+
   getAllInGuild: publicProcedure.input(z.string()).query(({ input, ctx }) => {
     return ctx.prisma.guildMember.findMany({
       where: {
@@ -23,6 +24,7 @@ export const guildMemberRouter = router({
       },
     });
   }),
+
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.guildMember.findMany();
   }),

@@ -31,7 +31,7 @@ export default defineNextConfig({
       {
         protocol: "https",
         hostname: "cdn.discordapp.com",
-        pathname: "/icons/**",
+        pathname: "/{icons,avatars}/**",
       },
     ],
   },
