@@ -17,15 +17,11 @@ const Highlights = ({ guildID }: Props) => {
     isError,
   } = trpc.guildMember.getAllInGuild.useQuery(guildID);
 
-  if (isLoading || !guildMembers?.length) {
-    return <h2>Loading highlights...</h2>;
-  }
-
-  if (isError || !guildMembers?.length) {
+  if (isError) {
     return <h2>Could not load highlights...</h2>;
   }
 
-  const { mostMessages, mostTimeConnected, oldestMember } = guildMembers.reduce(
+  const highlights = guildMembers?.reduce(
     (highlights, member) => {
       if (member.messagesSent > highlights.mostMessages.count) {
         highlights.mostMessages = {
@@ -76,20 +72,27 @@ const Highlights = ({ guildID }: Props) => {
       <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
         <Stat
           prefix={<GiGrowth />}
-          value={CONVERSIONS.HOURS_TO_LEVEL(mostTimeConnected.hours)}
-          suffix={`(${mostTimeConnected.nickname})`}
+          value={
+            highlights?.mostTimeConnected?.hours &&
+            CONVERSIONS.HOURS_TO_LEVEL(highlights?.mostTimeConnected?.hours)
+          }
+          suffix={`(${highlights?.mostTimeConnected?.nickname})`}
           tooltip="Highest level member"
         />
         <Stat
           prefix={<SiGooglemessages />}
-          value={mostMessages.count}
-          suffix={`(${mostMessages.nickname})`}
+          value={highlights?.mostMessages?.count}
+          suffix={`(${highlights?.mostMessages?.nickname})`}
           tooltip="Most messages sent"
         />
         <Stat
           prefix={<MdAccessTimeFilled />}
-          value={oldestMember.date.toLocaleDateString()}
-          suffix={`(${oldestMember.nickname})`}
+          value={
+            isLoading
+              ? undefined
+              : highlights?.oldestMember?.date.toLocaleDateString()
+          }
+          suffix={`(${highlights?.oldestMember?.nickname})`}
           tooltip="Oldest member"
         />
       </div>

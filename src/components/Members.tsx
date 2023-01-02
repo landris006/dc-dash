@@ -82,9 +82,6 @@ const Members = ({ guildID }: { guildID: string }) => {
     isError,
   } = trpc.guildMember.getAllInGuild.useQuery(guildID as string);
 
-  if (isLoading) {
-    return <h2>Loading members...</h2>;
-  }
   if (isError) {
     return <h2>Could not load members...</h2>;
   }
@@ -100,19 +97,23 @@ const Members = ({ guildID }: { guildID: string }) => {
           <h2 className="text-3xl font-semibold">Members</h2>
           <hr className=" h-1 rounded bg-black" />
         </div>
-        <ul className="flex flex-col gap-1  text-black">
-          {guildMembers.map((guildMember) => (
-            <ListItem
-              onClick={() => {
-                setIsOpen(true);
-                setSelectedMember(guildMember);
-              }}
-              key={guildMember.userID}
-            >
-              {guildMember.nickname}
-            </ListItem>
-          ))}
-        </ul>
+        {isLoading ? (
+          <h2 className="text-3xl">Loading members...</h2>
+        ) : (
+          <ul className="flex flex-col gap-1  text-black">
+            {guildMembers.map((guildMember) => (
+              <ListItem
+                onClick={() => {
+                  setIsOpen(true);
+                  setSelectedMember(guildMember);
+                }}
+                key={guildMember.userID}
+              >
+                {guildMember.nickname}
+              </ListItem>
+            ))}
+          </ul>
+        )}
       </Panel>
     </>
   );

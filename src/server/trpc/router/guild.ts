@@ -3,7 +3,7 @@ import { publicProcedure, router } from "../trpc";
 
 export const guildRouter = router({
   get: publicProcedure.input(z.string()).query(({ input, ctx }) => {
-    return ctx.prisma.guild.findUnique({
+    return ctx.prisma.guild.findUniqueOrThrow({
       where: {
         id: input,
       },
@@ -15,7 +15,7 @@ export const guildRouter = router({
   }),
 
   getStats: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
-    const guild = ctx.prisma.guild.findUnique({
+    const guild = ctx.prisma.guild.findUniqueOrThrow({
       where: {
         id: input,
       },
@@ -23,10 +23,6 @@ export const guildRouter = router({
 
     const members = await guild.guildMembers();
     const voiceChannels = await guild.voiceChannels();
-
-    if (!members || !voiceChannels) {
-      return;
-    }
 
     const stats = members.reduce(
       (stats, member) => {

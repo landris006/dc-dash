@@ -12,17 +12,11 @@ interface Props {
 }
 
 const Statistics = ({ guildID }: Props) => {
-  const {
-    data: stats,
-    isLoading,
-    isError,
-  } = trpc.guild.getStats.useQuery(guildID as string);
+  const { data: stats, isError } = trpc.guild.getStats.useQuery(
+    guildID as string
+  );
 
-  if (isLoading || !stats) {
-    return <h2>Loading stats...</h2>;
-  }
-
-  if (isError || !stats) {
+  if (isError) {
     return <h2>Could not load stats...</h2>;
   }
 
@@ -36,28 +30,30 @@ const Statistics = ({ guildID }: Props) => {
       <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
         <Stat
           prefix={<BsFillPersonFill />}
-          value={stats.totalMembers}
+          value={stats?.totalMembers}
           tooltip="Total members"
         />
         <Stat
           prefix={<MdAccessTimeFilled />}
-          value={Math.round(stats.totalTimeConnected)}
+          value={
+            stats?.totalTimeConnected && Math.round(stats.totalTimeConnected)
+          }
           suffix="hrs"
           tooltip="Total time connected"
         />
         <Stat
           prefix={<MdPhoneCallback />}
-          value={stats.totalConnections}
+          value={stats?.totalConnections}
           tooltip="Total voice connections"
         />
         <Stat
           prefix={<SiGooglemessages />}
-          value={stats.totalMessages}
+          value={stats?.totalMessages}
           tooltip="Total messages sent"
         />
         <Stat
           prefix={<IoCreate />}
-          value={stats.createdAt?.toLocaleDateString() ?? ""}
+          value={stats?.createdAt?.toLocaleDateString() ?? ""}
           tooltip="Created at"
         />
       </div>

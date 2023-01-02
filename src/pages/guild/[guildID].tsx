@@ -7,25 +7,21 @@ import Highlights from "../../components/Highlights";
 import Members from "../../components/Members";
 
 const Header = ({ guildID }: { guildID: string }) => {
-  const {
-    data: guild,
-    isLoading,
-    isError,
-  } = trpc.guild.get.useQuery(guildID as string);
+  const { data: guild, isLoading, isError } = trpc.guild.get.useQuery(guildID);
 
-  if (isLoading || !guild) {
-    return <h2>Loading guild...</h2>;
-  }
-  if (isError || !guild) {
+  if (isError) {
     return <h2>Could not load guild...</h2>;
   }
 
   return (
     <header className="bg-gray-300 p-3 text-black">
       <div className="container mx-auto flex flex-wrap gap-3 lg:px-20">
-        <h2 className="text-4xl">{guild.name}</h2>
+        <h2 className="text-4xl">
+          {isLoading ? "Loading guild..." : guild.name}
+        </h2>
+
         <Image
-          src={guild.iconURL ?? ""}
+          src={guild?.iconURL ?? ""}
           width={50}
           height={50}
           alt="guild icon"
