@@ -56,6 +56,7 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
           {member.nickname ?? user.username}
         </h2>
       </div>
+
       <hr className="h-1 rounded bg-black" />
 
       <div className=" py-3">

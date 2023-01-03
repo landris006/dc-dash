@@ -3,16 +3,22 @@ import Link from "next/link";
 import ListItem from "../components/ListItem";
 import { trpc } from "../utils/trpc";
 import Image from "next/image";
+import { ImSpinner8 } from "react-icons/im";
 
 const Home: NextPage = () => {
   const { data: guilds, isLoading, isError } = trpc.guild.getAll.useQuery();
 
   const Servers = () => {
     if (isLoading) {
-      return <div>Loading servers...</div>;
+      return (
+        <p className="flex gap-3">
+          <ImSpinner8 className="animate-spin" />
+          <span>Loading servers...</span>
+        </p>
+      );
     }
     if (isError) {
-      return <div>Could not load servers...</div>;
+      return <p>Could not load servers...</p>;
     }
 
     return (
