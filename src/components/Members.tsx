@@ -11,6 +11,7 @@ import { IoCreate } from "react-icons/io5";
 import { SiGooglemessages } from "react-icons/si";
 import { BiRename } from "react-icons/bi";
 import { CONVERSIONS } from "../utils/conversions";
+import { GoSearch } from "react-icons/go";
 
 const MemberInfo = ({ member }: { member: GuildMember }) => {
   const {
@@ -101,6 +102,7 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
 const Members = ({ guildID }: { guildID: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<GuildMember>();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     data: guildMembers,
@@ -119,25 +121,42 @@ const Members = ({ guildID }: { guildID: string }) => {
       </Modal>
 
       <Panel>
-        <div className="mb-5">
+        <div>
           <h2 className="text-3xl font-semibold">Members</h2>
-          <hr className=" h-1 rounded bg-black" />
+          <hr className="h-1 rounded bg-black" />
         </div>
+
+        <div className="flex items-center gap-2 py-3">
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            type="text"
+            className="h-10 rounded-md p-1 text-xl"
+          />
+          <GoSearch size={30} />
+        </div>
+
         {isLoading ? (
           <h2 className="text-3xl">Loading members...</h2>
         ) : (
           <ul className="flex flex-col gap-1  text-black">
-            {guildMembers.map((guildMember) => (
-              <ListItem
-                onClick={() => {
-                  setIsOpen(true);
-                  setSelectedMember(guildMember);
-                }}
-                key={guildMember.userID}
-              >
-                {guildMember.nickname}
-              </ListItem>
-            ))}
+            {guildMembers
+              .filter((guildMember) =>
+                guildMember.nickname
+                  ?.toLocaleLowerCase()
+                  .includes(searchQuery.toLocaleLowerCase())
+              )
+              .map((guildMember) => (
+                <ListItem
+                  onClick={() => {
+                    setIsOpen(true);
+                    setSelectedMember(guildMember);
+                  }}
+                  key={guildMember.userID}
+                >
+                  {guildMember.nickname}
+                </ListItem>
+              ))}
           </ul>
         )}
       </Panel>
