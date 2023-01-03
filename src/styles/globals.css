@@ -5,3 +5,18 @@
 body {
   background-color: #33383d;
 }
+
+::-webkit-scrollbar {
+  width: 1rem;
+  background-color: rgb(148 163 184);
+  border-radius: 10rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(100 116 139);
+  border-radius: 10rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(71 85 105);
+}

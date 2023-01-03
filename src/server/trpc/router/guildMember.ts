@@ -22,6 +22,9 @@ export const guildMemberRouter = router({
       where: {
         guildID: input,
       },
+      include: {
+        user: true,
+      },
     });
   }),
 
