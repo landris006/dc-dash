@@ -1,4 +1,4 @@
-import { GuildMember } from "@prisma/client";
+import { GuildMember, User } from "@prisma/client";
 import { useEffect, useRef, useState, RefObject } from "react";
 import { trpc } from "../utils/trpc";
 import ListItem from "./ListItem";
@@ -30,10 +30,14 @@ const Members = ({ guildID }: { guildID: string }) => {
     data: guildMembers,
     isLoading,
     isError,
-  } = trpc.guildMember.getAllInGuild.useQuery(guildID as string);
+  } = trpc.guildMember.getAllInGuildWithUser.useQuery(guildID as string);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<GuildMember>();
+  const [selectedMember, setSelectedMember] = useState<
+    GuildMember & {
+      user: User;
+    }
+  >();
   const [searchQuery, setSearchQuery] = useState("");
   const [guildMembersToShow, setGuildMembersToShow] = useState(
     guildMembers ?? []

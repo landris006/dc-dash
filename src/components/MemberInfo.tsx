@@ -1,36 +1,20 @@
-import { GuildMember } from "@prisma/client";
+import { GuildMember, User } from "@prisma/client";
 import { BiRename } from "react-icons/bi";
 import { IoCreate } from "react-icons/io5";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { SiGooglemessages } from "react-icons/si";
 import { CONVERSIONS } from "../utils/conversions";
-import { trpc } from "../utils/trpc";
 import Stat from "./Stat";
 import Panel from "./ui/Panel";
 import Image from "next/image";
 
-const MemberInfo = ({ member }: { member: GuildMember }) => {
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = trpc.user.get.useQuery(member.userID as string, {});
-
-  if (isLoading) {
-    return (
-      <Panel classNames="bg-white">
-        <h2>Loading user...</h2>
-      </Panel>
-    );
-  }
-  if (isError) {
-    return (
-      <Panel classNames="bg-white">
-        <h2>Error loading user...</h2>
-      </Panel>
-    );
-  }
-
+const MemberInfo = ({
+  member,
+}: {
+  member: GuildMember & {
+    user: User;
+  };
+}) => {
   const level = CONVERSIONS.HOURS_TO_LEVEL(member.hoursActive);
   const hoursToCurrentLevel = CONVERSIONS.LEVEL_TO_HOURS(level);
   const progression =
@@ -40,10 +24,10 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
   return (
     <Panel classNames="bg-white">
       <div className="flex gap-2">
-        {user.avatarURL && (
+        {member.user.avatarURL && (
           <div className="hidden sm:block">
             <Image
-              src={user.avatarURL}
+              src={member.user.avatarURL}
               width={75}
               height={75}
               alt="profile picture"
@@ -52,7 +36,7 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
           </div>
         )}
         <h2 className="flex content-center items-center text-3xl font-semibold">
-          {member.nickname ?? user.username}
+          {member.nickname ?? member.user.username}
         </h2>
       </div>
 
@@ -80,7 +64,11 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
           value={member.joinedAt.toLocaleDateString()}
           tooltip="Joined at"
         />
-        <Stat prefix={<BiRename />} value={user.username} tooltip="Username" />
+        <Stat
+          prefix={<BiRename />}
+          value={member.user.username}
+          tooltip="Username"
+        />
         <Stat
           prefix={<SiGooglemessages />}
           value={member.messagesSent}

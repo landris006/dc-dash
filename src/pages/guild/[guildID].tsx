@@ -17,7 +17,7 @@ const Header = ({ guildID }: { guildID: string }) => {
 
   return (
     <header className="bg-gray-300 p-3 text-black">
-      <div className="container mx-auto flex-wrap justify-between sm:flex">
+      <div className="container mx-auto flex-wrap justify-between px-3 sm:flex">
         <div className="mb-3 flex gap-3 sm:mb-0">
           <h2 className="text-4xl">
             {isLoading ? "Loading guild..." : guild.name}
@@ -58,7 +58,7 @@ const Server: NextPage = () => {
     <div className="flex h-screen flex-col">
       <Header guildID={guildID} />
 
-      <main className="container mx-auto mb-3 flex flex-1 flex-col">
+      <main className="container mx-auto flex flex-1 flex-col px-3 pb-3">
         <div className="my-3 flex-wrap gap-3 md:flex">
           <div className="mb-3 flex-1 md:mb-0">
             <Statistics guildID={guildID} />

@@ -22,11 +22,21 @@ export const guildMemberRouter = router({
       where: {
         guildID: input,
       },
-      include: {
-        user: true,
-      },
     });
   }),
+
+  getAllInGuildWithUser: publicProcedure
+    .input(z.string())
+    .query(({ input, ctx }) => {
+      return ctx.prisma.guildMember.findMany({
+        where: {
+          guildID: input,
+        },
+        include: {
+          user: true,
+        },
+      });
+    }),
 
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.guildMember.findMany();
