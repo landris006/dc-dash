@@ -44,13 +44,15 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
     <Panel classNames="bg-white">
       <div className="flex gap-2">
         {user.avatarURL && (
-          <Image
-            src={user.avatarURL}
-            width={50}
-            height={50}
-            alt="profile picture"
-            className="rounded-full"
-          />
+          <div className="hidden sm:block">
+            <Image
+              src={user.avatarURL}
+              width={50}
+              height={50}
+              alt="profile picture"
+              className=" rounded-full "
+            />
+          </div>
         )}
         <h2 className="flex content-center items-center text-3xl font-semibold">
           {member.nickname ?? user.username}
