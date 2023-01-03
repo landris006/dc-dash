@@ -10,6 +10,7 @@ import { MdAccessTimeFilled } from "react-icons/md";
 import { IoCreate } from "react-icons/io5";
 import { SiGooglemessages } from "react-icons/si";
 import { BiRename } from "react-icons/bi";
+import { CONVERSIONS } from "../utils/conversions";
 
 const MemberInfo = ({ member }: { member: GuildMember }) => {
   const {
@@ -33,6 +34,12 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
     );
   }
 
+  const level = CONVERSIONS.HOURS_TO_LEVEL(member.hoursActive);
+  const hoursToCurrentLevel = CONVERSIONS.LEVEL_TO_HOURS(level);
+  const progression =
+    (member.hoursActive - hoursToCurrentLevel) /
+    (CONVERSIONS.LEVEL_TO_HOURS(level + 1) - hoursToCurrentLevel);
+
   return (
     <Panel classNames="bg-white">
       <div className="flex gap-2">
@@ -50,7 +57,23 @@ const MemberInfo = ({ member }: { member: GuildMember }) => {
         </h2>
       </div>
       <hr className="h-1 rounded bg-black" />
-      <div className="grid justify-center gap-3 pt-3 sm:grid-cols-2 md:grid-cols-3">
+
+      <div className=" py-3">
+        <div className="relative flex w-full justify-center rounded-full bg-slate-300">
+          <div
+            className="absolute left-0 top-0 flex justify-center rounded-full"
+            style={{
+              backgroundColor: CONVERSIONS.LEVEL_TO_COLOR_MAP.get(level),
+              width: `${progression * 100}%`,
+            }}
+          >
+            {progression > 0.04 && <>&nbsp;</>}
+          </div>
+          <span className="z-10 font-semibold">Level {level}</span>
+        </div>
+      </div>
+
+      <div className="grid justify-center gap-3 sm:grid-cols-2 md:grid-cols-3">
         <Stat
           prefix={<IoCreate />}
           value={member.joinedAt.toLocaleDateString()}

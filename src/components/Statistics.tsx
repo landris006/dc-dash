@@ -53,7 +53,7 @@ const Statistics = ({ guildID }: Props) => {
         />
         <Stat
           prefix={<IoCreate />}
-          value={stats?.createdAt?.toLocaleDateString() ?? ""}
+          value={stats?.createdAt?.toLocaleDateString()}
           tooltip="Created at"
         />
       </div>

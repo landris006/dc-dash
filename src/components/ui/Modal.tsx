@@ -31,7 +31,7 @@ const Modal = ({ children, isOpen, onClose, classNames = "" }: Props) => {
   return createPortal(
     <div
       ref={modal}
-      className="fixed top-1/2 left-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2"
+      className="fixed top-1/2 left-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-40"
       onClick={(e) => {
         if (e.target === modal.current) {
           onClose();
@@ -39,7 +39,7 @@ const Modal = ({ children, isOpen, onClose, classNames = "" }: Props) => {
       }}
     >
       <div
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded  ${classNames}`}
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded ${classNames}`}
       >
         {children}
       </div>

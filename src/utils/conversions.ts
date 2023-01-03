@@ -2,18 +2,18 @@ export const CONVERSIONS = {
   MILISECONDS_TO_HOURS: 2.77777778e-7,
   MILISECONDS_TO_SECONDS: 1e-3,
 
-  /* export const LEVEL_TO_COLOR_MAP = new Map<number, ColorResolvable>([
-    [0, "White"],
-    [1, "Blue"],
-    [2, "Green"],
-    [3, "Yellow"],
-    [4, "Orange"],
-    [5, "Red"],
-    [6, "Purple"],
-    [7, "DarkVividPink"],
-    [8, "Grey"],
-    [9, "LuminousVividPink"],
-  ]); */
+  LEVEL_TO_COLOR_MAP: new Map<number, string>([
+    [0, "#FFFFFF"],
+    [1, "#3498DB"],
+    [2, "#2ECC71"],
+    [3, "#FFFF00"],
+    [4, "#E67E22"],
+    [5, "#E74C3C"],
+    [6, "#9B59B6"],
+    [7, "#AD1457"],
+    [8, "#95A5A6"],
+    [9, "#E91E63"],
+  ]),
 
   HOURS_TO_LEVEL: (hoursActive: number) => {
     if (hoursActive < 1) {
