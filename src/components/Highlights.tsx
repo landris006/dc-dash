@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 import { SiGooglemessages } from "react-icons/si";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { CONVERSIONS } from "../utils/conversions";
+import RefreshButton from "./RefreshButton";
 
 interface Props {
   guildID: string;
@@ -17,9 +18,7 @@ const Highlights = ({ guildID }: Props) => {
     isError,
   } = trpc.guildMember.getAllInGuild.useQuery(guildID);
 
-  if (isError) {
-    return <h2>Could not load highlights...</h2>;
-  }
+  const utils = trpc.useContext();
 
   const highlights = guildMembers?.reduce(
     (highlights, member) => {
@@ -70,31 +69,43 @@ const Highlights = ({ guildID }: Props) => {
       </div>
 
       <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
-        <Stat
-          prefix={<GiGrowth />}
-          value={
-            highlights?.mostTimeConnected?.hours &&
-            CONVERSIONS.HOURS_TO_LEVEL(highlights?.mostTimeConnected?.hours)
-          }
-          suffix={`(${highlights?.mostTimeConnected?.nickname})`}
-          tooltip="Highest level member"
-        />
-        <Stat
-          prefix={<SiGooglemessages />}
-          value={highlights?.mostMessages?.count}
-          suffix={`(${highlights?.mostMessages?.nickname})`}
-          tooltip="Most messages sent"
-        />
-        <Stat
-          prefix={<MdAccessTimeFilled />}
-          value={
-            isLoading
-              ? undefined
-              : highlights?.oldestMember?.date.toLocaleDateString()
-          }
-          suffix={`(${highlights?.oldestMember?.nickname})`}
-          tooltip="Oldest member"
-        />
+        {isError || !guildMembers?.length ? (
+          <div className="flex items-center gap-3">
+            <p className="text-xl">Could not load highlights...</p>{" "}
+            <RefreshButton
+              isLoading={isLoading}
+              onClick={() => utils.guildMember.getAllInGuild.invalidate()}
+            />
+          </div>
+        ) : (
+          <>
+            <Stat
+              prefix={<GiGrowth />}
+              value={
+                highlights?.mostTimeConnected?.hours &&
+                CONVERSIONS.HOURS_TO_LEVEL(highlights?.mostTimeConnected?.hours)
+              }
+              suffix={`(${highlights?.mostTimeConnected?.nickname})`}
+              tooltip="Highest level member"
+            />
+            <Stat
+              prefix={<SiGooglemessages />}
+              value={highlights?.mostMessages?.count}
+              suffix={`(${highlights?.mostMessages?.nickname})`}
+              tooltip="Most messages sent"
+            />
+            <Stat
+              prefix={<MdAccessTimeFilled />}
+              value={
+                isLoading
+                  ? undefined
+                  : highlights?.oldestMember?.date.toLocaleDateString()
+              }
+              suffix={`(${highlights?.oldestMember?.nickname})`}
+              tooltip="Oldest member"
+            />
+          </>
+        )}
       </div>
     </Panel>
   );

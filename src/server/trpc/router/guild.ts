@@ -15,16 +15,19 @@ export const guildRouter = router({
   }),
 
   getStats: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
-    const guild = ctx.prisma.guild.findUniqueOrThrow({
+    const guild = await ctx.prisma.guild.findUniqueOrThrow({
       where: {
         id: input,
       },
+      include: {
+        guildMembers: true,
+        voiceChannels: true,
+      },
     });
 
-    const members = await guild.guildMembers();
-    const voiceChannels = await guild.voiceChannels();
+    const { guildMembers, voiceChannels } = guild;
 
-    const stats = members.reduce(
+    const stats = guildMembers.reduce(
       (stats, member) => {
         stats.totalMessages += member.messagesSent;
         stats.totalTimeConnected += member.hoursActive;
@@ -32,7 +35,7 @@ export const guildRouter = router({
         return stats;
       },
       {
-        totalMembers: members.length,
+        totalMembers: guildMembers.length,
         totalMessages: 0,
         totalConnections: 0,
         totalTimeConnected: 0,

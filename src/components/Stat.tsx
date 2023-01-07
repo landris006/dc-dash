@@ -22,7 +22,7 @@ const Stat = ({
         className="flex items-center gap-1 whitespace-nowrap"
       >
         {value == undefined ? (
-          <ImSpinner8 className="animate-spin" />
+          <ImSpinner8 size={28} className="animate-spin" />
         ) : (
           <>
             {prefix} {value} {suffix}

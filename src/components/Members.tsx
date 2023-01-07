@@ -7,6 +7,7 @@ import Panel from "./ui/Panel";
 import { GoSearch } from "react-icons/go";
 import MemberInfo from "./MemberInfo";
 import Image from "next/image";
+import RefreshButton from "./RefreshButton";
 
 const calculateHeight = (
   panel: RefObject<HTMLDivElement>,
@@ -26,11 +27,9 @@ const calculateHeight = (
 };
 
 const Members = ({ guildID }: { guildID: string }) => {
-  const {
-    data: guildMembers,
-    isLoading,
-    isError,
-  } = trpc.guildMember.getAllInGuildWithUser.useQuery(guildID as string);
+  const { data: guildMembers, isLoading } =
+    trpc.guildMember.getAllInGuildWithUser.useQuery(guildID as string);
+  const utils = trpc.useContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<
@@ -65,10 +64,6 @@ const Members = ({ guildID }: { guildID: string }) => {
         calculateHeight(container, ul)
       );
   }, [guildMembers]);
-
-  if (isError) {
-    return <h2>Could not load members...</h2>;
-  }
 
   return (
     <>
@@ -126,7 +121,16 @@ const Members = ({ guildID }: { guildID: string }) => {
               ))}
 
               {guildMembersToShow.length === 0 && (
-                <p className="text-xl">No members found...</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-xl">No members found...</p>
+                  <RefreshButton
+                    isLoading={isLoading}
+                    maxRetries={3}
+                    onClick={() =>
+                      utils.guildMember.getAllInGuildWithUser.invalidate()
+                    }
+                  />
+                </div>
               )}
             </ul>
           )}

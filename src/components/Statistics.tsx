@@ -6,19 +6,19 @@ import { MdPhoneCallback } from "react-icons/md";
 import { SiGooglemessages } from "react-icons/si";
 import Stat from "./Stat";
 import { IoCreate } from "react-icons/io5";
+import RefreshButton from "./RefreshButton";
 
 interface Props {
   guildID: string;
 }
 
 const Statistics = ({ guildID }: Props) => {
-  const { data: stats, isError } = trpc.guild.getStats.useQuery(
-    guildID as string
-  );
-
-  if (isError) {
-    return <h2>Could not load stats...</h2>;
-  }
+  const {
+    data: stats,
+    isError,
+    isLoading,
+  } = trpc.guild.getStats.useQuery(guildID as string);
+  const utils = trpc.useContext();
 
   return (
     <Panel bgColor="bg-blue-200" classNames="bg-blue-200">
@@ -28,34 +28,47 @@ const Statistics = ({ guildID }: Props) => {
       </div>
 
       <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
-        <Stat
-          prefix={<BsFillPersonFill />}
-          value={stats?.totalMembers}
-          tooltip="Total members"
-        />
-        <Stat
-          prefix={<MdAccessTimeFilled />}
-          value={
-            stats?.totalTimeConnected && Math.round(stats.totalTimeConnected)
-          }
-          suffix="hrs"
-          tooltip="Total time connected"
-        />
-        <Stat
-          prefix={<MdPhoneCallback />}
-          value={stats?.totalConnections}
-          tooltip="Total voice connections"
-        />
-        <Stat
-          prefix={<SiGooglemessages />}
-          value={stats?.totalMessages}
-          tooltip="Total messages sent"
-        />
-        <Stat
-          prefix={<IoCreate />}
-          value={stats?.createdAt?.toLocaleDateString()}
-          tooltip="Created at"
-        />
+        {isError ? (
+          <div className="flex items-center gap-3">
+            <p className="text-xl">Could not load stats...</p>{" "}
+            <RefreshButton
+              isLoading={isLoading}
+              onClick={() => utils.guild.getStats.invalidate()}
+            />
+          </div>
+        ) : (
+          <>
+            <Stat
+              prefix={<BsFillPersonFill />}
+              value={stats?.totalMembers}
+              tooltip="Total members"
+            />
+            <Stat
+              prefix={<MdAccessTimeFilled />}
+              value={
+                stats?.totalTimeConnected &&
+                Math.round(stats.totalTimeConnected)
+              }
+              suffix="hrs"
+              tooltip="Total time connected"
+            />
+            <Stat
+              prefix={<MdPhoneCallback />}
+              value={stats?.totalConnections}
+              tooltip="Total voice connections"
+            />
+            <Stat
+              prefix={<SiGooglemessages />}
+              value={stats?.totalMessages}
+              tooltip="Total messages sent"
+            />
+            <Stat
+              prefix={<IoCreate />}
+              value={stats?.createdAt?.toLocaleDateString()}
+              tooltip="Created at"
+            />
+          </>
+        )}
       </div>
     </Panel>
   );
