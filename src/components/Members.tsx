@@ -113,7 +113,7 @@ const Members = ({ guildID }: { guildID: string }) => {
                 >
                   <div className="flex items-center gap-3">
                     <Image
-                      src={guildMember.user.avatarURL ?? ""}
+                      src={guildMember.user.avatarURL ?? "/default-avatar.png"}
                       width={40}
                       height={40}
                       alt="profile picture"

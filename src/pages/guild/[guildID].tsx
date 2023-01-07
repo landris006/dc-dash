@@ -24,13 +24,15 @@ const Header = ({ guildID }: { guildID: string }) => {
           </h2>
 
           <div className=" hidden items-center justify-center sm:flex">
-            <Image
-              // TODO: default image
-              src={guild?.iconURL ?? ""}
-              width={50}
-              height={50}
-              alt="guild icon"
-            />
+            {guild?.iconURL && (
+              <Image
+                // TODO: default image
+                src={guild.iconURL}
+                width={50}
+                height={50}
+                alt="guild icon"
+              />
+            )}
           </div>
         </div>
 
