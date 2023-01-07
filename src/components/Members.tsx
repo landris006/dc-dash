@@ -22,7 +22,7 @@ const calculateHeight = (
 
   const ulHeight = top + height - ul.current.getBoundingClientRect().top;
 
-  ul.current.style.height = `${ulHeight}px`;
+  ul.current.style.height = `${Math.max(ulHeight, 500)}px`;
 };
 
 const Members = ({ guildID }: { guildID: string }) => {
