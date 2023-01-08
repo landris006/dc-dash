@@ -62,22 +62,22 @@ const MemberInfo = ({
         <Stat
           prefix={<IoCreate />}
           value={member.joinedAt.toLocaleDateString()}
-          tooltip="Joined at"
+          tooltipText="Joined at"
         />
         <Stat
           prefix={<BiRename />}
           value={member.user.username}
-          tooltip="Username"
+          tooltipText="Username"
         />
         <Stat
           prefix={<SiGooglemessages />}
           value={member.messagesSent}
-          tooltip="Messages sent"
+          tooltipText="Messages sent"
         />
         <Stat
           prefix={<MdAccessTimeFilled />}
           value={Math.round(member.hoursActive)}
-          tooltip="Hours active"
+          tooltipText="Hours active"
         />
       </div>
     </Panel>

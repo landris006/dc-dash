@@ -86,13 +86,13 @@ const Highlights = ({ guildID }: Props) => {
                 CONVERSIONS.HOURS_TO_LEVEL(highlights?.mostTimeConnected?.hours)
               }
               suffix={`(${highlights?.mostTimeConnected?.nickname})`}
-              tooltip="Highest level member"
+              tooltipText="Highest level member"
             />
             <Stat
               prefix={<SiGooglemessages />}
               value={highlights?.mostMessages?.count}
               suffix={`(${highlights?.mostMessages?.nickname})`}
-              tooltip="Most messages sent"
+              tooltipText="Most messages sent"
             />
             <Stat
               prefix={<MdAccessTimeFilled />}
@@ -102,7 +102,7 @@ const Highlights = ({ guildID }: Props) => {
                   : highlights?.oldestMember?.date.toLocaleDateString()
               }
               suffix={`(${highlights?.oldestMember?.nickname})`}
-              tooltip="Oldest member"
+              tooltipText="Oldest member"
             />
           </>
         )}

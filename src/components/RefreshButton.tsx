@@ -9,7 +9,6 @@ interface Props {
 
 const RefreshButton = ({ onClick, isLoading, maxRetries }: Props) => {
   const [numberOfRetries, setNumberOfRetries] = React.useState(0);
-  numberOfRetries > (maxRetries ?? 0);
 
   if (maxRetries && numberOfRetries >= maxRetries) {
     return <></>;

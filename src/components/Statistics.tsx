@@ -41,7 +41,7 @@ const Statistics = ({ guildID }: Props) => {
             <Stat
               prefix={<BsFillPersonFill />}
               value={stats?.totalMembers}
-              tooltip="Total members"
+              tooltipText="Total members"
             />
             <Stat
               prefix={<MdAccessTimeFilled />}
@@ -50,22 +50,22 @@ const Statistics = ({ guildID }: Props) => {
                 Math.round(stats.totalTimeConnected)
               }
               suffix="hrs"
-              tooltip="Total time connected"
+              tooltipText="Total time connected"
             />
             <Stat
               prefix={<MdPhoneCallback />}
               value={stats?.totalConnections}
-              tooltip="Total voice connections"
+              tooltipText="Total voice connections"
             />
             <Stat
               prefix={<SiGooglemessages />}
               value={stats?.totalMessages}
-              tooltip="Total messages sent"
+              tooltipText="Total messages sent"
             />
             <Stat
               prefix={<IoCreate />}
               value={stats?.createdAt?.toLocaleDateString()}
-              tooltip="Created at"
+              tooltipText="Created at"
             />
           </>
         )}
