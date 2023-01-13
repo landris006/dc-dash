@@ -1,60 +1,19 @@
 import { GuildMember, User } from '@prisma/client';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
-import { trpc } from '../utils/trpc';
 import ListItem from './ListItem';
 import Image from 'next/image';
-import RefreshButton from './RefreshButton';
 import MemberInfo from './MemberInfo';
 import Modal from './ui/Modal';
-import { useRouter } from 'next/router';
 
-const MemberList = () => {
-  const router = useRouter();
-  const utils = trpc.useContext();
-  const guildID = router.query.guildID as string;
-
-  const [pagination, setPagination] = useState({
-    skip: 0,
-    take: 10,
-  });
-
+interface Props {
+  guildMembers: (GuildMember & { user: User })[];
+}
+const MemberList = ({ guildMembers }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<MemberWithUser>();
 
-  const [guildMembers, setGuildMembers] = useState<MemberWithUser[]>([]);
-  const [allMembersFetched, setAllMembersFetched] = useState(false);
-
-  const { isLoading, status } = trpc.guildMember.getMembers.useQuery(
-    {
-      guildID,
-      ...pagination,
-    },
-    {
-      onSuccess(data) {
-        if (pagination.skip + pagination.take <= guildMembers.length) {
-          return;
-        }
-
-        if (data.length === 0) {
-          setAllMembersFetched(true);
-          return;
-        }
-
-        setGuildMembers((prev) => [...prev, ...data]);
-      },
-    }
-  );
-  useEffect(() => {
-    utils.guildMember.getMembers.invalidate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname]);
-
   const ul = useRef<HTMLUListElement>(null);
   const container = useRef<HTMLDivElement>(null);
-
-  const incrementPagination = () => {
-    setPagination((prev) => ({ ...prev, skip: prev.skip + 10 }));
-  };
 
   useEffect(() => {
     calculateHeight(container, ul);
@@ -66,31 +25,9 @@ const MemberList = () => {
       );
   }, [guildMembers]);
 
-  useEffect(() => {
-    const onScroll = () => {
-      if (!ul.current) {
-        return;
-      }
-
-      const scrollBottom =
-        ul.current.scrollHeight -
-        ul.current.scrollTop -
-        ul.current.clientHeight;
-
-      if (scrollBottom < 100 && !allMembersFetched && status === 'success') {
-        incrementPagination();
-      }
-    };
-
-    const ulElement = ul.current;
-    ulElement?.addEventListener('scroll', onScroll);
-
-    return () => ulElement?.removeEventListener('scroll', onScroll);
-  }, [allMembersFetched, status]);
-
   return (
     <>
-      <Modal classNames="" isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         {selectedMember && <MemberInfo member={selectedMember} />}
       </Modal>
 
@@ -120,17 +57,6 @@ const MemberList = () => {
               </div>
             </ListItem>
           ))}
-
-          {status === 'success' && guildMembers.length === 0 && (
-            <div className="flex items-center gap-3">
-              <p className="text-xl">No members found...</p>
-              <RefreshButton
-                isLoading={isLoading}
-                maxRetries={3}
-                onClick={() => utils.guildMember.getMembers.invalidate()}
-              />
-            </div>
-          )}
         </ul>
       </div>
     </>

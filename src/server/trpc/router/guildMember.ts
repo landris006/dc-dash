@@ -1,6 +1,6 @@
-import { router, publicProcedure } from "../trpc";
-import { z } from "zod";
-import { GuildMember, Prisma } from "@prisma/client";
+import { router, publicProcedure } from '../trpc';
+import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 
 export const guildMemberRouter = router({
   get: publicProcedure
@@ -39,30 +39,59 @@ export const guildMemberRouter = router({
       });
     }),
 
-  getMembers: publicProcedure
+  getPaginatedMembers: publicProcedure
     .input(
       z.object({
-        skip: z.number().min(0).or(z.undefined()),
-        take: z.number().min(1).or(z.undefined()),
+        page: z.number().min(1),
+        limit: z.number().min(10),
+        queryParams: z
+          .object({
+            nickname: z.string().or(z.undefined()),
+            orderBy: z
+              .object({
+                nickname: z.enum(['asc', 'desc']).or(z.undefined()),
+                hoursActive: z.enum(['asc', 'desc']).or(z.undefined()),
+              })
+              .nullish(),
+          })
+          .nullish(),
         guildID: z.string(),
       })
     )
-    .query(({ input, ctx }) => {
-      const { take, skip, guildID } = input;
+    .query(async ({ input, ctx }) => {
+      const { page, limit, guildID } = input;
 
-      return ctx.prisma.guildMember.findMany({
-        skip,
-        take,
+      const orderBy = input.queryParams
+        ?.orderBy as Prisma.Enumerable<Prisma.GuildMemberOrderByWithRelationInput>;
+
+      const guildMembers = await ctx.prisma.guildMember.findMany({
+        skip: (page - 1) * limit,
+        take: limit + 1,
         where: {
           guildID,
+          nickname: {
+            contains: input.queryParams?.nickname,
+          },
         },
         include: {
           user: true,
         },
-        orderBy: {
-          nickname: "asc",
-        },
+        orderBy,
       });
+
+      if (guildMembers.length > limit) {
+        guildMembers.pop();
+
+        return {
+          guildMembers,
+          hasMore: true,
+        };
+      }
+
+      return {
+        guildMembers,
+        hasMore: false,
+      };
     }),
 
   getAll: publicProcedure.query(({ ctx }) => {

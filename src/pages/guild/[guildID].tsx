@@ -84,7 +84,7 @@ const BackToServers = ({ router }: { router: NextRouter }) => {
       <p className="flex items-center text-2xl text-slate-600 hover:text-black">
         Back to servers
       </p>
-      <BsFillDoorOpenFill size={30} className={'fill-slate-600'} />
+      <BsFillDoorOpenFill size={30} className="fill-slate-600" />
     </div>
   );
 };
