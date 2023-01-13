@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Panel from './ui/Panel';
 import { GoSearch } from 'react-icons/go';
 import MemberList from './MemberList';
@@ -34,7 +34,9 @@ const Members = () => {
       ...pagination,
     });
 
-  const initSearch = () => {
+  const initSearch = (e: FormEvent) => {
+    e.preventDefault();
+
     setQueryParams((prev) => ({ ...prev, nickname }));
   };
 
@@ -47,7 +49,10 @@ const Members = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3">
-          <div className="flex w-fit items-stretch gap-2 py-3">
+          <form
+            onSubmit={initSearch}
+            className="flex w-fit items-stretch gap-2 py-3"
+          >
             <input
               value={nickname}
               placeholder="Search members..."
@@ -57,7 +62,7 @@ const Members = () => {
             />
 
             <button
-              onClick={initSearch}
+              type="submit"
               className="flex items-center gap-2 rounded-md bg-teal-400 p-1 px-5 transition hover:bg-teal-500 active:bg-teal-400"
             >
               <p className="text-xl font-semibold">Search</p>
@@ -67,7 +72,7 @@ const Members = () => {
                 <GoSearch size={20} />
               )}
             </button>
-          </div>
+          </form>
 
           <div className="mb-1 flex items-center justify-center ">
             <button
