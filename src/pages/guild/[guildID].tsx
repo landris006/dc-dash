@@ -17,7 +17,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-gray-300 bg-opacity-60 p-3 text-black backdrop-blur-md">
+    <header className="bg-gray-300 bg-opacity-[0.45] p-3 text-black backdrop-blur-md">
       <div className="container mx-auto flex-wrap justify-between px-3 sm:flex">
         <div className="mb-3 flex gap-3 sm:mb-0">
           <h2 className="text-4xl">

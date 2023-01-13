@@ -18,7 +18,7 @@ const Panel = (
       onClick={onClick}
       className={` rounded-md p-3 shadow-xl
       ${transparent !== false && 'bg-opacity-[0.45]'}
-      ${classNames ?? 'bg-gray-300'}`}
+      ${classNames ?? 'bg-slate-300'}`}
     >
       {children}
     </div>
