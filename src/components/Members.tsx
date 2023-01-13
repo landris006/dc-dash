@@ -58,12 +58,12 @@ const Members = () => {
               placeholder="Search members..."
               onChange={(e) => setNickname(e.target.value)}
               type="text"
-              className="h-10 rounded-md p-1 text-xl"
+              className="h-10 rounded-md bg-slate-100 bg-opacity-60 p-1 text-xl"
             />
 
             <button
               type="submit"
-              className="flex items-center gap-2 rounded-md bg-teal-400 p-1 px-5 transition hover:bg-teal-500 active:bg-teal-400"
+              className="flex items-center gap-2 rounded-md bg-teal-400 bg-opacity-80 p-1 px-5 transition hover:bg-teal-500 active:bg-teal-400"
             >
               <p className="text-xl font-semibold">Search</p>
               {isLoading ? (
@@ -100,7 +100,7 @@ const Members = () => {
               }
             >
               <MdArrowBackIos
-                className={`rotate-180 text-teal-600 transition ${
+                className={`rotate-180  text-teal-600 transition ${
                   data?.hasMore
                     ? 'hover:scale-95 hover:text-teal-500'
                     : 'cursor-default opacity-30'

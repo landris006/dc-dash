@@ -1,12 +1,12 @@
-import { GuildMember, User } from "@prisma/client";
-import { BiRename } from "react-icons/bi";
-import { IoCreate } from "react-icons/io5";
-import { MdAccessTimeFilled } from "react-icons/md";
-import { SiGooglemessages } from "react-icons/si";
-import { CONVERSIONS } from "../utils/conversions";
-import Stat from "./Stat";
-import Panel from "./ui/Panel";
-import Image from "next/image";
+import { GuildMember, User } from '@prisma/client';
+import { BiRename } from 'react-icons/bi';
+import { IoCreate } from 'react-icons/io5';
+import { MdAccessTimeFilled } from 'react-icons/md';
+import { SiGooglemessages } from 'react-icons/si';
+import { CONVERSIONS } from '../utils/conversions';
+import Stat from './Stat';
+import Panel from './ui/Panel';
+import Image from 'next/image';
 
 const MemberInfo = ({
   member,
@@ -22,10 +22,10 @@ const MemberInfo = ({
     (CONVERSIONS.LEVEL_TO_HOURS(level + 1) - hoursToCurrentLevel);
 
   return (
-    <Panel classNames="bg-white">
-      <div className="flex gap-2">
+    <Panel classNames="bg-white" transparent={false}>
+      <div className="flex gap-2 ">
         {member.user.avatarURL && (
-          <div className="hidden sm:block">
+          <div className="hidden sm:block ">
             <Image
               src={member.user.avatarURL}
               width={75}

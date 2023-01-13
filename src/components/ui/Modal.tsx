@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
   children: React.ReactNode;
@@ -7,20 +7,20 @@ interface Props {
   onClose: () => void;
   classNames?: string;
 }
-const Modal = ({ children, isOpen, onClose, classNames = "" }: Props) => {
+const Modal = ({ children, isOpen, onClose, classNames = '' }: Props) => {
   const modal = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
+    if (e.key === 'Escape') {
       onClose();
     }
   };
 
   useEffect(() => {
-    document.body.addEventListener("keydown", handleKeyDown);
+    document.body.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.removeEventListener("keydown", handleKeyDown);
+      document.body.removeEventListener('keydown', handleKeyDown);
     };
   });
 
@@ -31,7 +31,7 @@ const Modal = ({ children, isOpen, onClose, classNames = "" }: Props) => {
   return createPortal(
     <div
       ref={modal}
-      className="fixed top-1/2 left-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-40"
+      className="fixed top-1/2 left-1/2 z-auto h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 backdrop-blur-[1px]"
       onClick={(e) => {
         if (e.target === modal.current) {
           onClose();
@@ -44,7 +44,7 @@ const Modal = ({ children, isOpen, onClose, classNames = "" }: Props) => {
         {children}
       </div>
     </div>,
-    document.body
+    document.querySelector('#__next') ?? document.body
   );
 };
 

@@ -3,7 +3,26 @@
 @tailwind utilities;
 
 body {
-  background-color: #33383d;
+  background-image: linear-gradient(
+    to left bottom,
+    #a5c0f0,
+    #9ab2fb,
+    #9aa2ff,
+    #a48fff,
+    #b776ff,
+    #b575ff,
+    #b475ff,
+    #b274ff,
+    #9c8afd,
+    #919bf4,
+    #92a8e6,
+    #9fb2d4
+  );
+  background-attachment: fixed;
+}
+
+hr {
+  border: none;
 }
 
 ::-webkit-scrollbar {
