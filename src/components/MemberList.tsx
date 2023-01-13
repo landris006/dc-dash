@@ -4,7 +4,6 @@ import { trpc } from '../utils/trpc';
 import ListItem from './ListItem';
 import Image from 'next/image';
 import RefreshButton from './RefreshButton';
-import { ImSpinner8 } from 'react-icons/im';
 import MemberInfo from './MemberInfo';
 import Modal from './ui/Modal';
 import { useRouter } from 'next/router';
@@ -121,12 +120,6 @@ const MemberList = () => {
               </div>
             </ListItem>
           ))}
-
-          {allMembersFetched || (
-            <ListItem>
-              <button onClick={incrementPagination}>asd</button>
-            </ListItem>
-          )}
 
           {status === 'success' && guildMembers.length === 0 && (
             <div className="flex items-center gap-3">
