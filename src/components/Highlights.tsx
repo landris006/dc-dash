@@ -7,15 +7,15 @@ import { SiGooglemessages } from "react-icons/si";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { CONVERSIONS } from "../utils/conversions";
 import RefreshButton from "./RefreshButton";
+import { useRouter } from "next/router";
 
-interface Props {
-  guildID: string;
-}
-const Highlights = ({ guildID }: Props) => {
+const Highlights = () => {
+  const guildID = useRouter().query.guildID as string;
+
   const {
     data: guildMembers,
     isLoading,
-    isError,
+    status,
   } = trpc.guildMember.getAllInGuild.useQuery(guildID);
 
   const utils = trpc.useContext();
@@ -69,7 +69,7 @@ const Highlights = ({ guildID }: Props) => {
       </div>
 
       <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
-        {isError || !guildMembers?.length ? (
+        {status === "success" && !guildMembers.length ? (
           <div className="flex items-center gap-3">
             <p className="text-xl">Could not load highlights...</p>{" "}
             <RefreshButton

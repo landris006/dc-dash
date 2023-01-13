@@ -7,12 +7,10 @@ import { SiGooglemessages } from "react-icons/si";
 import Stat from "./Stat";
 import { IoCreate } from "react-icons/io5";
 import RefreshButton from "./RefreshButton";
+import { useRouter } from "next/router";
 
-interface Props {
-  guildID: string;
-}
-
-const Statistics = ({ guildID }: Props) => {
+const Statistics = () => {
+  const guildID = useRouter().query.guildID as string;
   const {
     data: stats,
     isError,
