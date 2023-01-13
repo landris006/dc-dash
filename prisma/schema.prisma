@@ -44,7 +44,7 @@ model VoiceChannel {
   name        String
   guildID     String
   connections Int    @default(0)
-  guild       Guild  @relation(fields: [guildID], references: [id])
+  guild       Guild  @relation(fields: [guildID], references: [id], onDelete: Cascade)
 
   @@index([guildID])
 }
