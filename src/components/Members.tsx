@@ -7,7 +7,6 @@ import { MdArrowBackIos } from 'react-icons/md';
 import { trpc } from '../utils/trpc';
 import { useRouter } from 'next/router';
 import type { AppRouterTypes } from '../utils/trpc';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 
 type QueryParams =
   AppRouterTypes['guildMember']['getPaginatedMembers']['input']['queryParams'];
@@ -37,6 +36,7 @@ const Members = () => {
   const initSearch = (e: FormEvent) => {
     e.preventDefault();
 
+    setPagination((prev) => ({ ...prev, page: 1 }));
     setQueryParams((prev) => ({ ...prev, nickname }));
   };
 

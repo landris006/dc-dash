@@ -8,6 +8,12 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <>
       <Head>
         <title>Discord dashboard</title>
+        <link
+          type="image/png"
+          sizes="16x16"
+          rel="icon"
+          href="/discord-favicon.png"
+        ></link>
       </Head>
       <Component {...pageProps} />
     </>

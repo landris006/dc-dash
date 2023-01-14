@@ -24,7 +24,6 @@ const MemberList = ({ guildMembers }: Props) => {
         calculateHeight(container, ul)
       );
   }, [guildMembers]);
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
