@@ -81,13 +81,18 @@ const Members = () => {
         <div className="w-fit sm:flex sm:justify-between">
           <form onSubmit={initSearch}>
             <div className="flex w-fit flex-wrap items-stretch gap-2 py-3 md:flex-nowrap">
-              <input
-                value={nickname}
-                placeholder="Search members..."
-                onChange={(e) => setNickname(e.target.value)}
-                type="text"
-                className="h-10 rounded-md bg-slate-100 bg-opacity-60 p-1 text-xl"
-              />
+              <div className="flex">
+                <input
+                  value={nickname}
+                  placeholder="Search members..."
+                  onChange={(e) => setNickname(e.target.value)}
+                  type="text"
+                  className="h-10 rounded-md bg-slate-100 bg-opacity-60 p-1 text-xl"
+                />
+                <button className="-ml-6 w-5" onClick={() => setNickname('')}>
+                  <GrClose />
+                </button>
+              </div>
 
               <div className="relative flex flex-col gap-2  sm:flex-row">
                 <button
