@@ -20,11 +20,11 @@ const Header = () => {
     <header className="bg-gray-300 bg-opacity-[0.45] p-3 text-black backdrop-blur-md">
       <div className="container mx-auto flex-wrap justify-between px-3 sm:flex">
         <div className="mb-3 flex gap-3 sm:mb-0">
-          <h2 className="text-4xl">
+          <h2 className="flex items-center text-4xl">
             {isLoading ? 'Loading guild...' : guild.name}
           </h2>
 
-          <div className=" hidden items-center justify-center sm:flex">
+          <div className="hidden items-center justify-center sm:flex">
             {guild?.iconURL && (
               <Image
                 // TODO: default image

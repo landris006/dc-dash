@@ -51,6 +51,7 @@ export const guildMemberRouter = router({
               .object({
                 nickname: z.enum(['asc', 'desc']).or(z.undefined()),
                 hoursActive: z.enum(['asc', 'desc']).or(z.undefined()),
+                joinedAt: z.enum(['asc', 'desc']).or(z.undefined()),
               })
               .nullish(),
           })
@@ -79,18 +80,15 @@ export const guildMemberRouter = router({
         orderBy,
       });
 
+      let hasMore = false;
       if (guildMembers.length > limit) {
         guildMembers.pop();
-
-        return {
-          guildMembers,
-          hasMore: true,
-        };
+        hasMore = true;
       }
 
       return {
         guildMembers,
-        hasMore: false,
+        hasMore,
       };
     }),
 

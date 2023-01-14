@@ -1,44 +1,74 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
 import Panel from './ui/Panel';
-import { GoSearch } from 'react-icons/go';
 import MemberList from './MemberList';
-import { ImSpinner8 } from 'react-icons/im';
 import { trpc } from '../utils/trpc';
 import { useRouter } from 'next/router';
-import type { AppRouterTypes } from '../utils/trpc';
 import Pagination from './Pagination';
-
-type QueryParams =
-  AppRouterTypes['guildMember']['getPaginatedMembers']['input']['queryParams'];
+import { BsSortDownAlt, BsSortUpAlt } from 'react-icons/bs';
+import { GrClose } from 'react-icons/gr';
 
 const Members = () => {
   const guildID = useRouter().query.guildID as string;
 
   const [nickname, setNickname] = useState('');
-  const [queryParams, setQueryParams] = useState<QueryParams>({
-    nickname: '',
-    orderBy: {
-      nickname: 'asc',
-    },
-  });
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
   });
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [nickameFilter, setNicknameFilter] = useState('');
+  const [orderBy, setOrderBy] = useState<{ [key: string]: Ordering }>({
+    nickname: 'asc',
+    hoursActive: undefined,
+    joinedAt: undefined,
+  });
 
-  const { data, isLoading, isError, status } =
-    trpc.guildMember.getPaginatedMembers.useQuery({
-      guildID,
-      queryParams,
-      ...pagination,
-    });
+  const { data, isLoading, isError } =
+    trpc.guildMember.getPaginatedMembers.useQuery(
+      {
+        guildID,
+        queryParams: {
+          nickname: nickameFilter,
+          orderBy,
+        },
+        ...pagination,
+      },
+      {
+        onSuccess: (data) => {
+          if (!data.guildMembers.length) {
+            setPagination((prev) => ({ ...prev, page: 1 }));
+          }
+        },
+      }
+    );
 
   const initSearch = (e: FormEvent) => {
     e.preventDefault();
 
-    setPagination((prev) => ({ ...prev, page: 1 }));
-    setQueryParams((prev) => ({ ...prev, nickname }));
+    setNicknameFilter(nickname);
   };
+
+  const handleOrderByChange = (key: string) => {
+    setOrderBy((prev) => {
+      const newOrderBy = Object.fromEntries(
+        Object.entries(prev).map(([k]) => [k, undefined as Ordering])
+      );
+
+      newOrderBy[key] = prev[key] === 'asc' ? 'desc' : 'asc';
+
+      return newOrderBy;
+    });
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setNicknameFilter(nickname);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [nickname]);
 
   return (
     <>
@@ -50,7 +80,7 @@ const Members = () => {
 
         <div className="w-fit sm:flex sm:justify-between">
           <form onSubmit={initSearch}>
-            <div className="flex w-fit flex-wrap items-stretch gap-2 py-3 sm:flex-nowrap">
+            <div className="flex w-fit flex-wrap items-stretch gap-2 py-3 md:flex-nowrap">
               <input
                 value={nickname}
                 placeholder="Search members..."
@@ -59,40 +89,50 @@ const Members = () => {
                 className="h-10 rounded-md bg-slate-100 bg-opacity-60 p-1 text-xl"
               />
 
-              <div className="flex gap-2">
+              <div className="relative flex flex-col gap-2  sm:flex-row">
                 <button
-                  type="submit"
-                  className="flex items-center gap-2 rounded-md bg-indigo-500 bg-opacity-70 p-1 px-5 transition hover:bg-indigo-600 hover:bg-opacity-70 active:bg-indigo-700"
+                  onClick={() => setFiltersOpen((prev) => !prev)}
+                  className="
+                    relative flex h-10 items-center justify-center
+                    rounded-md bg-indigo-500 bg-opacity-70 px-3
+                    transition hover:bg-indigo-600 hover:bg-opacity-70
+                    active:bg-indigo-700 active:bg-opacity-70"
                 >
-                  <p className="text-xl font-semibold">Search</p>
-                  {isLoading ? (
-                    <ImSpinner8 size={20} className="animate-spin" />
-                  ) : (
-                    <GoSearch size={20} />
-                  )}
+                  <p className="mr-2 text-xl font-semibold">Sort</p>
+                  {filtersOpen ? <GrClose /> : <BsSortDownAlt />}
                 </button>
 
-                {/* <button className="relative  flex aspect-square h-10 items-center justify-center rounded-md bg-slate-200 bg-opacity-60 hover:bg-slate-300 hover:bg-opacity-60">
-                  <BsThreeDotsVertical size={30} />
-                </button> */}
+                {filtersOpen && (
+                  <div
+                    className={`
+                      absolute left-1/2 top-full z-10 flex -translate-x-1/2
+                      flex-col items-start gap-2 rounded-md bg-slate-200
+                      p-2 text-lg sm:relative sm:left-0 sm:top-0 sm:z-auto
+                      sm:grid sm:translate-x-0 sm:items-stretch sm:bg-transparent sm:p-0
+                      grid-cols-${Object.keys(orderBy).length}`}
+                  >
+                    {Object.entries(orderBy).map(([key, value]) => (
+                      <SortButton
+                        key={key}
+                        text={keyToLabelMap.get(key) ?? key}
+                        value={value}
+                        onClick={() => handleOrderByChange(key)}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </form>
         </div>
 
-        {isError ||
-          (status === 'success' && data.guildMembers.length === 0) || (
-            <Pagination
-              hasMore={data?.hasMore}
-              page={pagination.page}
-              setPagination={setPagination}
-            />
-          )}
-
-        {/* <div className="mb-3 flex gap-2">
-          <button className="h-9 rounded-md bg-slate-600">asd</button>
-          <button className="h-30 h-9 rounded-md bg-slate-600">asd2</button>
-        </div> */}
+        {isError || !data?.guildMembers.length || (
+          <Pagination
+            hasMore={data?.hasMore}
+            page={pagination.page}
+            setPagination={setPagination}
+          />
+        )}
 
         <MemberList
           guildMembers={data?.guildMembers}
@@ -105,3 +145,36 @@ const Members = () => {
 };
 
 export default Members;
+
+type Ordering = 'asc' | 'desc' | undefined;
+const SortButton = ({
+  text,
+  value,
+  onClick,
+}: {
+  text: string;
+  value?: Ordering;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      className="flex
+      w-full items-center justify-start rounded-md bg-slate-200
+      bg-opacity-60 px-2
+      text-xl hover:bg-slate-300
+      hover:bg-opacity-60 active:bg-slate-400 active:bg-opacity-60 sm:justify-evenly"
+    >
+      <p className="mr-2 text-lg ">{text}</p>
+      <div className={`${value === undefined && 'invisible'}`}>
+        {value === 'asc' ? <BsSortDownAlt /> : <BsSortUpAlt />}
+      </div>
+    </button>
+  );
+};
+
+const keyToLabelMap = new Map<string, string>([
+  ['nickname', 'Nickname'],
+  ['hoursActive', 'Level'],
+  ['joinedAt', 'Join Date'],
+]);

@@ -52,7 +52,10 @@ const Stat = ({
       >
         {tooltipText}
 
-        <BsTriangleFill className="pointer-events-none absolute left-1/2 -bottom-2 -translate-x-1/2 rotate-180 text-white" />
+        <BsTriangleFill
+          size={10}
+          className="pointer-events-none absolute left-1/2 -bottom-2 -translate-x-1/2 rotate-180 text-white"
+        />
       </p>
     </div>
   );
