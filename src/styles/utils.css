@@ -1,4 +1,4 @@
-@keyframes spin {
+@keyframes custom-spin {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
@@ -7,5 +7,5 @@
   }
 }
 .custom-animate-spin {
-  animation: spin 1s linear infinite;
+  animation: custom-spin 1s linear infinite;
 }
