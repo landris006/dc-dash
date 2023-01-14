@@ -114,7 +114,12 @@ const Members = () => {
                       flex-col items-start gap-2 rounded-md bg-slate-200
                       p-2 text-lg sm:relative sm:left-0 sm:top-0 sm:z-auto
                       sm:grid sm:translate-x-0 sm:items-stretch sm:bg-transparent sm:p-0
-                      grid-cols-${Object.keys(orderBy).length}`}
+                    `}
+                    style={{
+                      gridTemplateColumns: '1fr '.repeat(
+                        Object.keys(orderBy).length
+                      ),
+                    }}
                   >
                     {Object.entries(orderBy).map(([key, value]) => (
                       <SortButton
