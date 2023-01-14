@@ -1,13 +1,13 @@
-import React from "react";
-import Panel from "./ui/Panel";
-import Stat from "./Stat";
-import { GiGrowth } from "react-icons/gi";
-import { trpc } from "../utils/trpc";
-import { SiGooglemessages } from "react-icons/si";
-import { MdAccessTimeFilled } from "react-icons/md";
-import { CONVERSIONS } from "../utils/conversions";
-import RefreshButton from "./RefreshButton";
-import { useRouter } from "next/router";
+import React from 'react';
+import Panel from './ui/Panel';
+import Stat from './Stat';
+import { GiGrowth } from 'react-icons/gi';
+import { trpc } from '../utils/trpc';
+import { SiGooglemessages } from 'react-icons/si';
+import { MdAccessTimeFilled } from 'react-icons/md';
+import { CONVERSIONS } from '../utils/conversions';
+import RefreshButton from './RefreshButton';
+import { useRouter } from 'next/router';
 
 const Highlights = () => {
   const guildID = useRouter().query.guildID as string;
@@ -25,21 +25,21 @@ const Highlights = () => {
       if (member.messagesSent > highlights.mostMessages.count) {
         highlights.mostMessages = {
           count: member.messagesSent,
-          nickname: member.nickname ?? "",
+          nickname: member.nickname ?? '',
         };
       }
 
       if (member.hoursActive > highlights.mostTimeConnected.hours) {
         highlights.mostTimeConnected = {
           hours: member.hoursActive,
-          nickname: member.nickname ?? "",
+          nickname: member.nickname ?? '',
         };
       }
 
       if (member.joinedAt < highlights.oldestMember.date) {
         highlights.oldestMember = {
           date: member.joinedAt,
-          nickname: member.nickname ?? "",
+          nickname: member.nickname ?? '',
         };
       }
 
@@ -48,15 +48,15 @@ const Highlights = () => {
     {
       mostMessages: {
         count: 0,
-        nickname: "",
+        nickname: '',
       },
       mostTimeConnected: {
         hours: 0,
-        nickname: "",
+        nickname: '',
       },
       oldestMember: {
         date: new Date(),
-        nickname: "",
+        nickname: '',
       },
     }
   );
@@ -68,10 +68,10 @@ const Highlights = () => {
         <hr className="h-1 rounded bg-black" />
       </div>
 
-      <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
-        {status === "success" && !guildMembers.length ? (
+      <div className="flex flex-row flex-wrap gap-3 px-3 text-xl sm:flex-nowrap">
+        {status === 'success' && !guildMembers.length ? (
           <div className="flex items-center gap-3">
-            <p className="text-xl">Could not load highlights...</p>{" "}
+            <p className="text-xl">Could not load highlights...</p>{' '}
             <RefreshButton
               isLoading={isLoading}
               onClick={() => utils.guildMember.getAllInGuild.invalidate()}

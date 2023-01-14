@@ -3,10 +3,10 @@ import Panel from './ui/Panel';
 import { GoSearch } from 'react-icons/go';
 import MemberList from './MemberList';
 import { ImSpinner8 } from 'react-icons/im';
-import { MdArrowBackIos } from 'react-icons/md';
 import { trpc } from '../utils/trpc';
 import { useRouter } from 'next/router';
 import type { AppRouterTypes } from '../utils/trpc';
+import Pagination from './Pagination';
 
 type QueryParams =
   AppRouterTypes['guildMember']['getPaginatedMembers']['input']['queryParams'];
@@ -26,7 +26,7 @@ const Members = () => {
     limit: 10,
   });
 
-  const { data, isLoading, isError } =
+  const { data, isLoading, isError, status } =
     trpc.guildMember.getPaginatedMembers.useQuery({
       guildID,
       queryParams,
@@ -48,80 +48,57 @@ const Members = () => {
           <hr className="h-1 rounded bg-black" />
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3">
-          <form
-            onSubmit={initSearch}
-            className="flex w-fit items-stretch gap-2 py-3"
-          >
-            <input
-              value={nickname}
-              placeholder="Search members..."
-              onChange={(e) => setNickname(e.target.value)}
-              type="text"
-              className="h-10 rounded-md bg-slate-100 bg-opacity-60 p-1 text-xl"
-            />
+        <div className="w-fit sm:flex sm:justify-between">
+          <form onSubmit={initSearch}>
+            <div className="flex w-fit flex-wrap items-stretch gap-2 py-3 sm:flex-nowrap">
+              <input
+                value={nickname}
+                placeholder="Search members..."
+                onChange={(e) => setNickname(e.target.value)}
+                type="text"
+                className="h-10 rounded-md bg-slate-100 bg-opacity-60 p-1 text-xl"
+              />
 
-            <button
-              type="submit"
-              className="flex items-center gap-2 rounded-md bg-teal-400 bg-opacity-80 p-1 px-5 transition hover:bg-teal-500 active:bg-teal-400"
-            >
-              <p className="text-xl font-semibold">Search</p>
-              {isLoading ? (
-                <ImSpinner8 size={20} className="animate-spin" />
-              ) : (
-                <GoSearch size={20} />
-              )}
-            </button>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="flex items-center gap-2 rounded-md bg-indigo-500 bg-opacity-70 p-1 px-5 transition hover:bg-indigo-600 hover:bg-opacity-70 active:bg-indigo-700"
+                >
+                  <p className="text-xl font-semibold">Search</p>
+                  {isLoading ? (
+                    <ImSpinner8 size={20} className="animate-spin" />
+                  ) : (
+                    <GoSearch size={20} />
+                  )}
+                </button>
+
+                {/* <button className="relative  flex aspect-square h-10 items-center justify-center rounded-md bg-slate-200 bg-opacity-60 hover:bg-slate-300 hover:bg-opacity-60">
+                  <BsThreeDotsVertical size={30} />
+                </button> */}
+              </div>
+            </div>
           </form>
-
-          <div className="mb-1 flex items-center justify-center ">
-            <button
-              onClick={() =>
-                pagination.page > 1 &&
-                setPagination((prev) => ({ ...prev, page: prev.page - 1 }))
-              }
-            >
-              <MdArrowBackIos
-                className={`text-teal-600 transition  ${
-                  pagination.page <= 1
-                    ? 'cursor-default opacity-30'
-                    : 'hover:scale-95 hover:text-teal-500'
-                }`}
-                size={50}
-              />
-            </button>
-            <p className="select-none text-4xl text-teal-900">
-              {pagination.page}
-            </p>
-            <button
-              onClick={() =>
-                data?.hasMore &&
-                setPagination((prev) => ({ ...prev, page: prev.page + 1 }))
-              }
-            >
-              <MdArrowBackIos
-                className={`rotate-180  text-teal-600 transition ${
-                  data?.hasMore
-                    ? 'hover:scale-95 hover:text-teal-500'
-                    : 'cursor-default opacity-30'
-                }`}
-                size={50}
-              />
-            </button>
-          </div>
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center gap-3">
-            <p className="text-xl">Loading members...</p>
-          </div>
-        ) : isError || (!isLoading && !data.guildMembers.length) ? (
-          <div className="flex items-center gap-3">
-            <p className="text-xl">No members found...</p>
-          </div>
-        ) : (
-          <MemberList guildMembers={data.guildMembers} />
-        )}
+        {isError ||
+          (status === 'success' && data.guildMembers.length === 0) || (
+            <Pagination
+              hasMore={data?.hasMore}
+              page={pagination.page}
+              setPagination={setPagination}
+            />
+          )}
+
+        {/* <div className="mb-3 flex gap-2">
+          <button className="h-9 rounded-md bg-slate-600">asd</button>
+          <button className="h-30 h-9 rounded-md bg-slate-600">asd2</button>
+        </div> */}
+
+        <MemberList
+          guildMembers={data?.guildMembers}
+          isLoading={isLoading}
+          isError={isError}
+        />
       </Panel>
     </>
   );

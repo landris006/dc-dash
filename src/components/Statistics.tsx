@@ -1,13 +1,13 @@
-import { trpc } from "../utils/trpc";
-import Panel from "./ui/Panel";
-import { BsFillPersonFill } from "react-icons/bs";
-import { MdAccessTimeFilled } from "react-icons/md";
-import { MdPhoneCallback } from "react-icons/md";
-import { SiGooglemessages } from "react-icons/si";
-import Stat from "./Stat";
-import { IoCreate } from "react-icons/io5";
-import RefreshButton from "./RefreshButton";
-import { useRouter } from "next/router";
+import { trpc } from '../utils/trpc';
+import Panel from './ui/Panel';
+import { BsFillPersonFill } from 'react-icons/bs';
+import { MdAccessTimeFilled } from 'react-icons/md';
+import { MdPhoneCallback } from 'react-icons/md';
+import { SiGooglemessages } from 'react-icons/si';
+import Stat from './Stat';
+import { IoCreate } from 'react-icons/io5';
+import RefreshButton from './RefreshButton';
+import { useRouter } from 'next/router';
 
 const Statistics = () => {
   const guildID = useRouter().query.guildID as string;
@@ -25,10 +25,10 @@ const Statistics = () => {
         <hr className="h-1 rounded bg-black" />
       </div>
 
-      <div className="flex flex-wrap gap-3 text-xl sm:flex-nowrap">
+      <div className="flex flex-wrap gap-3 px-3 text-xl sm:flex-nowrap">
         {isError ? (
           <div className="flex items-center gap-3">
-            <p className="text-xl">Could not load stats...</p>{" "}
+            <p className="text-xl">Could not load stats...</p>{' '}
             <RefreshButton
               isLoading={isLoading}
               onClick={() => utils.guild.getStats.invalidate()}
