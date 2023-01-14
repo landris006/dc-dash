@@ -4,6 +4,7 @@ import ListItem from './ListItem';
 import Image from 'next/image';
 import MemberInfo from './MemberInfo';
 import Modal from './ui/Modal';
+import { ImSpinner8 } from 'react-icons/im';
 
 interface Props {
   guildMembers?: (GuildMember & { user: User })[];
@@ -44,12 +45,13 @@ const MemberList = ({
       <div className="flex-1" ref={container}>
         <ul
           ref={ul}
-          className="flex h-0 flex-col gap-1 overflow-y-auto text-black"
+          className="relative flex h-0 flex-col gap-1 overflow-y-auto text-black"
         >
           {isLoading ? (
-            <div className="flex items-center gap-3">
-              <p className="text-xl">Loading members...</p>
-            </div>
+            <ImSpinner8
+              size={100}
+              className="custom-animate-spin absolute top-1/2 left-1/2 text-slate-900 opacity-60"
+            />
           ) : isError || (!isLoading && !guildMembers?.length) ? (
             <div className="flex items-center gap-3">
               <p className="text-xl">No members found...</p>
