@@ -9,8 +9,17 @@ interface Props {
   guildMembers?: (GuildMember & { user: User })[];
   isLoading: boolean;
   isError: boolean;
+  pagination: {
+    page: number;
+    limit: number;
+  };
 }
-const MemberList = ({ guildMembers, isLoading, isError }: Props) => {
+const MemberList = ({
+  guildMembers,
+  isLoading,
+  isError,
+  pagination,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<MemberWithUser>();
 
@@ -46,7 +55,7 @@ const MemberList = ({ guildMembers, isLoading, isError }: Props) => {
               <p className="text-xl">No members found...</p>
             </div>
           ) : (
-            guildMembers?.map((guildMember) => (
+            guildMembers?.map((guildMember, index) => (
               <ListItem
                 onClick={() => {
                   setIsOpen(true);
@@ -55,6 +64,10 @@ const MemberList = ({ guildMembers, isLoading, isError }: Props) => {
                 key={guildMember.userID}
               >
                 <div className="flex items-center gap-3">
+                  <p className="text-3xl text-slate-900 opacity-60">
+                    {(pagination.page - 1) * pagination.limit + index + 1}
+                  </p>
+
                   <Image
                     src={guildMember.user.avatarURL ?? '/default-avatar.png'}
                     width={40}

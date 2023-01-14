@@ -138,6 +138,7 @@ const Members = () => {
           guildMembers={data?.guildMembers}
           isLoading={isLoading}
           isError={isError}
+          pagination={pagination}
         />
       </Panel>
     </>
