@@ -19,6 +19,8 @@ body {
     #9fb2d4
   );
   background-attachment: fixed;
+
+  color: rgb(23, 23, 23);
 }
 
 hr {
