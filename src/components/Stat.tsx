@@ -16,7 +16,7 @@ const Stat = ({
   const [isHovered, setIsHovered] = useState(false);
   const tooltipElement = useRef<HTMLParagraphElement>(null);
 
-  useEffect(() => {
+  /* useEffect(() => {
     calculatePosition(tooltipElement.current);
 
     window.addEventListener('resize', () =>
@@ -25,10 +25,10 @@ const Stat = ({
     window.removeEventListener('resize', () =>
       calculatePosition(tooltipElement.current)
     );
-  }, []);
+  }, []); */
 
   return (
-    <div className="relative">
+    <div className="relative w-min">
       <span
         onMouseOver={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

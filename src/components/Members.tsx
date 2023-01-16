@@ -136,13 +136,11 @@ const Members = () => {
           </form>
         </div>
 
-        {isError || !data?.guildMembers.length || (
-          <Pagination
-            hasMore={data?.hasMore}
-            page={pagination.page}
-            setPagination={setPagination}
-          />
-        )}
+        <Pagination
+          hasMore={data?.hasMore}
+          page={pagination.page}
+          setPagination={setPagination}
+        />
 
         <MemberList
           guildMembers={data?.guildMembers}

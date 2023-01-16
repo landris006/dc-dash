@@ -68,7 +68,7 @@ const Highlights = () => {
         <hr className="h-1 rounded bg-black" />
       </div>
 
-      <div className="flex flex-row flex-wrap gap-3 px-3 text-xl sm:flex-nowrap">
+      <div className="clex-col flex flex-wrap gap-3 px-3 text-xl sm:flex-row sm:flex-nowrap">
         {status === 'success' && !guildMembers.length ? (
           <div className="flex items-center gap-3">
             <p className="text-xl">Could not load highlights...</p>{' '}

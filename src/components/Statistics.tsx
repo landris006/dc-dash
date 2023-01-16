@@ -25,7 +25,7 @@ const Statistics = () => {
         <hr className="h-1 rounded bg-black" />
       </div>
 
-      <div className="flex flex-wrap gap-3 px-3 text-xl sm:flex-nowrap">
+      <div className="grid grid-cols-2 justify-items-center gap-3 px-3 text-xl sm:flex sm:flex-nowrap">
         {isError ? (
           <div className="flex items-center gap-3">
             <p className="text-xl">Could not load stats...</p>{' '}
