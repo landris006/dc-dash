@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { z } from 'zod';
+import { publicProcedure, router } from '../trpc';
 
 export const guildRouter = router({
   get: publicProcedure.input(z.string()).query(({ input, ctx }) => {
@@ -20,33 +20,115 @@ export const guildRouter = router({
         id: input,
       },
       include: {
-        guildMembers: true,
-        voiceChannels: true,
+        guildMembers: {
+          include: {
+            messages: true,
+            connections: true,
+          },
+        },
       },
     });
 
-    const { guildMembers, voiceChannels } = guild;
+    const stats = guild.guildMembers.reduce(
+      (stats, guildMember) => {
+        stats.totalMessages += guildMember.messages.length;
+        stats.totalConnections += guildMember.connections.length;
+        stats.totalTimeConnected += guildMember.connections.reduce(
+          (total, connection) => {
+            const { startTime, endTime } = connection;
+            if (!endTime) {
+              return total;
+            }
 
-    const stats = guildMembers.reduce(
-      (stats, member) => {
-        stats.totalMessages += member.messagesSent;
-        stats.totalTimeConnected += member.hoursActive;
+            return total + (endTime.getTime() - startTime.getTime());
+          },
+          0
+        );
 
         return stats;
       },
       {
-        totalMembers: guildMembers.length,
         totalMessages: 0,
         totalConnections: 0,
         totalTimeConnected: 0,
       }
     );
 
-    stats.totalConnections = voiceChannels.reduce(
-      (total, channel) => (total += channel.connections),
-      0
-    );
-
-    return { ...stats, createdAt: (await guild)?.createdAt };
+    return {
+      ...stats,
+      createdAt: guild.createdAt,
+      totalMembers: guild.guildMembers.length,
+    };
   }),
+
+  getHighlights: publicProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      const guild = await ctx.prisma.guild.findUniqueOrThrow({
+        where: {
+          id: input,
+        },
+        include: {
+          guildMembers: {
+            include: {
+              messages: true,
+              connections: true,
+              user: true,
+            },
+          },
+        },
+      });
+
+      return guild.guildMembers.reduce(
+        (highlights, guildMember) => {
+          const { nickname, messages, connections } = guildMember;
+
+          const totalMessages = messages.length;
+          if (totalMessages > highlights.mostMessages.count) {
+            highlights.mostMessages = {
+              count: totalMessages,
+              nickname: nickname ?? guildMember.user.username,
+            };
+          }
+
+          if (guildMember.joinedAt < highlights.oldestMember.date) {
+            highlights.oldestMember = {
+              date: guildMember.joinedAt,
+              nickname: nickname ?? guildMember.user.username,
+            };
+          }
+
+          const totalTimeConnected = connections.reduce((total, connection) => {
+            const { startTime, endTime } = connection;
+            if (!endTime) {
+              return total;
+            }
+
+            return total + (endTime.getTime() - startTime.getTime());
+          }, 0);
+          if (totalTimeConnected > highlights.mostTimeConnected.miliseconds) {
+            highlights.mostTimeConnected = {
+              miliseconds: totalTimeConnected,
+              nickname: nickname ?? guildMember.user.username,
+            };
+          }
+
+          return highlights;
+        },
+        {
+          mostMessages: {
+            count: 0,
+            nickname: '',
+          },
+          mostTimeConnected: {
+            miliseconds: 0,
+            nickname: '',
+          },
+          oldestMember: {
+            date: new Date(),
+            nickname: '',
+          },
+        }
+      );
+    }),
 });

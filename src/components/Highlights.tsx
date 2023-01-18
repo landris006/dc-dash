@@ -13,53 +13,12 @@ const Highlights = () => {
   const guildID = useRouter().query.guildID as string;
 
   const {
-    data: guildMembers,
+    data: highlights,
     isLoading,
-    status,
-  } = trpc.guildMember.getAllInGuild.useQuery(guildID);
+    isError,
+  } = trpc.guild.getHighlights.useQuery(guildID);
 
   const utils = trpc.useContext();
-
-  const highlights = guildMembers?.reduce(
-    (highlights, member) => {
-      if (member.messagesSent > highlights.mostMessages.count) {
-        highlights.mostMessages = {
-          count: member.messagesSent,
-          nickname: member.nickname ?? '',
-        };
-      }
-
-      if (member.hoursActive > highlights.mostTimeConnected.hours) {
-        highlights.mostTimeConnected = {
-          hours: member.hoursActive,
-          nickname: member.nickname ?? '',
-        };
-      }
-
-      if (member.joinedAt < highlights.oldestMember.date) {
-        highlights.oldestMember = {
-          date: member.joinedAt,
-          nickname: member.nickname ?? '',
-        };
-      }
-
-      return highlights;
-    },
-    {
-      mostMessages: {
-        count: 0,
-        nickname: '',
-      },
-      mostTimeConnected: {
-        hours: 0,
-        nickname: '',
-      },
-      oldestMember: {
-        date: new Date(),
-        nickname: '',
-      },
-    }
-  );
 
   return (
     <Panel classNames="bg-rose-200">
@@ -69,7 +28,7 @@ const Highlights = () => {
       </div>
 
       <div className="clex-col flex flex-wrap gap-3 px-3 text-xl sm:flex-row sm:flex-nowrap">
-        {status === 'success' && !guildMembers.length ? (
+        {isError ? (
           <div className="flex items-center gap-3">
             <p className="text-xl">Could not load highlights...</p>{' '}
             <RefreshButton
@@ -82,8 +41,11 @@ const Highlights = () => {
             <Stat
               prefix={<GiGrowth />}
               value={
-                highlights?.mostTimeConnected?.hours &&
-                CONVERSIONS.HOURS_TO_LEVEL(highlights?.mostTimeConnected?.hours)
+                highlights?.mostTimeConnected?.miliseconds &&
+                CONVERSIONS.HOURS_TO_LEVEL(
+                  highlights?.mostTimeConnected?.miliseconds *
+                    CONVERSIONS.MILISECONDS_TO_HOURS
+                )
               }
               suffix={`(${highlights?.mostTimeConnected?.nickname})`}
               tooltipText="Highest level member"

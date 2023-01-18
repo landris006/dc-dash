@@ -7,6 +7,7 @@ import { CONVERSIONS } from '../utils/conversions';
 import Stat from './Stat';
 import Panel from './ui/Panel';
 import Image from 'next/image';
+import { trpc } from '../utils/trpc';
 
 const MemberInfo = ({
   member,
@@ -15,10 +16,14 @@ const MemberInfo = ({
     user: User;
   };
 }) => {
-  const level = CONVERSIONS.HOURS_TO_LEVEL(member.hoursActive);
+  const { data: stats, status } = trpc.guildMember.getStats.useQuery(member.id);
+
+  const hoursActive =
+    (stats?.timeActive ?? 0) * CONVERSIONS.MILISECONDS_TO_HOURS;
+  const level = CONVERSIONS.HOURS_TO_LEVEL(hoursActive);
   const hoursToCurrentLevel = CONVERSIONS.LEVEL_TO_HOURS(level);
   const progression =
-    (member.hoursActive - hoursToCurrentLevel) /
+    (hoursActive - hoursToCurrentLevel) /
     (CONVERSIONS.LEVEL_TO_HOURS(level + 1) - hoursToCurrentLevel);
 
   return (
@@ -71,12 +76,12 @@ const MemberInfo = ({
         />
         <Stat
           prefix={<SiGooglemessages />}
-          value={member.messagesSent}
+          value={stats?.totalMessages}
           tooltipText="Messages sent"
         />
         <Stat
           prefix={<MdAccessTimeFilled />}
-          value={Math.round(member.hoursActive)}
+          value={status === 'success' ? Math.round(hoursActive) : undefined}
           tooltipText="Hours active"
         />
       </div>

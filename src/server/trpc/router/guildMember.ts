@@ -1,6 +1,12 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
+import {
+  Connection,
+  GuildMember,
+  Prisma,
+  PrismaClient,
+  User,
+} from '@prisma/client';
 
 export const guildMemberRouter = router({
   get: publicProcedure
@@ -18,6 +24,31 @@ export const guildMemberRouter = router({
       });
     }),
 
+  getStats: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    const guildMember = await ctx.prisma.guildMember.findUniqueOrThrow({
+      where: {
+        id: input,
+      },
+      include: {
+        user: true,
+        messages: true,
+        connections: true,
+      },
+    });
+
+    return {
+      timeActive: guildMember.connections.reduce((total, connection) => {
+        const { startTime, endTime } = connection;
+        if (!endTime) {
+          return total;
+        }
+
+        return total + (endTime.getTime() - startTime.getTime());
+      }, 0),
+      totalMessages: guildMember.messages.length,
+    };
+  }),
+
   getAllInGuild: publicProcedure.input(z.string()).query(({ input, ctx }) => {
     return ctx.prisma.guildMember.findMany({
       where: {
@@ -25,19 +56,6 @@ export const guildMemberRouter = router({
       },
     });
   }),
-
-  getAllInGuildWithUser: publicProcedure
-    .input(z.string())
-    .query(({ input, ctx }) => {
-      return ctx.prisma.guildMember.findMany({
-        where: {
-          guildID: input,
-        },
-        include: {
-          user: true,
-        },
-      });
-    }),
 
   getPaginatedMembers: publicProcedure
     .input(
@@ -60,25 +78,61 @@ export const guildMemberRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      const { page, limit, guildID } = input;
+      const { page, limit, guildID, queryParams } = input;
 
-      const orderBy = input.queryParams
-        ?.orderBy as Prisma.Enumerable<Prisma.GuildMemberOrderByWithRelationInput>;
+      const isSortingByHoursActive = queryParams?.orderBy?.hoursActive;
+      const orderBy =
+        queryParams?.orderBy as Prisma.Enumerable<Prisma.GuildMemberOrderByWithRelationInput>;
 
-      const guildMembers = await ctx.prisma.guildMember.findMany({
-        skip: (page - 1) * limit,
-        take: limit + 1,
-        where: {
-          guildID,
-          nickname: {
-            contains: input.queryParams?.nickname,
+      let guildMembers: (GuildMember & {
+        user: User;
+      })[];
+
+      if (isSortingByHoursActive) {
+        const rawMembers =
+          isSortingByHoursActive === 'asc'
+            ? await ascendingHoursSpentQuery(ctx.prisma, {
+                guildID,
+                nickname: input.queryParams?.nickname ?? '',
+                skip: (page - 1) * limit,
+                take: limit + 1,
+              })
+            : await descendingHoursSpentQuery(ctx.prisma, {
+                guildID,
+                nickname: input.queryParams?.nickname ?? '',
+                skip: (page - 1) * limit,
+                take: limit + 1,
+              });
+
+        guildMembers = rawMembers.map((guildMember) => {
+          const newGuildmember = {
+            ...guildMember,
+            id: guildMember.guildMemberID,
+            user: {
+              id: guildMember.userID,
+              avatarURL: guildMember.avatarURL,
+              username: guildMember.username,
+            },
+          };
+
+          return newGuildmember;
+        });
+      } else {
+        guildMembers = await ctx.prisma.guildMember.findMany({
+          skip: (page - 1) * limit,
+          take: limit + 1,
+          where: {
+            guildID,
+            nickname: {
+              contains: input.queryParams?.nickname,
+            },
           },
-        },
-        include: {
-          user: true,
-        },
-        orderBy,
-      });
+          include: {
+            user: true,
+          },
+          orderBy,
+        });
+      }
 
       let hasMore = false;
       if (guildMembers.length > limit) {
@@ -96,3 +150,65 @@ export const guildMemberRouter = router({
     return ctx.prisma.guildMember.findMany();
   }),
 });
+
+interface GuildMemberWithUser extends GuildMember {
+  avatarURL: string;
+  username: string;
+  guildMemberID: string;
+}
+
+// pure joy
+const ascendingHoursSpentQuery = async (
+  prisma: PrismaClient,
+  {
+    guildID,
+    nickname,
+    skip,
+    take,
+  }: { guildID: string; nickname: string; skip: number; take: number }
+) => {
+  return prisma.$queryRaw<GuildMemberWithUser[]>`
+  SELECT "GuildMember"."id" AS "guildMemberID", *
+  FROM "GuildMember"
+  JOIN "User" ON "User"."id" = "GuildMember"."userID"
+
+  WHERE "guildID" = ${guildID} AND
+  "nickname" LIKE ${'%' + nickname + '%'}
+
+  ORDER BY COALESCE((
+    SELECT SUM("endTime" - "startTime")
+    FROM "Connection"
+    WHERE "guildMemberID" = "GuildMember"."id"
+  ), 0 * INTERVAL '0 hours') DESC
+
+  OFFSET ${skip}
+  LIMIT ${take}
+  `;
+};
+const descendingHoursSpentQuery = async (
+  prisma: PrismaClient,
+  {
+    guildID,
+    nickname,
+    skip,
+    take,
+  }: { guildID: string; nickname: string; skip: number; take: number }
+) => {
+  return prisma.$queryRaw<GuildMemberWithUser[]>`
+  SELECT "GuildMember"."id" AS "guildMemberID", *
+  FROM "GuildMember"
+  JOIN "User" ON "User"."id" = "GuildMember"."userID"
+
+  WHERE "guildID" = ${guildID} AND
+  "nickname" LIKE ${'%' + nickname + '%'}
+
+  ORDER BY COALESCE((
+    SELECT SUM("endTime" - "startTime")
+    FROM "Connection"
+    WHERE "guildMemberID" = "GuildMember"."id"
+  ), 0 * INTERVAL '0 hours') ASC
+
+  OFFSET ${skip}
+  LIMIT ${take}
+  `;
+};

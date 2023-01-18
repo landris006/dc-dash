@@ -8,6 +8,7 @@ import Stat from './Stat';
 import { IoCreate } from 'react-icons/io5';
 import RefreshButton from './RefreshButton';
 import { useRouter } from 'next/router';
+import { CONVERSIONS } from '../utils/conversions';
 
 const Statistics = () => {
   const guildID = useRouter().query.guildID as string;
@@ -45,7 +46,9 @@ const Statistics = () => {
               prefix={<MdAccessTimeFilled />}
               value={
                 stats?.totalTimeConnected &&
-                Math.round(stats.totalTimeConnected)
+                Math.round(
+                  stats.totalTimeConnected * CONVERSIONS.MILISECONDS_TO_HOURS
+                )
               }
               suffix="hrs"
               tooltipText="Total time connected"
