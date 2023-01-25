@@ -60,8 +60,8 @@ const Server: NextPage = () => {
       <Header />
 
       <main className="container mx-auto flex flex-1 flex-col px-3 pb-3">
-        <div className="my-3 flex-wrap gap-3 md:flex">
-          <div className="mb-3 flex-1 md:mb-0">
+        <div className="my-3 flex-wrap gap-3 xl:flex">
+          <div className="mb-3 xl:mb-0">
             <Statistics />
           </div>
           <div className="flex-1">

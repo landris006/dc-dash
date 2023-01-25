@@ -80,7 +80,7 @@ const Members = () => {
 
         <div className="w-fit sm:flex sm:justify-between">
           <form onSubmit={initSearch}>
-            <div className="flex w-fit flex-wrap items-stretch gap-2 py-3 md:flex-nowrap">
+            <div className="flex w-fit flex-wrap items-stretch gap-2 py-3 lg:flex-nowrap">
               <div className="flex">
                 <input
                   value={nickname}
@@ -169,10 +169,10 @@ const SortButton = ({
     <button
       onClick={onClick}
       className="flex
-      w-full items-center justify-start rounded-md bg-slate-200
-      bg-opacity-60 px-2
-      text-xl hover:bg-slate-300
-      hover:bg-opacity-60 active:bg-slate-400 active:bg-opacity-60 sm:justify-evenly"
+      w-full items-center justify-start whitespace-nowrap rounded-md
+      bg-slate-200 bg-opacity-60
+      px-2 text-xl
+      hover:bg-slate-300 hover:bg-opacity-60 active:bg-slate-400 active:bg-opacity-60 sm:justify-evenly"
     >
       <p className="mr-2 text-lg ">{text}</p>
       <div className={`${value === undefined && 'invisible'}`}>
