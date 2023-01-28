@@ -74,7 +74,7 @@ const Members = () => {
     <>
       <Panel classNames="bg-gray-300 flex-1 flex flex-col">
         <div>
-          <h2 className="h- text-3xl font-semibold">Members</h2>
+          <h2 className="text-3xl font-semibold">Members</h2>
           <hr className="h-1 rounded bg-black" />
         </div>
 

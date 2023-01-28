@@ -6,6 +6,7 @@ import Statistics from '../../components/Statistics';
 import Highlights from '../../components/Highlights';
 import Members from '../../components/Members';
 import { BsFillDoorOpenFill } from 'react-icons/bs';
+import ChannelStatus from '../../components/ChannelStatus';
 
 const Header = () => {
   const router = useRouter();
@@ -46,6 +47,7 @@ const Header = () => {
 const Server: NextPage = () => {
   const router = useRouter();
   const guildID = router.query.guildID as string | undefined;
+
   if (!guildID) {
     return (
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-slate-300 p-3">
@@ -69,7 +71,11 @@ const Server: NextPage = () => {
           </div>
         </div>
 
-        <Members />
+        <div className="flex flex-1 gap-3">
+          <ChannelStatus guildID={guildID} />
+
+          <Members />
+        </div>
       </main>
     </div>
   );
