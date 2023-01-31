@@ -7,9 +7,9 @@ import Member from './Member';
 
 interface Props {
   channelID: string;
-  usersIDs: string[];
+  users: { id: string; muted: boolean; deafened: boolean }[];
 }
-const Channel = ({ channelID, usersIDs }: Props) => {
+const Channel = ({ channelID, users }: Props) => {
   const {
     data: voiceChannel,
     isLoading,
@@ -47,15 +47,15 @@ const Channel = ({ channelID, usersIDs }: Props) => {
         </span>
 
         <span className="whitespace-nowrap text-slate-600">
-          {usersIDs.length} member{usersIDs.length !== 1 && 's'}
+          {users.length} member{users.length !== 1 && 's'}
         </span>
       </p>
 
-      {usersIDs.length > 0 && (
+      {users.length > 0 && (
         <ul className="flex flex-col gap-1 pt-3">
-          {usersIDs.map((userID) => (
-            <li className="ml-2" key={userID}>
-              <Member userID={userID} />
+          {users.map((user) => (
+            <li className="ml-2" key={user.id}>
+              <Member user={user} />
             </li>
           ))}
         </ul>

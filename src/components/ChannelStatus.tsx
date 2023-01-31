@@ -6,9 +6,13 @@ import Channel from './Channel';
 import { env } from '../env/client.mjs';
 
 const ChannelStatus = ({ guildID }: { guildID: string }) => {
-  const [channels, setChannels] = React.useState<{ [key: string]: string[] }>(
-    {}
-  );
+  const [channels, setChannels] = React.useState<{
+    [key: string]: {
+      id: string;
+      muted: boolean;
+      deafened: boolean;
+    }[];
+  }>({});
 
   useEffect(() => {
     if (!guildID) {
@@ -36,8 +40,8 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
       <hr className="h-1 rounded bg-black" />
 
       <ul className="flex flex-col gap-2 pt-3">
-        {Object.entries(channels).map(([channelID, usersIDs]) => (
-          <Channel key={channelID} channelID={channelID} usersIDs={usersIDs} />
+        {Object.entries(channels).map(([channelID, users]) => (
+          <Channel key={channelID} channelID={channelID} users={users} />
         ))}
       </ul>
     </Panel>
