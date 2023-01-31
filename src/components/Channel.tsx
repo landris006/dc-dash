@@ -52,7 +52,7 @@ const Channel = ({ channelID, usersIDs }: Props) => {
       </p>
 
       {usersIDs.length > 0 && (
-        <ul className="pt-3">
+        <ul className="flex flex-col gap-1 pt-3">
           {usersIDs.map((userID) => (
             <li className="ml-2" key={userID}>
               <Member userID={userID} />
