@@ -19,9 +19,12 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
       return;
     }
 
-    const socket = io(env.NEXT_PUBLIC_BOT_URL);
+    const socket = io(env.NEXT_PUBLIC_BOT_URL, {
+      query: {
+        guildID,
+      },
+    });
 
-    socket.emit('subscribe', guildID);
     socket.on('update', (data) => setChannels(data));
     socket.on('error', (error) => console.error(error));
 
