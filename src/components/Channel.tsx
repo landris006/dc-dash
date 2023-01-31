@@ -17,8 +17,6 @@ const Channel = ({ channelID, usersIDs }: Props) => {
   } = trpc.voiceChannel.get.useQuery(channelID);
   const utils = trpc.useContext();
 
-  const [isShowingMembers, setIsShowingMembers] = React.useState(false);
-
   if (isLoading) {
     return (
       <ListItem>
@@ -42,15 +40,18 @@ const Channel = ({ channelID, usersIDs }: Props) => {
   }
 
   return (
-    <ListItem onClick={() => setIsShowingMembers((prev) => !prev)}>
-      <p className="flex justify-between">
-        <span>{voiceChannel?.name}</span>
-        <span className="text-slate-600">
+    <ListItem>
+      <p className="flex justify-between gap-3">
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap md:max-w-[10rem] ">
+          {voiceChannel?.name}
+        </span>
+
+        <span className="whitespace-nowrap text-slate-600">
           {usersIDs.length} member{usersIDs.length !== 1 && 's'}
         </span>
       </p>
 
-      {isShowingMembers && (
+      {usersIDs.length > 0 && (
         <ul className="pt-3">
           {usersIDs.map((userID) => (
             <li className="ml-2" key={userID}>

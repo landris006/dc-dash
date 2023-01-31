@@ -94,7 +94,7 @@ const Members = () => {
                 </button>
               </div>
 
-              <div className="relative flex flex-col gap-2  sm:flex-row">
+              <div className="relative flex flex-col gap-2 sm:flex-row">
                 <button
                   onClick={() => setFiltersOpen((prev) => !prev)}
                   className="
@@ -111,15 +111,10 @@ const Members = () => {
                   <div
                     className={`
                       absolute left-1/2 top-full z-10 flex -translate-x-1/2
-                      flex-col items-start gap-2 rounded-md bg-slate-200
-                      p-2 text-lg sm:relative sm:left-0 sm:top-0 sm:z-auto
-                      sm:grid sm:translate-x-0 sm:items-stretch sm:bg-transparent sm:p-0
+                      flex-col items-start gap-2 rounded-lg bg-slate-200
+                      p-2 text-lg lg:relative lg:left-0 lg:top-0 lg:z-auto
+                      lg:flex lg:translate-x-0 lg:flex-row lg:items-stretch lg:bg-transparent lg:p-0
                     `}
-                    style={{
-                      gridTemplateColumns: '1fr '.repeat(
-                        Object.keys(orderBy).length
-                      ),
-                    }}
                   >
                     {Object.entries(orderBy).map(([key, value]) => (
                       <SortButton

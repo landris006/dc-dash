@@ -38,11 +38,6 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
         {Object.entries(channels).map(([channelID, usersIDs]) => (
           <Channel key={channelID} channelID={channelID} usersIDs={usersIDs} />
         ))}
-
-        <Channel
-          channelID={'419432952535973890'}
-          usersIDs={['694620824765726760']}
-        />
       </ul>
     </Panel>
   );
