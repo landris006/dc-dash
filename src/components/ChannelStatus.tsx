@@ -3,6 +3,7 @@ import Panel from './ui/Panel';
 import { GoPrimitiveDot } from 'react-icons/go';
 import { io } from 'socket.io-client';
 import Channel from './Channel';
+import { env } from '../env/client.mjs';
 
 const ChannelStatus = ({ guildID }: { guildID: string }) => {
   const [channels, setChannels] = React.useState<{ [key: string]: string[] }>(
@@ -14,7 +15,7 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
       return;
     }
 
-    const socket = io('http://localhost:5000');
+    const socket = io(env.NEXT_PUBLIC_BOT_URL);
 
     socket.emit('subscribe', guildID);
     socket.on('update', (data) => setChannels(data));
