@@ -11,6 +11,7 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
       id: string;
       muted: boolean;
       deafened: boolean;
+      streaming: boolean;
     }[];
   }>({});
 

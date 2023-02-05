@@ -9,7 +9,7 @@ import { TbHeadphonesOff } from 'react-icons/tb';
 const Member = ({
   user,
 }: {
-  user: { id: string; muted: boolean; deafened: boolean };
+  user: { id: string; muted: boolean; deafened: boolean; streaming: boolean };
 }) => {
   const guildID = useRouter().query.guildID as string;
 
@@ -46,8 +46,12 @@ const Member = ({
       <span>{guildMember.nickname ?? guildMember.user.username}</span>
 
       {user.muted && <BsFillMicMuteFill opacity={0.7} />}
-
       {user.deafened && <TbHeadphonesOff opacity={0.7} />}
+      {user.streaming && (
+        <span className="rounded-lg bg-red-500 px-2 text-[12px] font-semibold uppercase text-white">
+          live
+        </span>
+      )}
     </p>
   );
 };

@@ -7,7 +7,12 @@ import Member from './Member';
 
 interface Props {
   channelID: string;
-  users: { id: string; muted: boolean; deafened: boolean }[];
+  users: {
+    id: string;
+    muted: boolean;
+    deafened: boolean;
+    streaming: boolean;
+  }[];
 }
 const Channel = ({ channelID, users }: Props) => {
   const {
