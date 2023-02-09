@@ -5,6 +5,7 @@ import { trpc } from '../utils/trpc';
 import Image from 'next/image';
 import { BsFillMicMuteFill } from 'react-icons/bs';
 import { TbHeadphonesOff } from 'react-icons/tb';
+import TimeOnline from './TimeOnline';
 
 const Member = ({
   user,
@@ -17,7 +18,7 @@ const Member = ({
     data: guildMember,
     isLoading,
     isError,
-  } = trpc.guildMember.getWithUser.useQuery({
+  } = trpc.guildMember.getConnectedMember.useQuery({
     guildID,
     userID: user.id,
   });
@@ -35,24 +36,32 @@ const Member = ({
   }
 
   return (
-    <p className="flex items-center gap-2">
-      <Image
-        width={25}
-        height={25}
-        className="rounded-full"
-        src={guildMember.user.avatarURL ?? '/default-avatar.png'}
-      />
+    <div className="flex justify-between">
+      <p className="flex items-center gap-2">
+        <Image
+          width={25}
+          height={25}
+          alt="avatar"
+          className="rounded-full"
+          src={guildMember.user.avatarURL ?? '/default-avatar.png'}
+        />
 
-      <span>{guildMember.nickname ?? guildMember.user.username}</span>
+        <span>{guildMember.nickname ?? guildMember.user.username}</span>
 
-      {user.muted && <BsFillMicMuteFill opacity={0.7} />}
-      {user.deafened && <TbHeadphonesOff opacity={0.7} />}
-      {user.streaming && (
-        <span className="rounded-lg bg-red-500 px-2 text-[12px] font-semibold uppercase text-white">
-          live
-        </span>
+        {user.muted && <BsFillMicMuteFill opacity={0.7} />}
+        {user.deafened && <TbHeadphonesOff opacity={0.7} />}
+        {user.streaming && (
+          <span className="rounded-lg bg-red-500 px-2 text-[12px] font-semibold uppercase text-white">
+            live
+          </span>
+        )}
+      </p>
+
+      {guildMember.connections.length === 1 && (
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        <TimeOnline startTime={guildMember.connections[0]!.startTime} />
       )}
-    </p>
+    </div>
   );
 };
 

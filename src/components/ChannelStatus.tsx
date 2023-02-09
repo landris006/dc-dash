@@ -4,6 +4,7 @@ import { GoPrimitiveDot } from 'react-icons/go';
 import { io } from 'socket.io-client';
 import Channel from './Channel';
 import { env } from '../env/client.mjs';
+import { ImSpinner8 } from 'react-icons/im';
 
 const ChannelStatus = ({ guildID }: { guildID: string }) => {
   const [channels, setChannels] = React.useState<{
@@ -39,7 +40,11 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
     <Panel>
       <h2 className="flex items-center text-3xl font-semibold">
         Channel status
-        <GoPrimitiveDot color="#ff4545" className="animate-pulse" size={35} />
+        {Object.keys(channels).length === 0 ? (
+          <ImSpinner8 size={23} className="ml-3 animate-spin" />
+        ) : (
+          <GoPrimitiveDot color="#ff4545" className="animate-pulse" size={35} />
+        )}
       </h2>
       <hr className="h-1 rounded bg-black" />
 

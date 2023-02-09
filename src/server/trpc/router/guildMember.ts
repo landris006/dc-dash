@@ -42,6 +42,29 @@ export const guildMemberRouter = router({
       });
     }),
 
+  getConnectedMember: publicProcedure
+    .input(
+      z.object({
+        guildID: z.string(),
+        userID: z.string(),
+      })
+    )
+    .query(({ input, ctx }) => {
+      return ctx.prisma.guildMember.findUniqueOrThrow({
+        where: {
+          guildID_userID: { guildID: input.guildID, userID: input.userID },
+        },
+        include: {
+          user: true,
+          connections: {
+            where: {
+              endTime: null,
+            },
+          },
+        },
+      });
+    }),
+
   getStats: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
     const guildMember = await ctx.prisma.guildMember.findUniqueOrThrow({
       where: {

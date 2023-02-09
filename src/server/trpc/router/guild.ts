@@ -14,6 +14,16 @@ export const guildRouter = router({
     return ctx.prisma.guild.findMany();
   }),
 
+  getVoiceChannels: publicProcedure
+    .input(z.string())
+    .query(({ input, ctx }) => {
+      return ctx.prisma.voiceChannel.findMany({
+        where: {
+          guildID: input,
+        },
+      });
+    }),
+
   getStats: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
     const guild = await ctx.prisma.guild.findUniqueOrThrow({
       where: {
