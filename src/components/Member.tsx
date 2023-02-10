@@ -18,10 +18,15 @@ const Member = ({
     data: guildMember,
     isLoading,
     isError,
-  } = trpc.guildMember.getConnectedMember.useQuery({
-    guildID,
-    userID: user.id,
-  });
+  } = trpc.guildMember.getConnectedMember.useQuery(
+    {
+      guildID,
+      userID: user.id,
+    },
+    {
+      refetchOnMount: 'always',
+    }
+  );
 
   if (isLoading) {
     return (
