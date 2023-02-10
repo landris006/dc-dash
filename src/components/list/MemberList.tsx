@@ -1,9 +1,9 @@
 import { GuildMember, User } from '@prisma/client';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
-import ListItem from './ListItem';
+import ListItem from '../common/ListItem';
 import Image from 'next/image';
 import MemberInfo from './MemberInfo';
-import Modal from './ui/Modal';
+import Modal from '../common/Modal';
 import { ImSpinner8 } from 'react-icons/im';
 
 interface Props {

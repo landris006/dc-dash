@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import Panel from './ui/Panel';
+import Panel from '../common/Panel';
 import { GoPrimitiveDot } from 'react-icons/go';
 import { io } from 'socket.io-client';
 import Channel from './Channel';
-import { env } from '../env/client.mjs';
+import { env } from '../../env/client.mjs';
 import { ImSpinner8 } from 'react-icons/im';
 
 const ChannelStatus = ({ guildID }: { guildID: string }) => {

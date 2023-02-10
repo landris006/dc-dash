@@ -3,11 +3,11 @@ import { BiRename } from 'react-icons/bi';
 import { IoCreate } from 'react-icons/io5';
 import { MdAccessTimeFilled } from 'react-icons/md';
 import { SiGooglemessages } from 'react-icons/si';
-import { CONVERSIONS } from '../utils/conversions';
-import Stat from './Stat';
-import Panel from './ui/Panel';
+import { CONVERSIONS } from '../../utils/conversions';
+import Stat from '../Stat';
+import Panel from '../common/Panel';
 import Image from 'next/image';
-import { trpc } from '../utils/trpc';
+import { trpc } from '../../utils/trpc';
 
 const MemberInfo = ({
   member,

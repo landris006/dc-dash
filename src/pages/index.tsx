@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import ListItem from '../components/ListItem';
+import ListItem from '../components/common/ListItem';
 import { trpc } from '../utils/trpc';
 import Image from 'next/image';
 import { ImSpinner8 } from 'react-icons/im';

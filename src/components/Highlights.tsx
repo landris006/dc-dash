@@ -1,12 +1,12 @@
 import React from 'react';
-import Panel from './ui/Panel';
+import Panel from './common/Panel';
 import Stat from './Stat';
 import { GiGrowth } from 'react-icons/gi';
 import { trpc } from '../utils/trpc';
 import { SiGooglemessages } from 'react-icons/si';
 import { MdAccessTimeFilled } from 'react-icons/md';
 import { CONVERSIONS } from '../utils/conversions';
-import RefreshButton from './RefreshButton';
+import RefreshButton from './common/RefreshButton';
 import { useRouter } from 'next/router';
 
 const Highlights = () => {

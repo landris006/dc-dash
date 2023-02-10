@@ -1,7 +1,7 @@
 import { FormEvent, MouseEventHandler, useEffect, useState } from 'react';
-import Panel from './ui/Panel';
+import Panel from '../common/Panel';
 import MemberList from './MemberList';
-import { trpc } from '../utils/trpc';
+import { trpc } from '../../utils/trpc';
 import { useRouter } from 'next/router';
 import Pagination from './Pagination';
 import { BsSortDownAlt, BsSortUpAlt } from 'react-icons/bs';

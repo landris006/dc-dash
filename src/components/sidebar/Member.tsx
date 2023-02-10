@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { ImSpinner8 } from 'react-icons/im';
-import { trpc } from '../utils/trpc';
+import { trpc } from '../../utils/trpc';
 import Image from 'next/image';
 import { BsFillMicMuteFill } from 'react-icons/bs';
 import { TbHeadphonesOff } from 'react-icons/tb';

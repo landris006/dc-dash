@@ -1,12 +1,12 @@
 import { trpc } from '../utils/trpc';
-import Panel from './ui/Panel';
+import Panel from './common/Panel';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdAccessTimeFilled } from 'react-icons/md';
 import { MdPhoneCallback } from 'react-icons/md';
 import { SiGooglemessages } from 'react-icons/si';
 import Stat from './Stat';
 import { IoCreate } from 'react-icons/io5';
-import RefreshButton from './RefreshButton';
+import RefreshButton from './common/RefreshButton';
 import { useRouter } from 'next/router';
 import { CONVERSIONS } from '../utils/conversions';
 
