@@ -17,7 +17,7 @@ const Panel = (
       ref={ref}
       onClick={onClick}
       className={`h-full rounded-md p-3 shadow-xl
-      ${transparent !== false && 'bg-opacity-[0.45]'}
+      ${transparent !== false && 'bg-opacity-[0.45] dark:bg-opacity-[0.15]'}
       ${classNames ?? 'bg-slate-300'}`}
     >
       {children}

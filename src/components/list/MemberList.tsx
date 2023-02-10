@@ -45,7 +45,7 @@ const MemberList = ({
       <div className="flex-1" ref={container}>
         <ul
           ref={ul}
-          className="relative flex h-0 flex-col gap-1 overflow-y-auto text-black"
+          className="relative flex h-0 flex-col gap-1 overflow-y-auto text-black dark:text-slate-200"
         >
           {isLoading ? (
             <ImSpinner8
@@ -66,7 +66,7 @@ const MemberList = ({
                 key={guildMember.userID}
               >
                 <div className="flex items-center gap-3">
-                  <p className="text-3xl text-slate-900 opacity-60">
+                  <p className="text-3xl font-bold text-slate-900 opacity-60 dark:text-slate-200">
                     {(pagination.page - 1) * pagination.limit + index + 1}
                   </p>
 
@@ -78,7 +78,9 @@ const MemberList = ({
                     className=" rounded-full "
                   />
 
-                  <span className="text-xl">{guildMember.nickname}</span>
+                  <span className="text-sla text-xl">
+                    {guildMember.nickname}
+                  </span>
                 </div>
               </ListItem>
             ))

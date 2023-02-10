@@ -21,6 +21,45 @@ body {
   background-attachment: fixed;
 
   color: rgb(23, 23, 23);
+  font-weight: 400;
+}
+
+.dark body {
+  /* background-image: linear-gradient( */
+  /*   to left bottom, */
+  /*   #132b57, */
+  /*   #182a5c, */
+  /*   #1f2860, */
+  /*   #282563, */
+  /*   #312165, */
+  /*   #322266, */
+  /*   #322368, */
+  /*   #332469, */
+  /*   #2b2a6a, */
+  /*   #252f69, */
+  /*   #203368, */
+  /*   #1d3766 */
+  /* ); */
+  background-image: linear-gradient(
+    to left bottom,
+    #0c2044,
+    #0f1f49,
+    #151d4e,
+    #1c1b52,
+    #251755,
+    #251856,
+    #261856,
+    #261957,
+    #1f1d56,
+    #182154,
+    #132451,
+    #10264e
+  );
+  background-attachment: fixed;
+
+  font-weight: 300;
+
+  color: #e2e8f0;
 }
 
 hr {

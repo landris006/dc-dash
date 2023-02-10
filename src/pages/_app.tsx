@@ -3,6 +3,7 @@ import '../styles/utils.css';
 import type { AppType } from 'next/app';
 import Head from 'next/head';
 import { trpc } from '../utils/trpc';
+import { ThemeProvider } from 'next-themes';
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -16,7 +17,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           href="/discord-favicon.png"
         ></link>
       </Head>
-      <Component {...pageProps} />
+
+      <ThemeProvider enableSystem={true} attribute="class">
+        <Component {...pageProps} />
+      </ThemeProvider>
     </>
   );
 };
