@@ -40,6 +40,8 @@ const Member = ({
     return <div>Something went wrong...</div>;
   }
 
+  console.log({ guildMember });
+
   return (
     <div className="flex justify-between">
       <p className="flex items-center gap-2">
