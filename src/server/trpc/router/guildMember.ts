@@ -1,6 +1,7 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import {
+  Connection,
   GuildMember,
   Prisma,
   PrismaClient,
@@ -182,6 +183,7 @@ export const guildMemberRouter = router({
         guildMembers = guildMembersRes.map((guildMember) => {
           const newGuildmember = {
             ...guildMember,
+            connections: guildMember.connections as Connection[] | undefined,
             totalTime: guildMember.connections.reduce((total, connection) => {
               const { startTime, endTime } = connection;
               if (!endTime) {
@@ -192,7 +194,6 @@ export const guildMemberRouter = router({
             }, 0),
           };
 
-          // @ts-ignore
           delete newGuildmember.connections;
 
           return newGuildmember;
