@@ -1,7 +1,6 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import {
-  Connection,
   GuildMember,
   Prisma,
   PrismaClient,
@@ -127,6 +126,7 @@ export const guildMemberRouter = router({
 
       let guildMembers: (GuildMember & {
         user: User;
+        totalTime: number;
       })[];
 
       if (isSortingByHoursActive) {
@@ -159,7 +159,7 @@ export const guildMemberRouter = router({
           return newGuildmember;
         });
       } else {
-        guildMembers = await ctx.prisma.guildMember.findMany({
+        const guildMembersRes = await ctx.prisma.guildMember.findMany({
           skip: (page - 1) * limit,
           take: limit + 1,
           where: {
@@ -170,8 +170,32 @@ export const guildMemberRouter = router({
           },
           include: {
             user: true,
+            connections: {
+              where: {
+                NOT: [{ endTime: null }],
+              },
+            },
           },
           orderBy,
+        });
+
+        guildMembers = guildMembersRes.map((guildMember) => {
+          const newGuildmember = {
+            ...guildMember,
+            totalTime: guildMember.connections.reduce((total, connection) => {
+              const { startTime, endTime } = connection;
+              if (!endTime) {
+                return total;
+              }
+
+              return total + (endTime.getTime() - startTime.getTime());
+            }, 0),
+          };
+
+          // @ts-ignore
+          delete newGuildmember.connections;
+
+          return newGuildmember;
         });
       }
 
@@ -196,6 +220,7 @@ interface GuildMemberWithUser extends GuildMember {
   avatarURL: string;
   username: string;
   guildMemberID: string;
+  totalTime: number;
 }
 
 // pure joy
@@ -209,18 +234,22 @@ const ascendingHoursSpentQuery = async (
   }: { guildID: string; nickname: string; skip: number; take: number }
 ) => {
   return prisma.$queryRaw<GuildMemberWithUser[]>`
-  SELECT "GuildMember"."id" AS "guildMemberID", *
+  SELECT "GuildMember"."id" AS "guildMemberID",
+    COALESCE(
+      (
+        SELECT SUM(EXTRACT(EPOCH FROM "endTime") - EXTRACT(EPOCH FROM "startTime")) * 1000
+        FROM "Connection"
+        WHERE "guildMemberID" = "GuildMember"."id"
+      ), 0
+    )
+   AS "totalTime", *
   FROM "GuildMember"
   JOIN "User" ON "User"."id" = "GuildMember"."userID"
 
   WHERE "guildID" = ${guildID} AND
   "nickname" LIKE ${'%' + nickname + '%'}
 
-  ORDER BY COALESCE((
-    SELECT SUM("endTime" - "startTime")
-    FROM "Connection"
-    WHERE "guildMemberID" = "GuildMember"."id"
-  ), 0 * INTERVAL '0 hours') DESC
+  ORDER BY "totalTime" DESC
 
   OFFSET ${skip}
   LIMIT ${take}
@@ -236,18 +265,22 @@ const descendingHoursSpentQuery = async (
   }: { guildID: string; nickname: string; skip: number; take: number }
 ) => {
   return prisma.$queryRaw<GuildMemberWithUser[]>`
-  SELECT "GuildMember"."id" AS "guildMemberID", *
+  SELECT "GuildMember"."id" AS "guildMemberID",
+    COALESCE(
+      (
+        SELECT SUM(EXTRACT(EPOCH FROM "endTime") - EXTRACT(EPOCH FROM "startTime")) * 1000
+        FROM "Connection"
+        WHERE "guildMemberID" = "GuildMember"."id"
+      ), 0
+    )
+   AS "totalTime", *
   FROM "GuildMember"
   JOIN "User" ON "User"."id" = "GuildMember"."userID"
 
   WHERE "guildID" = ${guildID} AND
   "nickname" LIKE ${'%' + nickname + '%'}
 
-  ORDER BY COALESCE((
-    SELECT SUM("endTime" - "startTime")
-    FROM "Connection"
-    WHERE "guildMemberID" = "GuildMember"."id"
-  ), 0 * INTERVAL '0 hours') ASC
+  ORDER BY "totalTime" ASC
 
   OFFSET ${skip}
   LIMIT ${take}
