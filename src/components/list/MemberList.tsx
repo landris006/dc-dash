@@ -5,9 +5,10 @@ import Image from 'next/image';
 import MemberInfo from './MemberInfo';
 import Modal from '../common/Modal';
 import { ImSpinner8 } from 'react-icons/im';
+import { CONVERSIONS } from '../../utils/conversions';
 
 interface Props {
-  guildMembers?: (GuildMember & { user: User })[];
+  guildMembers?: (GuildMember & { user: User; totalTime: number })[];
   isLoading: boolean;
   isError: boolean;
   pagination: {
@@ -36,6 +37,7 @@ const MemberList = ({
         calculateHeight(container, ul)
       );
   }, [guildMembers]);
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
@@ -45,7 +47,7 @@ const MemberList = ({
       <div className="flex-1" ref={container}>
         <ul
           ref={ul}
-          className="relative flex h-0 flex-col gap-1 overflow-y-auto text-black"
+          className="relative flex h-0 flex-col gap-1 overflow-auto text-black"
         >
           {isLoading ? (
             <ImSpinner8
@@ -79,6 +81,19 @@ const MemberList = ({
                   />
 
                   <span className="text-xl">{guildMember.nickname}</span>
+
+                  <span
+                    className="rounded-full  px-2 py-1 text-sm font-semibold text-black"
+                    style={{
+                      backgroundColor: CONVERSIONS.LEVEL_TO_COLOR_MAP.get(
+                        getLevel(guildMember.totalTime)
+                      ),
+                      opacity: 0.8,
+                    }}
+                  >
+                    Level &nbsp;
+                    {getLevel(guildMember.totalTime)}
+                  </span>
                 </div>
               </ListItem>
             ))
@@ -110,3 +125,9 @@ interface MemberWithUser extends GuildMember {
 }
 
 export default MemberList;
+
+const getLevel = (totalTime: number) => {
+  return CONVERSIONS.HOURS_TO_LEVEL(
+    CONVERSIONS.MILISECONDS_TO_HOURS * totalTime
+  );
+};
