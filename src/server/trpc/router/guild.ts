@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getTotalTime } from '../../../utils/getTotalTime';
 import { publicProcedure, router } from '../trpc';
 
 export const guildRouter = router({
@@ -43,18 +44,7 @@ export const guildRouter = router({
       (stats, guildMember) => {
         stats.totalMessages += guildMember.messages.length;
         stats.totalConnections += guildMember.connections.length;
-        stats.totalTimeConnected += guildMember.connections.reduce(
-          (total, connection) => {
-            const { startTime, endTime } = connection;
-            if (!endTime) {
-              return total;
-            }
-
-            return total + (endTime.getTime() - startTime.getTime());
-          },
-          0
-        );
-
+        stats.totalTimeConnected += getTotalTime(guildMember.connections);
         return stats;
       },
       {
@@ -108,14 +98,8 @@ export const guildRouter = router({
             };
           }
 
-          const totalTimeConnected = connections.reduce((total, connection) => {
-            const { startTime, endTime } = connection;
-            if (!endTime) {
-              return total;
-            }
+          const totalTimeConnected = getTotalTime(connections);
 
-            return total + (endTime.getTime() - startTime.getTime());
-          }, 0);
           if (totalTimeConnected > highlights.mostTimeConnected.miliseconds) {
             highlights.mostTimeConnected = {
               miliseconds: totalTimeConnected,

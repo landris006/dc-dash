@@ -7,6 +7,7 @@ import {
   PrismaClient,
   User,
 } from '@prisma/client';
+import { getTotalTime } from '../../../utils/getTotalTime';
 
 export const guildMemberRouter = router({
   get: publicProcedure
@@ -78,14 +79,7 @@ export const guildMemberRouter = router({
     });
 
     return {
-      timeActive: guildMember.connections.reduce((total, connection) => {
-        const { startTime, endTime } = connection;
-        if (!endTime) {
-          return total;
-        }
-
-        return total + (endTime.getTime() - startTime.getTime());
-      }, 0),
+      timeActive: getTotalTime(guildMember.connections),
       totalMessages: guildMember.messages.length,
     };
   }),
@@ -184,14 +178,7 @@ export const guildMemberRouter = router({
           const newGuildmember = {
             ...guildMember,
             connections: guildMember.connections as Connection[] | undefined,
-            totalTime: guildMember.connections.reduce((total, connection) => {
-              const { startTime, endTime } = connection;
-              if (!endTime) {
-                return total;
-              }
-
-              return total + (endTime.getTime() - startTime.getTime());
-            }, 0),
+            totalTime: getTotalTime(guildMember.connections),
           };
 
           delete newGuildmember.connections;

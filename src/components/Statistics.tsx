@@ -20,7 +20,7 @@ const Statistics = () => {
   const utils = trpc.useContext();
 
   return (
-    <Panel bgColor="bg-blue-200" classNames="bg-blue-200">
+    <Panel className="bg-blue-200">
       <div className="mb-5">
         <h2 className="text-3xl font-semibold">Stats</h2>
         <hr className="h-1 rounded bg-black" />

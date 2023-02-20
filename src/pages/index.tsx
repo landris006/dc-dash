@@ -26,7 +26,7 @@ const Home: NextPage = () => {
         {guilds.map((guild) => (
           <ListItem key={guild.id}>
             <div className="flex flex-wrap gap-3">
-              <Link href={`/guild/${guild.id}`}>{guild.name}</Link>
+              <Link href={`/guild/${guild.id}/stats`}>{guild.name}</Link>
               <Image
                 src={guild.iconURL ?? ''}
                 width={50}

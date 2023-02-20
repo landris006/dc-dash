@@ -37,7 +37,7 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
   }, [guildID]);
 
   return (
-    <Panel>
+    <Panel className="bg-slate-300">
       <h2 className="flex items-center text-3xl font-semibold">
         Channel status
         {Object.keys(channels).length === 0 ? (

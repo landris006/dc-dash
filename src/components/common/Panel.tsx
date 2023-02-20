@@ -1,24 +1,20 @@
-import React, { Ref } from 'react';
+import React, { HTMLAttributes, HtmlHTMLAttributes, Ref } from 'react';
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  bgColor?: string;
-  classNames?: string;
-  transparent?: boolean;
-  onClick?: () => void;
 }
 
 const Panel = (
-  { children, classNames, onClick, transparent }: Props,
+  { children, className, onClick, ...props }: Props,
   ref: Ref<HTMLDivElement>
 ) => {
   return (
     <div
+      {...props}
       ref={ref}
       onClick={onClick}
-      className={`h-full rounded-md p-3 shadow-xl
-      ${transparent !== false && 'bg-opacity-[0.45]'}
-      ${classNames ?? 'bg-slate-300'}`}
+      className={`h-full rounded-md bg-opacity-[0.45] p-3 shadow-xl
+      ${className}`}
     >
       {children}
     </div>

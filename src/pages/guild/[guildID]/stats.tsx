@@ -1,10 +1,10 @@
 import type { NextPage } from 'next';
-import Statistics from '../../components/Statistics';
-import Highlights from '../../components/Highlights';
-import Members from '../../components/list/Members';
-import ChannelStatus from '../../components/sidebar/ChannelStatus';
-import BackToServers from '../../components/header/BackToServers';
-import Header from '../../components/header/Header';
+import Statistics from '../../../components/Statistics';
+import Highlights from '../../../components/Highlights';
+import Members from '../../../components/list/Members';
+import ChannelStatus from '../../../components/sidebar/ChannelStatus';
+import BackToServers from '../../../components/header/BackToServers';
+import Header from '../../../components/header/Header';
 import { useRouter } from 'next/router';
 
 const Server: NextPage = () => {
@@ -14,8 +14,8 @@ const Server: NextPage = () => {
   if (!guildID) {
     return (
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-slate-300 p-3">
-        <h2 className="mb-3 text-2xl">Invalid server id...</h2>
-        <BackToServers router={router} />
+        <h2 className="mb-3 text-2xl">Loading...</h2>
+        <BackToServers />
       </div>
     );
   }

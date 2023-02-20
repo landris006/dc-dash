@@ -20,6 +20,8 @@ body {
   );
   background-attachment: fixed;
 
+  overflow-x: hidden;
+
   color: rgb(23, 23, 23);
 }
 

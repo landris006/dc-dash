@@ -15,6 +15,19 @@ export const CONVERSIONS = {
     [9, '#E91E63'],
   ]),
 
+  LEVEL_TO_COLOR_MAP_TAILWIND: new Map<number, string>([
+    [0, 'bg-[#FFFFFF]'],
+    [1, 'bg-[#3498DB]'],
+    [2, 'bg-[#2ECC71]'],
+    [3, 'bg-[#FFFF00]'],
+    [4, 'bg-[#E67E22]'],
+    [5, 'bg-[#E74C3C]'],
+    [6, 'bg-[#9B59B6]'],
+    [7, 'bg-[#AD1457]'],
+    [8, 'bg-[#95A5A6]'],
+    [9, 'bg-[#E91E63]'],
+  ]),
+
   HOURS_TO_LEVEL: (hoursActive: number) => {
     if (hoursActive < 1) {
       return 1;

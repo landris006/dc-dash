@@ -21,7 +21,7 @@ const Highlights = () => {
   const utils = trpc.useContext();
 
   return (
-    <Panel classNames="bg-rose-200">
+    <Panel className="bg-rose-200">
       <div className=" mb-5">
         <h2 className="text-3xl font-semibold">Highlights</h2>
         <hr className="h-1 rounded bg-black" />
