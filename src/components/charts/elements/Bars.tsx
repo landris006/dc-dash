@@ -52,12 +52,14 @@ const Bars = ({
         >
           <rect
             key={level}
-            x={xScale(level)}
-            y={dimensions.innerHeight}
-            width={
-              xScale.bandwidth() + xScale.padding() * xScale.bandwidth() + 1
+            x={
+              (xScale(level) ?? 0) - (xScale.padding() * xScale.bandwidth()) / 2
             }
-            height={dimensions.margin.bottom}
+            y={dimensions.innerHeight - yScale(frequency)}
+            width={
+              xScale.bandwidth() + xScale.padding() * xScale.bandwidth() + 2
+            }
+            height={yScale(frequency) + dimensions.margin.bottom}
             fill="transparent"
           ></rect>
 

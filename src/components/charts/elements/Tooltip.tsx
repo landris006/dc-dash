@@ -32,15 +32,13 @@ const useFollowMouse = () => {
         return;
       }
 
-      if (e.clientX < window.innerWidth / 4) {
-        setSide('right');
-      }
-
       if (
         e.clientX + tooltip.current.getBoundingClientRect().width >
-        window.innerWidth
+        window.innerWidth * 0.9
       ) {
         setSide('left');
+      } else {
+        setSide('right');
       }
 
       tooltip.current.animate(

@@ -28,7 +28,9 @@ const YScale = ({ yScale }: { yScale: ScaleLinear<number, number, never> }) => {
             dimensions.innerHeight - yScale(tick) + 1
           })`}
         >
-          <line x2={dimensions.innerWidth} stroke="rgba(0, 0, 0, 0.1)" />
+          {tick !== 0 && (
+            <line x2={dimensions.innerWidth} stroke="rgba(0, 0, 0, 0.1)" />
+          )}
 
           <line x1={-12} x2={0} stroke="black" />
 
