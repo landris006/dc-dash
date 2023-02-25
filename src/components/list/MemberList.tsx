@@ -6,6 +6,7 @@ import MemberInfo from './MemberInfo';
 import Modal from '../common/Modal';
 import { ImSpinner8 } from 'react-icons/im';
 import { CONVERSIONS } from '../../utils/conversions';
+import ClickOutsideListener from '../common/ClickOutsideListener';
 
 interface Props {
   guildMembers?: (GuildMember & { user: User; totalTime: number })[];
@@ -41,7 +42,11 @@ const MemberList = ({
   return (
     <>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {selectedMember && <MemberInfo member={selectedMember} />}
+        {selectedMember && (
+          <ClickOutsideListener onClickOutside={() => setIsOpen(false)}>
+            <MemberInfo member={selectedMember} />
+          </ClickOutsideListener>
+        )}
       </Modal>
 
       <div className="flex-1" ref={container}>

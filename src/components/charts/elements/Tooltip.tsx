@@ -2,17 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const Tooltip = ({ children }: { children: React.ReactNode | undefined }) => {
-  const { tooltip, isPositioned } = useFollowMouse();
+  const { tooltip } = useFollowMouse();
 
   return createPortal(
     <div
       ref={tooltip}
-      className="pointer-events-none absolute left-1/2 top-1/2 -translate-y-1/2 rounded-md bg-violet-400 bg-opacity-80 p-3"
-      style={{
-        display: children ? 'block' : 'none',
-      }}
+      className={`pointer-events-none absolute top-1/2 min-w-[8rem] -translate-y-1/2`}
+      // style={{
+      //   display: children ? 'block' : 'none',
+      // }}
     >
-      {isPositioned && children}
+      {children}
     </div>,
     document.body
   );
@@ -22,7 +22,6 @@ export default Tooltip;
 
 const useFollowMouse = () => {
   const tooltip = useRef<HTMLDivElement>(null);
-  const [isPositioned, setIsPositioned] = useState(false);
 
   const [side, setSide] = useState<'left' | 'right'>();
 
@@ -32,10 +31,7 @@ const useFollowMouse = () => {
         return;
       }
 
-      if (
-        e.clientX + tooltip.current.getBoundingClientRect().width >
-        window.innerWidth * 0.9
-      ) {
+      if (e.clientX > window.innerWidth * 0.5) {
         setSide('left');
       } else {
         setSide('right');
@@ -56,9 +52,7 @@ const useFollowMouse = () => {
           duration: 500,
           fill: 'forwards',
         }
-      ).onfinish = () => {
-        setIsPositioned(true);
-      };
+      );
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -66,7 +60,7 @@ const useFollowMouse = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [side]);
+  }, [side, tooltip.current]);
 
-  return { tooltip, isPositioned };
+  return { tooltip, side };
 };

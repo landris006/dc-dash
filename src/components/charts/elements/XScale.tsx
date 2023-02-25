@@ -1,7 +1,10 @@
 import { ScaleBand } from 'd3';
-import { dimensions } from '../BarChart';
+import { useContext } from 'react';
+import { DimensionsContext } from './ChartWrapper';
 
 const XScale = ({ xScale }: { xScale: ScaleBand<string> }) => {
+  const dimensions = useContext(DimensionsContext);
+
   return (
     <>
       <line

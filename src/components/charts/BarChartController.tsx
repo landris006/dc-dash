@@ -1,7 +1,10 @@
 import React, { Dispatch, useEffect, useMemo } from 'react';
+import { ImSpinner8 } from 'react-icons/im';
 import { trpc } from '../../utils/trpc';
+import ClickOutsideListener from '../common/ClickOutsideListener';
 import Panel from '../common/Panel';
-import BarChart, { dimensions } from './BarChart';
+import BarChart from './BarChart';
+import ChartWrapper from './elements/ChartWrapper';
 
 const BarChartController = ({ guildID }: { guildID: string }) => {
   const {
@@ -36,7 +39,12 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
   }, [maxLevel]);
 
   if (isLoading) {
-    return <>Loading...</>;
+    return (
+      <ImSpinner8
+        size={100}
+        className="custom-animate-spin absolute top-1/2 left-1/2 text-slate-900 opacity-60"
+      />
+    );
   }
 
   if (isError) {
@@ -48,7 +56,7 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
       <div className="flex justify-center">
         <Panel
           className="flex flex-1  gap-3 bg-slate-300"
-          style={{ maxWidth: dimensions.width }}
+          style={{ maxWidth: 960 }}
         >
           <p className="flex items-center text-2xl">Filters: </p>
 
@@ -61,11 +69,17 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
       </div>
 
       <div>
-        <BarChart
-          levels={levels.filter((level) =>
-            levelsToInclude.includes(level.level)
-          )}
-        />
+        <ChartWrapper
+          aspectRatio={1.5}
+          margin={{ top: 20, right: 20, bottom: 75, left: 75 }}
+          minWidth={600}
+        >
+          <BarChart
+            levels={levels.filter((level) =>
+              levelsToInclude.includes(level.level)
+            )}
+          />
+        </ChartWrapper>
       </div>
     </>
   );
@@ -87,7 +101,7 @@ const Filters = ({
   return (
     <div className="relative">
       <button
-        className={` cursor-pointer rounded-md bg-slate-300 p-2 transition hover:bg-slate-400 ${
+        className={`cursor-pointer rounded-md bg-slate-300 p-2 transition hover:bg-slate-400 ${
           isPanelOpen && 'bg-slate-400'
         }`}
         onClick={() => setIsPanelOpen((prev) => !prev)}
@@ -96,28 +110,30 @@ const Filters = ({
       </button>
 
       {isPanelOpen && (
-        <Panel className="absolute left-0 top-full h-fit w-full bg-white bg-opacity-100">
-          {Array.from({ length: maxLevel }, (_, i) => i + 1).map((level) => (
-            <p key={level} className="mx-1 flex gap-3">
-              <input
-                className="bg-red-100"
-                type="checkbox"
-                checked={levelsToInclude.includes(level.toString())}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setLevelsToInclude((prev) => [...prev, level.toString()]);
-                  } else {
-                    setLevelsToInclude((prev) =>
-                      prev.filter((l) => l !== level.toString())
-                    );
-                  }
-                }}
-                id={level.toString()}
-              />{' '}
-              <label htmlFor={level.toString()}> Level {level}</label>{' '}
-            </p>
-          ))}
-        </Panel>
+        <ClickOutsideListener onClickOutside={() => setIsPanelOpen(false)}>
+          <Panel className="absolute left-0 top-full h-auto w-full bg-white bg-opacity-100">
+            {Array.from({ length: maxLevel }, (_, i) => i + 1).map((level) => (
+              <p key={level} className="mx-1 flex gap-3">
+                <input
+                  className="bg-red-100"
+                  type="checkbox"
+                  checked={levelsToInclude.includes(level.toString())}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setLevelsToInclude((prev) => [...prev, level.toString()]);
+                    } else {
+                      setLevelsToInclude((prev) =>
+                        prev.filter((l) => l !== level.toString())
+                      );
+                    }
+                  }}
+                  id={level.toString()}
+                />{' '}
+                <label htmlFor={level.toString()}> Level {level}</label>{' '}
+              </p>
+            ))}
+          </Panel>
+        </ClickOutsideListener>
       )}
     </div>
   );

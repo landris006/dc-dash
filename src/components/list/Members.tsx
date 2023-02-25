@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Pagination from './Pagination';
 import { BsSortDownAlt, BsSortUpAlt } from 'react-icons/bs';
 import { GrClose } from 'react-icons/gr';
+import ClickOutsideListener from '../common/ClickOutsideListener';
 
 const Members = () => {
   const guildID = useRouter().query.guildID as string;
@@ -108,23 +109,27 @@ const Members = () => {
                 </button>
 
                 {filtersOpen && (
-                  <div
-                    className={`
-                      absolute left-1/2 top-full z-10 flex -translate-x-1/2
-                      flex-col items-start gap-2 rounded-lg bg-slate-200
-                      p-2 text-lg lg:relative lg:left-0 lg:top-0 lg:z-auto
-                      lg:flex lg:translate-x-0 lg:flex-row lg:items-stretch lg:bg-transparent lg:p-0
-                    `}
+                  <ClickOutsideListener
+                    onClickOutside={() => setFiltersOpen(false)}
                   >
-                    {Object.entries(orderBy).map(([key, value]) => (
-                      <SortButton
-                        key={key}
-                        text={keyToLabelMap.get(key) ?? key}
-                        value={value}
-                        onClick={() => handleOrderByChange(key)}
-                      />
-                    ))}
-                  </div>
+                    <div
+                      className={`
+                      absolute left-1/2 top-full z-10 flex h-auto -translate-x-1/2
+                      flex-col items-start gap-2 rounded-lg bg-slate-200
+                      p-2 text-lg lg:relative lg:left-0 lg:top-0 lg:z-auto lg:flex
+                      lg:h-full lg:translate-x-0 lg:flex-row lg:items-stretch lg:bg-transparent lg:p-0
+                    `}
+                    >
+                      {Object.entries(orderBy).map(([key, value]) => (
+                        <SortButton
+                          key={key}
+                          text={keyToLabelMap.get(key) ?? key}
+                          value={value}
+                          onClick={() => handleOrderByChange(key)}
+                        />
+                      ))}
+                    </div>
+                  </ClickOutsideListener>
                 )}
               </div>
             </div>

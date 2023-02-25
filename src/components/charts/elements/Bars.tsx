@@ -1,7 +1,7 @@
 import { ScaleBand, ScaleLinear } from 'd3';
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { CONVERSIONS } from '../../../utils/conversions';
-import { dimensions } from '../BarChart';
+import { DimensionsContext } from './ChartWrapper';
 import Tooltip from './Tooltip';
 
 const Bars = ({
@@ -13,6 +13,7 @@ const Bars = ({
   xScale: ScaleBand<string>;
   yScale: ScaleLinear<number, number, never>;
 }) => {
+  const dimensions = useContext(DimensionsContext);
   const [tooltipData, setTooltipData] = useState<{
     level: string;
     frequency: number;
@@ -27,7 +28,7 @@ const Bars = ({
     <>
       <Tooltip>
         {tooltipData && (
-          <div className="text-xl backdrop-blur-md">
+          <div className="rounded-md bg-violet-400 bg-opacity-80 p-3 text-xl backdrop-blur-md">
             <p>Level: {tooltipData.level}</p>
             <p>Frequency: {tooltipData.frequency}</p>
             <p>
