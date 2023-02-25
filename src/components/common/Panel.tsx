@@ -13,7 +13,7 @@ const Panel = (
       {...props}
       ref={ref}
       onClick={onClick}
-      className={`h-full rounded-md bg-opacity-[0.45] p-3 shadow-xl
+      className={`rounded-md bg-opacity-[0.45] p-3 shadow-xl
       ${className}`}
     >
       {children}

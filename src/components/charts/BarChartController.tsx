@@ -111,7 +111,7 @@ const Filters = ({
 
       {isPanelOpen && (
         <ClickOutsideListener onClickOutside={() => setIsPanelOpen(false)}>
-          <Panel className="absolute left-0 top-full h-auto w-full bg-white bg-opacity-100">
+          <Panel className="absolute left-0 top-full h-fit w-full bg-white bg-opacity-100">
             {Array.from({ length: maxLevel }, (_, i) => i + 1).map((level) => (
               <p key={level} className="mx-1 flex gap-3">
                 <input
