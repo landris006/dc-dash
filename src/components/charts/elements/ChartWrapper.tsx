@@ -61,26 +61,26 @@ function useWidth(minWidth: number) {
   const container = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
-  function resize() {
-    if (container.current) {
-      let { width } = container.current.getBoundingClientRect();
-
-      if (width < minWidth) {
-        width = minWidth;
-      }
-
-      setWidth(width);
-    }
-  }
-
   useEffect(() => {
+    const resize = () => {
+      if (container.current) {
+        let { width } = container.current.getBoundingClientRect();
+
+        if (width < minWidth) {
+          width = minWidth;
+        }
+
+        setWidth(width);
+      }
+    };
+
     resize();
     window.addEventListener('resize', resize);
 
     return () => {
       window.removeEventListener('resize', resize);
     };
-  }, []);
+  }, [minWidth]);
 
   return { container, width };
 }

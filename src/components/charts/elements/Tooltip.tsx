@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 const Tooltip = ({ children }: { children: React.ReactNode | undefined }) => {
-  const { tooltip } = useFollowMouse();
+  const tooltip = useFollowMouse();
 
   return createPortal(
     <div
       ref={tooltip}
       className={`pointer-events-none absolute top-1/2 min-w-[8rem] -translate-y-1/2`}
-      // style={{
-      //   display: children ? 'block' : 'none',
-      // }}
     >
       {children}
     </div>,
@@ -23,19 +20,13 @@ export default Tooltip;
 const useFollowMouse = () => {
   const tooltip = useRef<HTMLDivElement>(null);
 
-  const [side, setSide] = useState<'left' | 'right'>();
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!tooltip.current) {
         return;
       }
 
-      if (e.clientX > window.innerWidth * 0.5) {
-        setSide('left');
-      } else {
-        setSide('right');
-      }
+      const rightSide = e.clientX < window.innerWidth * 0.5;
 
       tooltip.current.animate(
         {
@@ -43,7 +34,7 @@ const useFollowMouse = () => {
           left:
             (
               e.clientX +
-              (side === 'right'
+              (rightSide
                 ? 10
                 : -tooltip.current.getBoundingClientRect().width - 10)
             ).toString() + 'px',
@@ -60,7 +51,7 @@ const useFollowMouse = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [side, tooltip.current]);
+  }, []);
 
-  return { tooltip, side };
+  return tooltip;
 };
