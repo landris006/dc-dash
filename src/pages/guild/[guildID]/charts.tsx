@@ -40,7 +40,7 @@ const Charts: NextPage = () => {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-[100svh] flex-col">
       <Header />
 
       <main className="container mx-auto my-3 flex max-w-7xl flex-1 flex-col items-stretch gap-3 px-3 md:flex-row">

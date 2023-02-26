@@ -27,7 +27,7 @@ const MemberInfo = ({
     (CONVERSIONS.LEVEL_TO_HOURS(level + 1) - hoursToCurrentLevel);
 
   return (
-    <Panel className="bg-white bg-opacity-100">
+    <Panel className="mx-auto w-[90vw] bg-white bg-opacity-100 sm:max-w-fit">
       <div className="flex gap-2 ">
         {member.user.avatarURL && (
           <div className="hidden sm:block ">
@@ -63,7 +63,7 @@ const MemberInfo = ({
         </div>
       </div>
 
-      <div className="grid justify-center gap-3 text-xl sm:grid-cols-2 md:grid-cols-3">
+      <div className="grid grid-cols-2 justify-center gap-3 text-xl sm:grid-cols-3">
         <Stat
           prefix={<IoCreate />}
           value={member.joinedAt.toLocaleDateString()}

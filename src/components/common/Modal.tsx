@@ -30,7 +30,7 @@ const Modal = ({ children, isOpen, onClose, className }: Props) => {
   return createPortal(
     <div
       ref={modal}
-      className="fixed top-1/2 left-1/2 z-auto h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 backdrop-blur-[5px]"
+      className="fixed top-1/2 left-1/2 z-auto h-[100svh] w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 backdrop-blur-[5px]"
     >
       <div
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${className}`}
