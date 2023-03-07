@@ -1,10 +1,10 @@
 import React, { Dispatch, useEffect, useMemo } from 'react';
 import { ImSpinner8 } from 'react-icons/im';
-import { trpc } from '../../utils/trpc';
-import ClickOutsideListener from '../common/ClickOutsideListener';
-import Panel from '../common/Panel';
+import { trpc } from '../../../utils/trpc';
+import ClickOutsideListener from '../../common/ClickOutsideListener';
+import Panel from '../../common/Panel';
 import BarChart from './BarChart';
-import ChartWrapper from './elements/ChartWrapper';
+import ChartWrapper from '../elements/ChartWrapper';
 
 const BarChartController = ({ guildID }: { guildID: string }) => {
   const {
@@ -53,7 +53,7 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="z-10 flex justify-center">
         <Panel
           className="flex flex-1  gap-3 bg-slate-300"
           style={{ maxWidth: 960 }}
@@ -68,9 +68,8 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
         </Panel>
       </div>
 
-      <div>
+      <div className="flex-1">
         <ChartWrapper
-          aspectRatio={1.5}
           margin={{ top: 20, right: 20, bottom: 75, left: 75 }}
           minWidth={600}
         >

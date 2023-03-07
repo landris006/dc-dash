@@ -90,9 +90,12 @@ const MemberList = ({
                   <span
                     className="rounded-full px-2 py-1 text-sm font-semibold text-black"
                     style={{
-                      backgroundColor: CONVERSIONS.LEVEL_TO_COLOR_MAP.get(
-                        getLevel(guildMember.totalTime)
-                      ),
+                      backgroundColor:
+                        CONVERSIONS.LEVEL_TO_COLOR_MAP[
+                          getLevel(
+                            guildMember.totalTime
+                          ).toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
+                        ],
                       opacity: 0.8,
                     }}
                   >

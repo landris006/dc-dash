@@ -1,17 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { DimensionsContext } from './ChartWrapper';
 
 const Tooltip = ({ children }: { children: React.ReactNode | undefined }) => {
-  const tooltip = useFollowMouse();
+  const { tooltip, containerRef } = useFollowMouse();
 
   return createPortal(
     <div
       ref={tooltip}
-      className={`pointer-events-none absolute top-1/2 min-w-[8rem] -translate-y-1/2`}
+      className={`pointer-events-none absolute top-1/2 z-10 min-w-[8rem] -translate-y-1/2`}
     >
       {children}
     </div>,
-    document.body
+    containerRef?.current ?? document.body
   );
 };
 
@@ -19,10 +20,11 @@ export default Tooltip;
 
 const useFollowMouse = () => {
   const tooltip = useRef<HTMLDivElement>(null);
+  const { containerRef } = useContext(DimensionsContext);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!tooltip.current) {
+      if (!tooltip.current || !containerRef?.current) {
         return;
       }
 
@@ -30,17 +32,18 @@ const useFollowMouse = () => {
 
       tooltip.current.animate(
         {
-          top: e.clientY.toString() + 'px',
+          top: (e.clientY - containerRef.current.offsetTop).toString() + 'px',
           left:
             (
-              e.clientX +
+              e.clientX -
+              containerRef.current.offsetLeft +
               (rightSide
                 ? 10
                 : -tooltip.current.getBoundingClientRect().width - 10)
             ).toString() + 'px',
         },
         {
-          duration: 500,
+          duration: 200,
           fill: 'forwards',
         }
       );
@@ -51,7 +54,7 @@ const useFollowMouse = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [containerRef]);
 
-  return tooltip;
+  return { tooltip, containerRef };
 };

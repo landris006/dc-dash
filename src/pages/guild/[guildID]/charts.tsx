@@ -1,7 +1,8 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
-import BarChartController from '../../../components/charts/BarChartController';
+import BarChartController from '../../../components/charts/BarChart/BarChartController';
+import ActivityChartController from '../../../components/charts/ActivityChart/ActivityChartController';
 import Panel from '../../../components/common/Panel';
 import Header from '../../../components/header/Header';
 
@@ -24,7 +25,6 @@ const Charts: NextPage = () => {
       return;
     }
 
-    // setAnimating(true);
     box.current.animate(
       {
         left: e.currentTarget.offsetLeft + 'px',
@@ -40,11 +40,11 @@ const Charts: NextPage = () => {
   };
 
   return (
-    <div className="flex h-[100svh] flex-col">
+    <div className="flex h-screen flex-col">
       <Header />
 
       <main className="container mx-auto my-3 flex max-w-7xl flex-1 flex-col items-stretch gap-3 px-3 md:flex-row">
-        <Panel className="flex w-full flex-col justify-between gap-3 bg-slate-300 md:px-16 lg:px-36">
+        <Panel className="flex w-full flex-1 flex-col justify-between gap-3 bg-slate-300 md:px-16 lg:px-36">
           <Panel className="mx-auto h-min w-auto bg-slate-100">
             <nav className="relative flex justify-center">
               <div
@@ -79,6 +79,6 @@ export default Charts;
 
 const routes = (guildID: string) => ({
   Levels: <BarChartController guildID={guildID} />,
+  Activity: <ActivityChartController guildID={guildID} />,
   Time: <div>coming soon</div>,
-  Activity: <div>coming soon</div>,
 });

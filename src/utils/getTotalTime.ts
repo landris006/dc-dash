@@ -1,4 +1,5 @@
 import { Connection } from '@prisma/client';
+import { CONVERSIONS } from './conversions';
 
 export const getTotalTime = (connections: Connection[]) => {
   return connections.reduce((total, connection) => {
@@ -9,4 +10,10 @@ export const getTotalTime = (connections: Connection[]) => {
 
     return total + (endTime.getTime() - startTime.getTime());
   }, 0);
+};
+
+export const getLevel = (connections: Connection[]) => {
+  return CONVERSIONS.HOURS_TO_LEVEL(
+    getTotalTime(connections) * CONVERSIONS.MILISECONDS_TO_HOURS
+  );
 };

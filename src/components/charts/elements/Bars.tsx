@@ -69,7 +69,11 @@ const Bars = ({
             y={dimensions.innerHeight - yScale(frequency)}
             width={xScale.bandwidth()}
             height={yScale(frequency)}
-            fill={CONVERSIONS.LEVEL_TO_COLOR_MAP.get(+level)}
+            fill={
+              CONVERSIONS.LEVEL_TO_COLOR_MAP[
+                level as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
+              ]
+            }
           ></rect>
         </g>
       ))}

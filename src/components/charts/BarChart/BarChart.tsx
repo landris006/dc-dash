@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import { DimensionsContext } from './elements/ChartWrapper';
-import Bars from './elements/Bars';
-import YScale from './elements/YScale';
-import XScale from './elements/XScale';
+import { DimensionsContext } from '../elements/ChartWrapper';
+import Bars from '../elements/Bars';
+import YScale from '../elements/YScale';
+import XScale from '../elements/XScale';
 
 const BarChart = ({
   levels,

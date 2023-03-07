@@ -52,7 +52,10 @@ const MemberInfo = ({
           <div
             className="absolute left-0 top-0 flex justify-center rounded-full"
             style={{
-              backgroundColor: CONVERSIONS.LEVEL_TO_COLOR_MAP.get(level),
+              backgroundColor:
+                CONVERSIONS.LEVEL_TO_COLOR_MAP[
+                  level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
+                ],
               width: `${progression * 100}%`,
             }}
           >
