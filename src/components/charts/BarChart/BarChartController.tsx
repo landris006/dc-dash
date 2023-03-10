@@ -7,17 +7,17 @@ import BarChart from './BarChart';
 import ChartWrapper from '../elements/ChartWrapper';
 
 const BarChartController = ({ guildID }: { guildID: string }) => {
-  const {
-    data: levels,
-    isLoading,
-    isError,
-  } = trpc.chart.levels.useQuery(
+  const { data, isLoading, isError } = trpc.chart.levels.useQuery(
     { guildID },
     {
       onSuccess: (data) => {
-        data.sort((a, b) => +a.level - +b.level);
+        return data.sort((a, b) => +a.level - +b.level);
       },
     }
+  );
+  const levels = useMemo(
+    () => data?.sort((a, b) => +a.level - +b.level),
+    [data]
   );
 
   const maxLevel = useMemo(() => {
@@ -74,9 +74,9 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
           minWidth={600}
         >
           <BarChart
-            levels={levels.filter((level) =>
+            levels={levels?.filter((level) =>
               levelsToInclude.includes(level.level)
-            )}
+            ) ?? []}
           />
         </ChartWrapper>
       </div>

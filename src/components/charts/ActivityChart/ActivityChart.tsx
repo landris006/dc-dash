@@ -15,8 +15,9 @@ const ActivityChart = ({
   const dimensions = useContext(DimensionsContext);
 
   const calculatedDomains = useMemo(() => {
-    const minX = connections[0]?.startTime ?? new Date();
-    const maxX = connections[connections.length - 1]?.endTime ?? new Date();
+    const day = 1000 * 60 * 60 * 24;
+    const minX = connections[0]?.startTime ?? new Date(Date.now() - day);
+    const maxX =  new Date();
 
     const minY = 0;
     const maxY = 10;

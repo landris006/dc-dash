@@ -28,12 +28,14 @@ const defaultdimensions = {
   innerWidth: defaultWidth - defaultMargin.left - defaultMargin.right,
   innerHeight: defaultHeight - defaultMargin.top - defaultMargin.bottom,
   containerRef: null as RefObject<HTMLDivElement> | null,
+  svgRef: null as RefObject<SVGSVGElement> | null,
 };
 
 export const DimensionsContext = createContext(defaultdimensions);
 
 const ChartWrapper = ({ margin, children, minWidth }: Props) => {
   const { container, width, height } = useWidth(minWidth ?? 0);
+  const svgRef = useRef<SVGSVGElement>(null);
   const dimensions = {
     width,
     height,
@@ -41,6 +43,7 @@ const ChartWrapper = ({ margin, children, minWidth }: Props) => {
     innerWidth: width - margin.left - margin.right,
     innerHeight: height - margin.top - margin.bottom,
     containerRef: container,
+    svgRef,
   };
 
   return (
@@ -50,7 +53,7 @@ const ChartWrapper = ({ margin, children, minWidth }: Props) => {
         className="relative h-full overflow-x-auto overflow-y-hidden"
       >
         {container.current && (
-          <svg width={width} height={height} className="absolute">
+          <svg ref={svgRef} width={width} height={height} className="absolute">
             <g transform={`translate(${margin.left}, ${margin.top})`}>
               {children}
             </g>

@@ -3,12 +3,13 @@ import { createPortal } from 'react-dom';
 import { DimensionsContext } from './ChartWrapper';
 
 const Tooltip = ({ children }: { children: React.ReactNode | undefined }) => {
-  const { tooltip, containerRef } = useFollowMouse();
+  const { tooltip } = useFollowMouse();
+  const { containerRef } = useContext(DimensionsContext);
 
   return createPortal(
     <div
       ref={tooltip}
-      className={`pointer-events-none absolute top-1/2 z-10 min-w-[8rem] -translate-y-1/2`}
+      className={`pointer-events-none absolute top-1/2 z-20 min-w-[8rem] -translate-y-1/2`}
     >
       {children}
     </div>,
@@ -20,11 +21,11 @@ export default Tooltip;
 
 const useFollowMouse = () => {
   const tooltip = useRef<HTMLDivElement>(null);
-  const { containerRef } = useContext(DimensionsContext);
+  const { svgRef } = useContext(DimensionsContext);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!tooltip.current || !containerRef?.current) {
+      if (!tooltip.current || !svgRef?.current) {
         return;
       }
 
@@ -32,11 +33,14 @@ const useFollowMouse = () => {
 
       tooltip.current.animate(
         {
-          top: (e.clientY - containerRef.current.offsetTop).toString() + 'px',
+          top:
+            (
+              e.clientY - svgRef.current.getBoundingClientRect().top
+            ).toString() + 'px',
           left:
             (
               e.clientX -
-              containerRef.current.offsetLeft +
+              svgRef.current.getBoundingClientRect().left +
               (rightSide
                 ? 10
                 : -tooltip.current.getBoundingClientRect().width - 10)
@@ -54,7 +58,7 @@ const useFollowMouse = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [containerRef]);
+  }, [svgRef]);
 
-  return { tooltip, containerRef };
+  return { tooltip, svgRef };
 };
