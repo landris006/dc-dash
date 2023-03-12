@@ -3,7 +3,7 @@ import { Context } from '../../context';
 
 export const activity = async (guildID: string, ctx: Context) => {
   const now = new Date();
-  const startTime = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7);
+  const startTime = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 1);
 
   const connections = await ctx.prisma.connection.findMany({
     where: {
@@ -36,6 +36,7 @@ export const activity = async (guildID: string, ctx: Context) => {
       guildMember: {
         user: connection.guildMember.user,
         level,
+        nickname: connection.guildMember.nickname,
       },
     };
   });

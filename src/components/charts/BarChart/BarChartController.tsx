@@ -72,6 +72,7 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
         <ChartWrapper
           margin={{ top: 20, right: 20, bottom: 75, left: 75 }}
           minWidth={600}
+          minHeight={300}
         >
           <BarChart
             levels={levels?.filter((level) =>

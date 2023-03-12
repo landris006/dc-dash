@@ -1,8 +1,8 @@
 import { Connection } from '@prisma/client';
 import { ScaleLinear, ScaleTime } from 'd3';
 import React from 'react';
-import { CONVERSIONS } from '../../../utils/conversions';
 import { AppRouterTypes } from '../../../utils/trpc';
+import Session from './Session';
 
 interface Props {
   xScale: ScaleTime<number, number, never>;
@@ -31,28 +31,7 @@ const Sessions = ({ xScale, yScale, connections }: Props) => {
 
           const position = decidePosition(connection, plottedConnections);
 
-          return (
-            <g
-              key={connection.id}
-              className="cursor-pointer opacity-60 hover:opacity-80"
-            >
-              <rect
-                x={xScale(connection.startTime)}
-                width={
-                  xScale(connection.endTime ?? new Date()) -
-                  xScale(connection.startTime)
-                }
-                height={(yScale(0) - yScale(1)) * 0.8}
-                y={yScale(position + 1)}
-                transform={`translate(0, ${(yScale(0) - yScale(1)) / 0.8 / 2})`}
-                fill={
-                  CONVERSIONS.LEVEL_TO_COLOR_MAP[
-                    connection.guildMember.level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
-                  ]
-                }
-              ></rect>
-            </g>
-          );
+          return <Session key={connection.id} connection={connection} position={position} xScale={xScale} yScale={yScale} />;
         })}
     </g>
   );

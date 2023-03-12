@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { AppRouterTypes } from '../../../utils/trpc';
 import { DimensionsContext } from '../elements/ChartWrapper';
@@ -7,6 +7,13 @@ import Axis from '../elements/Axis';
 import Sessions from '../elements/Sessions';
 import Ruler from '../elements/Ruler';
 
+const day = 1000 * 60 * 60 * 24 * 1;
+const minX = Date.now() - day;
+const maxX = Date.now();
+
+const minY = 0;
+const maxY = 10;
+
 const ActivityChart = ({
   connections,
 }: {
@@ -14,22 +21,12 @@ const ActivityChart = ({
 }) => {
   const dimensions = useContext(DimensionsContext);
 
-  const calculatedDomains = useMemo(() => {
-    const day = 1000 * 60 * 60 * 24;
-    const minX = connections[0]?.startTime ?? new Date(Date.now() - day);
-    const maxX =  new Date();
-
-    const minY = 0;
-    const maxY = 10;
-    return { x: [minX, maxX], y: [minY, maxY] };
-  }, [connections]);
-
   const xScale = scaleTime()
-    .domain(calculatedDomains.x)
+    .domain([minX, maxX])
     .range([0, dimensions.innerWidth]);
 
   const yScale = scaleLinear()
-    .domain(calculatedDomains.y)
+    .domain([minY, maxY])
     .range([dimensions.innerHeight, 0]);
 
   return (

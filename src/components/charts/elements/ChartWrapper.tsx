@@ -9,6 +9,7 @@ import React, {
 
 interface Props {
   minWidth?: number;
+  minHeight?: number;
   margin: {
     top: number;
     right: number;
@@ -33,8 +34,8 @@ const defaultdimensions = {
 
 export const DimensionsContext = createContext(defaultdimensions);
 
-const ChartWrapper = ({ margin, children, minWidth }: Props) => {
-  const { container, width, height } = useWidth(minWidth ?? 0);
+const ChartWrapper = ({ margin, children, minWidth, minHeight }: Props) => {
+  const { container, width, height } = useWidth(minWidth ?? 0, minHeight ?? 0);
   const svgRef = useRef<SVGSVGElement>(null);
   const dimensions = {
     width,
@@ -48,12 +49,9 @@ const ChartWrapper = ({ margin, children, minWidth }: Props) => {
 
   return (
     <DimensionsContext.Provider value={dimensions}>
-      <div
-        ref={container}
-        className="relative h-full overflow-x-auto overflow-y-hidden"
-      >
+      <div ref={container} className="relative h-full overflow-x-auto">
         {container.current && (
-          <svg ref={svgRef} width={width} height={height} className="absolute">
+          <svg ref={svgRef} width={width} height={height} className="absolute outline-none">
             <g transform={`translate(${margin.left}, ${margin.top})`}>
               {children}
             </g>
@@ -66,7 +64,7 @@ const ChartWrapper = ({ margin, children, minWidth }: Props) => {
 
 export default ChartWrapper;
 
-function useWidth(minWidth: number) {
+function useWidth(minWidth: number, minHeight: number) {
   const container = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
 
@@ -84,6 +82,10 @@ function useWidth(minWidth: number) {
           width = minWidth;
         }
 
+        if (height < minHeight) {
+          height = minHeight;
+        }
+
         setSize({ width, height });
       }
     };
@@ -94,7 +96,7 @@ function useWidth(minWidth: number) {
     return () => {
       window.removeEventListener('resize', resize);
     };
-  }, [minWidth]);
+  }, [minWidth, minHeight]);
 
   return { container, ...size };
 }
