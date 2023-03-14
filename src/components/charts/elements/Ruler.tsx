@@ -15,15 +15,15 @@ const Ruler = ({ xScale }: { xScale: ScaleTime<number, number, never> }) => {
       {isShowing && (
         <g
           className="pointer-events-none"
+          pointerEvents="none"
           transform={`translate(${position - width / 2}, 0)`}
         >
-          <rect
-            fill="#a78bfa"
-            x={0}
-            y={tooltipHeight}
-            height={innerHeight - tooltipHeight}
-            width={width}
-          ></rect>
+          <line
+            stroke="#a78bfa"
+            strokeWidth={2}
+            y1={tooltipHeight}
+            y2={innerHeight}
+          />
 
           <g
             transform={`translate(${
@@ -53,7 +53,7 @@ const Ruler = ({ xScale }: { xScale: ScaleTime<number, number, never> }) => {
 export default Ruler;
 
 const useGetRulerData = (xScale: ScaleTime<number, number, never>) => {
-  const { height, innerHeight, innerWidth, containerRef, margin } =
+  const { height, innerHeight, innerWidth, svgRef, margin } =
     useContext(DimensionsContext);
 
   const [position, setPosition] = useState(0);
@@ -63,19 +63,20 @@ const useGetRulerData = (xScale: ScaleTime<number, number, never>) => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef?.current) {
+      if (!svgRef?.current) {
         return;
       }
 
       if (
-        e.clientY < containerRef.current.offsetTop ||
-        e.clientY > containerRef.current.offsetTop + height
+        e.clientY < svgRef.current.getBoundingClientRect().left ||
+        e.clientY > svgRef.current.getBoundingClientRect().top + height
       ) {
         setIsShowing(false);
         return;
       }
 
-      let offsetX = e.clientX - containerRef.current.offsetLeft - margin.left;
+      let offsetX =
+        e.clientX - svgRef.current.getBoundingClientRect().left - margin.left;
 
       if (offsetX < 0) {
         offsetX = 0;
@@ -115,7 +116,7 @@ const useGetRulerData = (xScale: ScaleTime<number, number, never>) => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [height, containerRef, margin.left, innerWidth, xScale]);
+  }, [height, svgRef, margin.left, innerWidth, xScale]);
 
   return {
     position,

@@ -4,7 +4,7 @@ import { AppRouterTypes } from '../../../utils/trpc';
 import { DimensionsContext } from '../elements/ChartWrapper';
 import { axisBottom, axisLeft } from 'd3';
 import Axis from '../elements/Axis';
-import Sessions from '../elements/Sessions';
+import Connections from '../elements/Connections';
 import Ruler from '../elements/Ruler';
 
 const day = 1000 * 60 * 60 * 24 * 1;
@@ -19,27 +19,30 @@ const ActivityChart = ({
 }: {
   connections: AppRouterTypes['chart']['activity']['output'];
 }) => {
-  const dimensions = useContext(DimensionsContext);
+  const { innerWidth, innerHeight } = useContext(DimensionsContext);
 
-  const xScale = scaleTime()
-    .domain([minX, maxX])
-    .range([0, dimensions.innerWidth]);
+  const xScale = scaleTime().domain([minX, maxX]).range([0, innerWidth]);
 
-  const yScale = scaleLinear()
-    .domain([minY, maxY])
-    .range([dimensions.innerHeight, 0]);
+  const yScale = scaleLinear().domain([minY, maxY]).range([innerHeight, 0]);
 
   return (
     <>
       <Axis
         axis={axisBottom(xScale)}
-        transform={`translate(0, ${dimensions.innerHeight})`}
+        transform={`translate(0, ${innerHeight})`}
         className="text-lg"
       />
 
       <Axis axis={axisLeft(yScale)} className="text-lg" />
 
-      <Sessions xScale={xScale} yScale={yScale} connections={connections} />
+      <line
+        x1={xScale(new Date(maxX).setHours(0, 0, 0))}
+        x2={xScale(new Date(maxX).setHours(0, 0, 0))}
+        y2={innerHeight}
+        stroke="rgba(0, 0, 0, 0.3)"
+      />
+
+      <Connections xScale={xScale} yScale={yScale} connections={connections} />
 
       <Ruler xScale={xScale} />
     </>

@@ -35,6 +35,10 @@ hr {
   border: none;
 }
 
+svg text {
+  user-select: none;
+}
+
 ::-webkit-scrollbar {
   width: 1rem;
   background-color: rgb(148 163 184);

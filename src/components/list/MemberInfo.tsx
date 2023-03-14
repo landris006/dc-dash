@@ -27,7 +27,7 @@ const MemberInfo = ({
     (CONVERSIONS.LEVEL_TO_HOURS(level + 1) - hoursToCurrentLevel);
 
   return (
-    <Panel className="w-[90vw] bg-white bg-opacity-100 md:w-fit ">
+    <Panel className="w-[90vw] bg-white bg-opacity-100 md:w-fit">
       <div className="flex gap-2 ">
         {member.user.avatarURL && (
           <div className="hidden sm:block ">

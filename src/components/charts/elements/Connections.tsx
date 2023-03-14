@@ -1,8 +1,8 @@
-import { Connection } from '@prisma/client';
 import { ScaleLinear, ScaleTime } from 'd3';
 import React from 'react';
 import { AppRouterTypes } from '../../../utils/trpc';
-import Session from './Session';
+import ConnectionComponent from './Connection';
+import type { Connection } from '@prisma/client';
 
 interface Props {
   xScale: ScaleTime<number, number, never>;
@@ -10,7 +10,7 @@ interface Props {
   connections: AppRouterTypes['chart']['activity']['output'];
 }
 
-const Sessions = ({ xScale, yScale, connections }: Props) => {
+const Connections = ({ xScale, yScale, connections }: Props) => {
   const plottedConnections = new Map<number, Connection[]>();
 
   return (
@@ -31,13 +31,21 @@ const Sessions = ({ xScale, yScale, connections }: Props) => {
 
           const position = decidePosition(connection, plottedConnections);
 
-          return <Session key={connection.id} connection={connection} position={position} xScale={xScale} yScale={yScale} />;
+          return (
+            <ConnectionComponent
+              key={connection.id}
+              connection={connection}
+              position={position}
+              xScale={xScale}
+              yScale={yScale}
+            />
+          );
         })}
     </g>
   );
 };
 
-export default Sessions;
+export default Connections;
 
 const decidePosition = (
   connection: Connection,
@@ -69,24 +77,13 @@ const checkIntersections = (
       return false;
     }
 
-    if (!connection.endTime && !c.endTime) {
-      return true;
-    }
-
     if (
-      connection.startTime <= c.startTime &&
-      (connection?.endTime ?? new Date()) >= c.startTime
+      connection.startTime > (c.endTime ?? new Date()) ||
+      (connection.endTime ?? new Date()) < c.startTime
     ) {
-      return true;
+      return false;
     }
 
-    if (
-      connection.startTime >= c.startTime &&
-      connection.startTime <= (c.endTime ?? new Date())
-    ) {
-      return true;
-    }
-
-    return false;
+    return true;
   }).length;
 };

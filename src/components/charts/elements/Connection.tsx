@@ -1,10 +1,13 @@
 import { ScaleLinear, ScaleTime } from 'd3';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { CONVERSIONS } from '../../../utils/conversions';
 import { AppRouterTypes } from '../../../utils/trpc';
 import { DimensionsContext } from './ChartWrapper';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
+import ClickOutsideListener from '../../common/ClickOutsideListener';
+import Modal from '../../common/Modal';
+import Panel from '../../common/Panel';
 
 interface Props {
   connection: AppRouterTypes['chart']['activity']['output'][0];
@@ -16,13 +19,61 @@ interface Props {
 const tooltipWidth = 300;
 const imagePadding = 3;
 
-const Session = ({ connection, xScale, yScale, position }: Props) => {
+const Connection = ({ connection, xScale, yScale, position }: Props) => {
   const { tooltipState, rectRef, svgRef, margin } = useIsHovered();
   const height = (yScale(0) - yScale(1)) * 0.8;
   const tooltipHeight = height * 0.75;
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onClose = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <g>
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ClickOutsideListener onClickOutside={onClose}>
+          <Panel className="w-[90vw] bg-white bg-opacity-100 text-xl md:w-fit ">
+            <h2 className="text-2xl font-semibold">Connection</h2>
+
+            <hr className="my-1 h-[2px] rounded bg-black" />
+
+            <div className="grid grid-cols-2">
+              <p>Member: </p>
+              <p className="flex items-center gap-3">
+                <Image
+                  src={
+                    connection.guildMember.user.avatarURL ??
+                    '/default-avatar.png'
+                  }
+                  alt="profile picture"
+                  width={25}
+                  height={25}
+                  className="rounded-full"
+                />
+                {connection.guildMember.nickname ??
+                  connection.guildMember.user.username}
+              </p>
+
+              <p>From:</p>
+              <p>{connection.startTime.toLocaleString()}</p>
+
+              <p>To:</p>
+              <p>{connection.endTime?.toLocaleString() ?? '-'}</p>
+
+              <p>Duration:</p>
+              <p>
+                {(
+                  CONVERSIONS.MILISECONDS_TO_HOURS *
+                  ((connection.endTime?.getTime() ?? Date.now()) -
+                    connection.startTime.getTime())
+                ).toFixed(2) + ' h'}
+              </p>
+            </div>
+          </Panel>
+        </ClickOutsideListener>
+      </Modal>
+
       <rect
         ref={rectRef}
         className={`relative cursor-pointer ${
@@ -30,7 +81,7 @@ const Session = ({ connection, xScale, yScale, position }: Props) => {
         }`}
         x={xScale(connection.startTime)}
         width={
-          xScale(connection.endTime ?? new Date()) -
+          xScale(connection.endTime ?? xScale.domain()[1] ?? new Date()) -
           xScale(connection.startTime)
         }
         height={height}
@@ -41,6 +92,7 @@ const Session = ({ connection, xScale, yScale, position }: Props) => {
             connection.guildMember.level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
           ]
         }
+        onClick={() => setIsOpen(true)}
       ></rect>
 
       {tooltipState.isHovered &&
@@ -94,11 +146,11 @@ const Session = ({ connection, xScale, yScale, position }: Props) => {
           </foreignObject>,
           svgRef?.current ?? document.body
         )}
-    </g>
+    </>
   );
 };
 
-export default Session;
+export default Connection;
 
 const useIsHovered = () => {
   const [tooltipState, setTooltipState] = React.useState({
