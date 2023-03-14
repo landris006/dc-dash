@@ -44,7 +44,7 @@ const Charts: NextPage = () => {
       <Header />
 
       <main className="container mx-auto my-3 flex max-w-7xl flex-1 flex-col items-stretch gap-3 px-3 md:flex-row">
-        <Panel className="flex w-full flex-1 flex-col justify-between gap-3 bg-slate-300 md:px-16 lg:px-36">
+        <Panel className="flex w-full flex-1 flex-col justify-between gap-3 bg-slate-300 md:px-16">
           <Panel className="mx-auto h-min w-auto bg-slate-100">
             <nav className="relative flex justify-center">
               <div

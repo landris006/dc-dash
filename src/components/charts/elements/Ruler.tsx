@@ -3,16 +3,17 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ChartContext } from './ChartContext';
 
 const width = 3;
-const tooltipWidth = 150;
+const tooltipWidth = 170;
 const tooltipHeight = 30;
 
 const Ruler = ({ xScale }: { xScale: ScaleTime<number, number, never> }) => {
   const { position, innerHeight, tooltipText, isShowing, tooltipOffset } =
     useGetRulerData(xScale);
+  const { allowInteractions } = useContext(ChartContext);
 
   return (
     <>
-      {isShowing && (
+      {isShowing && allowInteractions && (
         <g
           className="pointer-events-none"
           pointerEvents="none"
@@ -104,14 +105,8 @@ const useGetRulerData = (xScale: ScaleTime<number, number, never>) => {
       setIsShowing(true);
 
       const date = xScale.invert(offsetX);
-      const hours = date.getHours();
-      const minutes = date.getMinutes();
 
-      setTooltipText(
-        `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}\n${
-          hours < 10 ? '0' : ''
-        }${hours}:${minutes < 10 ? '0' : ''}${minutes}`
-      );
+      setTooltipText(date.toLocaleString());
       setPosition(offsetX);
     },
     [height, innerWidth, margin.left, svgRef, xScale, allowInteractions]

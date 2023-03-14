@@ -6,6 +6,7 @@ import { axisBottom, axisLeft } from 'd3';
 import Axis from '../elements/Axis';
 import Connections from '../elements/Connections';
 import Ruler from '../elements/Ruler';
+import Selector from '../elements/Selector';
 
 const day = 1000 * 60 * 60 * 24 * 1;
 const minX = Date.now() - day;
@@ -45,6 +46,8 @@ const ActivityChart = ({
       <Connections xScale={xScale} yScale={yScale} connections={connections} />
 
       <Ruler xScale={xScale} />
+
+      <Selector connections={connections} xScale={xScale} />
     </>
   );
 };

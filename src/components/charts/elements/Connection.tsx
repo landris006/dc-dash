@@ -67,7 +67,9 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
               <p>
                 {(
                   CONVERSIONS.MILISECONDS_TO_HOURS *
-                  ((connection.endTime?.getTime() ?? Date.now()) -
+                  ((connection.endTime?.getTime() ??
+                    xScale.domain()[1]?.getTime() ??
+                    Date.now()) -
                     connection.startTime.getTime())
                 ).toFixed(2) + ' h'}
               </p>
@@ -94,9 +96,10 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
             connection.guildMember.level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
           ]
         }
-        onClick={() => {
-          setIsOpen(true);
+        onMouseDown={(e) => {
           setAllowInteractions(false);
+          setIsOpen(true);
+          e.stopPropagation();
         }}
       ></rect>
 
@@ -105,7 +108,9 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
           <foreignObject
             x={
               tooltipState.side === 'right'
-                ? xScale(connection.endTime ?? new Date()) + margin.left
+                ? xScale(
+                    connection.endTime ?? xScale.domain()[1] ?? new Date()
+                  ) + margin.left
                 : xScale(connection.startTime) - tooltipWidth + margin.left
             }
             y={yScale(position) - tooltipHeight / 2 + margin.top}

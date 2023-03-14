@@ -24,7 +24,7 @@ const ActivityChartController = ({ guildID }: { guildID: string }) => {
     return <>Error</>;
   }
   return (
-    <Chart margin={{ top: 20, right: 20, bottom: 75, left: 75 }} minWidth={600}>
+    <Chart margin={{ top: 20, right: 85, bottom: 75, left: 85 }} minWidth={600}>
       <ActivityChart connections={connections} />;
     </Chart>
   );

@@ -34,6 +34,10 @@ export const activity = async (guildID: string, ctx: Context) => {
     return {
       ...connection,
       guildMember: {
+        id: connection.guildMember.id,
+        guildID: connection.guildMember.guildID,
+        userID: connection.guildMember.userID,
+        joinedAt: connection.guildMember.joinedAt,
         user: connection.guildMember.user,
         level,
         nickname: connection.guildMember.nickname,
