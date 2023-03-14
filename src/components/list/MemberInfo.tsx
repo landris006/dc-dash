@@ -1,4 +1,4 @@
-import { GuildMember, User } from '@prisma/client';
+import { GuildMember } from '@prisma/client';
 import { BiRename } from 'react-icons/bi';
 import { IoCreate } from 'react-icons/io5';
 import { MdAccessTimeFilled } from 'react-icons/md';
@@ -9,17 +9,13 @@ import Panel from '../common/Panel';
 import Image from 'next/image';
 import { trpc } from '../../utils/trpc';
 
-const MemberInfo = ({
-  member,
-}: {
-  member: GuildMember & {
-    user: User;
-  };
-}) => {
-  const { data: stats, status } = trpc.guildMember.getStats.useQuery(member.id);
+const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
+  const { data: memberInfo, status } = trpc.guildMember.getMemberInfo.useQuery({
+    id,
+  });
 
   const hoursActive =
-    (stats?.timeActive ?? 0) * CONVERSIONS.MILISECONDS_TO_HOURS;
+    (memberInfo?.timeActive ?? 0) * CONVERSIONS.MILISECONDS_TO_HOURS;
   const level = CONVERSIONS.HOURS_TO_LEVEL(hoursActive);
   const hoursToCurrentLevel = CONVERSIONS.LEVEL_TO_HOURS(level);
   const progression =
@@ -29,10 +25,10 @@ const MemberInfo = ({
   return (
     <Panel className="w-[90vw] bg-white bg-opacity-100 md:w-fit">
       <div className="flex gap-2 ">
-        {member.user.avatarURL && (
+        {memberInfo?.user.avatarURL && (
           <div className="hidden sm:block ">
             <Image
-              src={member.user.avatarURL}
+              src={memberInfo.user.avatarURL}
               width={75}
               height={75}
               alt="profile picture"
@@ -41,7 +37,7 @@ const MemberInfo = ({
           </div>
         )}
         <h2 className="flex content-center items-center text-3xl font-semibold">
-          {member.nickname ?? member.user.username}
+          {memberInfo?.nickname ?? memberInfo?.user.username}
         </h2>
       </div>
 
@@ -69,17 +65,17 @@ const MemberInfo = ({
       <div className="grid grid-cols-2 justify-center gap-3 text-xl sm:grid-cols-3">
         <Stat
           prefix={<IoCreate />}
-          value={member.joinedAt.toLocaleDateString()}
+          value={memberInfo?.joinedAt.toLocaleDateString()}
           tooltipText="Joined at"
         />
         <Stat
           prefix={<BiRename />}
-          value={member.user.username}
+          value={memberInfo?.user.username}
           tooltipText="Username"
         />
         <Stat
           prefix={<SiGooglemessages />}
-          value={stats?.totalMessages}
+          value={memberInfo?.totalMessages}
           tooltipText="Messages sent"
         />
         <Stat

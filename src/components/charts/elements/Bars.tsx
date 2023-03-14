@@ -11,6 +11,7 @@ import Panel from '../../common/Panel';
 import { ChartContext } from './ChartContext';
 import Tooltip from './Tooltip';
 import Image from 'next/image';
+import MemberInfo from '../../list/MemberInfo';
 
 const Bars = ({
   data,
@@ -23,6 +24,7 @@ const Bars = ({
 }) => {
   const { margin, innerHeight, setAllowInteractions } =
     useContext(ChartContext);
+
   const [tooltipData, setTooltipData] = useState<{
     level: string;
     frequency: number;
@@ -60,7 +62,7 @@ const Bars = ({
         <ClickOutsideListener onClickOutside={onClose}>
           <Panel className="w-[90vw] bg-white bg-opacity-100 text-xl md:w-fit md:min-w-[24rem]">
             <div className="flex gap-3">
-              <h2 className="text-2xl">Members</h2>
+              <h2 className="text-2xl font-semibold">Members</h2>
 
               <span
                 className="flex items-center rounded-full px-2 py-1 text-sm font-semibold text-black"
@@ -133,6 +135,11 @@ export default Bars;
 
 const List = ({ level }: { level: number }) => {
   const guildID = useRouter().query.guildID as string;
+  const [selectedID, setSelectedID] = useState<string | null>(null);
+
+  const onClose = () => {
+    setSelectedID(null);
+  };
 
   const {
     data: members,
@@ -152,22 +159,37 @@ const List = ({ level }: { level: number }) => {
   }
 
   return (
-    <ul className="flex max-h-[80vh] flex-col gap-1 overflow-y-auto">
-      {members.map((member) => (
-        <ListItem key={member.id}>
-          <div className="flex items-center gap-3">
-            <Image
-              src={member.user.avatarURL ?? '/default-avatar.png'}
-              alt="profile picture"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
+    <>
+      <Modal
+        className="flex items-center justify-center"
+        blurBackground={false}
+        isOpen={!!selectedID}
+        onClose={() => setSelectedID(null)}
+      >
+        {selectedID && (
+          <ClickOutsideListener onClickOutside={onClose}>
+            <MemberInfo id={selectedID} />
+          </ClickOutsideListener>
+        )}
+      </Modal>
 
-            {member.nickname ?? member.user.username}
-          </div>
-        </ListItem>
-      ))}
-    </ul>
+      <ul className="flex max-h-[80vh] flex-col gap-1 overflow-y-auto">
+        {members.map((member) => (
+          <ListItem key={member.id} onClick={() => setSelectedID(member.id)}>
+            <div className="flex items-center gap-3">
+              <Image
+                src={member.user.avatarURL ?? '/default-avatar.png'}
+                alt="profile picture"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+
+              {member.nickname ?? member.user.username}
+            </div>
+          </ListItem>
+        ))}
+      </ul>
+    </>
   );
 };

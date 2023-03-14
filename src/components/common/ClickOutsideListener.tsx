@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, MouseEvent, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 
 const ClickOutsideListener = ({
   children,
@@ -10,13 +10,18 @@ const ClickOutsideListener = ({
   ignoreCount?: number;
 }) => {
   const [eventsIgnored, setEventsIgnored] = useState(0);
-
-  const handleClick = (e: MouseEvent) => {
-    e.stopPropagation();
-  };
+  const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleDocumentClick = () => {
+    const handleClick = (e: globalThis.MouseEvent) => {
+      if (!elementRef.current) {
+        return;
+      }
+
+      if (elementRef.current.contains(e.target as Node)) {
+        return;
+      }
+
       if (eventsIgnored < ignoreCount) {
         setEventsIgnored((prev) => prev + 1);
         return;
@@ -25,14 +30,13 @@ const ClickOutsideListener = ({
       onClickOutside();
     };
 
-    document.addEventListener('click', handleDocumentClick);
-
+    document.addEventListener('click', handleClick);
     return () => {
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('click', handleClick);
     };
   }, [onClickOutside, ignoreCount, eventsIgnored]);
 
-  return <div onClick={handleClick}>{children}</div>;
+  return <div ref={elementRef}>{children}</div>;
 };
 
 export default ClickOutsideListener;

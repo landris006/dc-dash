@@ -2,6 +2,7 @@ export const CONVERSIONS = {
   MILISECONDS_TO_HOURS: 2.77777778e-7,
   MILISECONDS_TO_SECONDS: 1e-3,
 
+  // TODO: refactor LEVEL_TO_COLOR_MAP
   LEVEL_TO_COLOR_MAP: {
     '0': '#FFFFFF',
     '1': '#3498DB',

@@ -41,10 +41,14 @@ const MemberList = ({
 
   return (
     <>
-      <Modal className='flex items-center justify-center' isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal
+        className="flex items-center justify-center"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      >
         {selectedMember && (
           <ClickOutsideListener onClickOutside={() => setIsOpen(false)}>
-            <MemberInfo member={selectedMember} />
+            <MemberInfo id={selectedMember.id} />
           </ClickOutsideListener>
         )}
       </Modal>

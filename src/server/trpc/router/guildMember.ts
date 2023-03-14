@@ -66,23 +66,32 @@ export const guildMemberRouter = router({
       });
     }),
 
-  getStats: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
-    const guildMember = await ctx.prisma.guildMember.findUniqueOrThrow({
-      where: {
-        id: input,
-      },
-      include: {
-        user: true,
-        messages: true,
-        connections: true,
-      },
-    });
+  getMemberInfo: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input: { id }, ctx }) => {
+      const guildMember = await ctx.prisma.guildMember.findUniqueOrThrow({
+        where: {
+          id,
+        },
+        include: {
+          user: true,
+          messages: true,
+          connections: true,
+        },
+      });
 
-    return {
-      timeActive: getTotalTime(guildMember.connections),
-      totalMessages: guildMember.messages.length,
-    };
-  }),
+      const guildMemberForReturn = {
+        ...guildMember,
+        messages: undefined,
+        connections: undefined,
+        timeActive: getTotalTime(guildMember.connections),
+        totalMessages: guildMember.messages.length,
+      };
+      delete guildMemberForReturn.messages;
+      delete guildMemberForReturn.connections;
+
+      return guildMemberForReturn;
+    }),
 
   getAllInGuild: publicProcedure
     .input(
