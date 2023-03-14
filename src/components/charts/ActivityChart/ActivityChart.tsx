@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { AppRouterTypes } from '../../../utils/trpc';
-import { DimensionsContext } from '../elements/ChartWrapper';
+import { ChartContext } from '../elements/ChartContext';
 import { axisBottom, axisLeft } from 'd3';
 import Axis from '../elements/Axis';
 import Connections from '../elements/Connections';
@@ -19,7 +19,7 @@ const ActivityChart = ({
 }: {
   connections: AppRouterTypes['chart']['activity']['output'];
 }) => {
-  const { innerWidth, innerHeight } = useContext(DimensionsContext);
+  const { innerWidth, innerHeight } = useContext(ChartContext);
 
   const xScale = scaleTime().domain([minX, maxX]).range([0, innerWidth]);
 

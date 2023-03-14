@@ -1,11 +1,5 @@
-import React, {
-  createContext,
-  ReactNode,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { ChartContext } from './ChartContext';
 
 interface Props {
   minWidth?: number;
@@ -19,25 +13,11 @@ interface Props {
   children: ReactNode;
 }
 
-const defaultWidth = 960;
-const defaultHeight = 600;
-const defaultMargin = { top: 20, right: 20, bottom: 75, left: 75 };
-const defaultdimensions = {
-  width: defaultWidth,
-  height: defaultHeight,
-  margin: { top: 20, right: 20, bottom: 75, left: 75 },
-  innerWidth: defaultWidth - defaultMargin.left - defaultMargin.right,
-  innerHeight: defaultHeight - defaultMargin.top - defaultMargin.bottom,
-  containerRef: null as RefObject<HTMLDivElement> | null,
-  svgRef: null as RefObject<SVGSVGElement> | null,
-};
-
-export const DimensionsContext = createContext(defaultdimensions);
-
-const ChartWrapper = ({ margin, children, minWidth, minHeight }: Props) => {
+const Chart = ({ margin, children, minWidth, minHeight }: Props) => {
   const { container, width, height } = useWidth(minWidth ?? 0, minHeight ?? 0);
   const svgRef = useRef<SVGSVGElement>(null);
-  const dimensions = {
+  const [allowInteractions, setAllowInteractions] = useState(true);
+  const chartContextValue = {
     width,
     height,
     margin,
@@ -45,26 +25,33 @@ const ChartWrapper = ({ margin, children, minWidth, minHeight }: Props) => {
     innerHeight: height - margin.top - margin.bottom,
     containerRef: container,
     svgRef,
+    allowInteractions,
+    setAllowInteractions,
   };
 
   return (
-    <DimensionsContext.Provider value={dimensions}>
+    <ChartContext.Provider value={chartContextValue}>
       <div ref={container} className="relative h-full overflow-x-auto">
         {container.current && (
-          <svg ref={svgRef} width={width} height={height} className="absolute outline-none">
+          <svg
+            ref={svgRef}
+            width={width}
+            height={height}
+            className="absolute outline-none"
+          >
             <g transform={`translate(${margin.left}, ${margin.top})`}>
               {children}
             </g>
           </svg>
         )}
       </div>
-    </DimensionsContext.Provider>
+    </ChartContext.Provider>
   );
 };
 
-export default ChartWrapper;
+export default Chart;
 
-function useWidth(minWidth: number, minHeight: number) {
+const useWidth = (minWidth: number, minHeight: number) => {
   const container = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
 
@@ -99,4 +86,4 @@ function useWidth(minWidth: number, minHeight: number) {
   }, [minWidth, minHeight]);
 
   return { container, ...size };
-}
+};

@@ -2,7 +2,7 @@ import { ScaleLinear, ScaleTime } from 'd3';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { CONVERSIONS } from '../../../utils/conversions';
 import { AppRouterTypes } from '../../../utils/trpc';
-import { DimensionsContext } from './ChartWrapper';
+import { ChartContext } from './ChartContext';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import ClickOutsideListener from '../../common/ClickOutsideListener';
@@ -20,13 +20,15 @@ const tooltipWidth = 300;
 const imagePadding = 3;
 
 const Connection = ({ connection, xScale, yScale, position }: Props) => {
-  const { tooltipState, rectRef, svgRef, margin } = useIsHovered();
+  const { setAllowInteractions, svgRef, margin } = useContext(ChartContext);
+  const { tooltipState, rectRef } = useIsHovered();
   const height = (yScale(0) - yScale(1)) * 0.8;
   const tooltipHeight = height * 0.75;
   const [isOpen, setIsOpen] = useState(false);
 
   const onClose = () => {
     setIsOpen(false);
+    setAllowInteractions(true);
   };
 
   return (
@@ -92,7 +94,10 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
             connection.guildMember.level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
           ]
         }
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          setAllowInteractions(false);
+        }}
       ></rect>
 
       {tooltipState.isHovered &&
@@ -153,17 +158,30 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
 export default Connection;
 
 const useIsHovered = () => {
+  const {
+    containerRef,
+    height,
+    innerWidth,
+    svgRef,
+    margin,
+    allowInteractions,
+  } = useContext(ChartContext);
+
   const [tooltipState, setTooltipState] = React.useState({
     isHovered: false,
     side: 'left' as 'left' | 'right',
   });
-  const { containerRef, height, innerWidth, svgRef, margin } =
-    useContext(DimensionsContext);
+
   const rectRef = React.useRef<SVGRectElement>(null);
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!containerRef?.current || !rectRef.current || !svgRef?.current) {
+      if (
+        !containerRef?.current ||
+        !rectRef.current ||
+        !svgRef?.current ||
+        !allowInteractions
+      ) {
         setTooltipState({ isHovered: false, side: 'left' });
         return;
       }
@@ -190,7 +208,7 @@ const useIsHovered = () => {
             : 'right',
       });
     },
-    [containerRef, height, innerWidth, margin, rectRef, svgRef]
+    [containerRef, height, innerWidth, margin, rectRef, svgRef, allowInteractions]
   );
 
   useEffect(() => {
@@ -201,5 +219,5 @@ const useIsHovered = () => {
     };
   }, [handleMouseMove]);
 
-  return { tooltipState, rectRef, svgRef, margin };
+  return { tooltipState, rectRef };
 };

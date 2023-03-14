@@ -4,7 +4,7 @@ import { trpc } from '../../../utils/trpc';
 import ClickOutsideListener from '../../common/ClickOutsideListener';
 import Panel from '../../common/Panel';
 import BarChart from './BarChart';
-import ChartWrapper from '../elements/ChartWrapper';
+import Chart from '../elements/Chart';
 
 const BarChartController = ({ guildID }: { guildID: string }) => {
   const { data, isLoading, isError } = trpc.chart.levels.useQuery(
@@ -69,7 +69,7 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
       </div>
 
       <div className="flex-1">
-        <ChartWrapper
+        <Chart
           margin={{ top: 20, right: 20, bottom: 75, left: 75 }}
           minWidth={600}
           minHeight={300}
@@ -79,7 +79,7 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
               levelsToInclude.includes(level.level)
             ) ?? []}
           />
-        </ChartWrapper>
+        </Chart>
       </div>
     </>
   );

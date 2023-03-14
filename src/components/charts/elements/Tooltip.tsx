@@ -1,10 +1,10 @@
 import { useContext, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { DimensionsContext } from './ChartWrapper';
+import { ChartContext } from './ChartContext';
 
 const Tooltip = ({ children }: { children: React.ReactNode | undefined }) => {
   const { tooltip } = useFollowMouse();
-  const { containerRef } = useContext(DimensionsContext);
+  const { containerRef } = useContext(ChartContext);
 
   return createPortal(
     <div
@@ -21,7 +21,7 @@ export default Tooltip;
 
 const useFollowMouse = () => {
   const tooltip = useRef<HTMLDivElement>(null);
-  const { svgRef } = useContext(DimensionsContext);
+  const { svgRef } = useContext(ChartContext);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

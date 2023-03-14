@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImSpinner8 } from 'react-icons/im';
 import { trpc } from '../../../utils/trpc';
-import ChartWrapper from '../elements/ChartWrapper';
+import Chart from '../elements/Chart';
 import ActivityChart from './ActivityChart';
 
 const ActivityChartController = ({ guildID }: { guildID: string }) => {
@@ -24,12 +24,9 @@ const ActivityChartController = ({ guildID }: { guildID: string }) => {
     return <>Error</>;
   }
   return (
-    <ChartWrapper
-      margin={{ top: 20, right: 20, bottom: 75, left: 75 }}
-      minWidth={600}
-    >
+    <Chart margin={{ top: 20, right: 20, bottom: 75, left: 75 }} minWidth={600}>
       <ActivityChart connections={connections} />;
-    </ChartWrapper>
+    </Chart>
   );
 };
 

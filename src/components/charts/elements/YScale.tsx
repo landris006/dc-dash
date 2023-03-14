@@ -1,9 +1,9 @@
 import { ScaleLinear } from 'd3';
 import { useContext } from 'react';
-import { DimensionsContext } from './ChartWrapper';
+import { ChartContext } from './ChartContext';
 
 const YScale = ({ yScale }: { yScale: ScaleLinear<number, number, never> }) => {
-  const dimensions = useContext(DimensionsContext);
+  const dimensions = useContext(ChartContext);
 
   return (
     <>

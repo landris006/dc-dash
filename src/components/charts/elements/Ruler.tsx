@@ -1,6 +1,6 @@
 import { ScaleTime } from 'd3';
-import React, { useContext, useEffect, useState } from 'react';
-import { DimensionsContext } from './ChartWrapper';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ChartContext } from './ChartContext';
 
 const width = 3;
 const tooltipWidth = 150;
@@ -53,22 +53,26 @@ const Ruler = ({ xScale }: { xScale: ScaleTime<number, number, never> }) => {
 export default Ruler;
 
 const useGetRulerData = (xScale: ScaleTime<number, number, never>) => {
-  const { height, innerHeight, innerWidth, svgRef, margin } =
-    useContext(DimensionsContext);
+  const { height, innerHeight, innerWidth, svgRef, margin, allowInteractions } =
+    useContext(ChartContext);
 
   const [position, setPosition] = useState(0);
   const [tooltipText, setTooltipText] = useState('');
   const [isShowing, setIsShowing] = useState(false);
   const [tooltipOffset, setTooltipOffset] = useState(width / 2);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
       if (!svgRef?.current) {
         return;
       }
 
+      if (!allowInteractions) {
+        return;
+      }
+
       if (
-        e.clientY < svgRef.current.getBoundingClientRect().left ||
+        e.clientY < svgRef.current.getBoundingClientRect().top ||
         e.clientY > svgRef.current.getBoundingClientRect().top + height
       ) {
         setIsShowing(false);
@@ -109,14 +113,17 @@ const useGetRulerData = (xScale: ScaleTime<number, number, never>) => {
         }${hours}:${minutes < 10 ? '0' : ''}${minutes}`
       );
       setPosition(offsetX);
-    };
+    },
+    [height, innerWidth, margin.left, svgRef, xScale, allowInteractions]
+  );
 
+  useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [height, svgRef, margin.left, innerWidth, xScale]);
+  }, [handleMouseMove]);
 
   return {
     position,
