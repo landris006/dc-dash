@@ -35,7 +35,7 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ClickOutsideListener onClickOutside={onClose}>
-          <Panel className="w-[90vw] bg-white bg-opacity-100 text-xl md:w-fit ">
+          <Panel className="w-[90vw] bg-white bg-opacity-100 text-xl md:w-fit">
             <h2 className="text-2xl font-semibold">Connection</h2>
 
             <hr className="my-1 h-[2px] rounded bg-black" />
@@ -208,7 +208,15 @@ const useIsHovered = () => {
             : 'right',
       });
     },
-    [containerRef, height, innerWidth, margin, rectRef, svgRef, allowInteractions]
+    [
+      containerRef,
+      height,
+      innerWidth,
+      margin,
+      rectRef,
+      svgRef,
+      allowInteractions,
+    ]
   );
 
   useEffect(() => {

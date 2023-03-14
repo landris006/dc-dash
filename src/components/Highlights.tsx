@@ -6,7 +6,6 @@ import { trpc } from '../utils/trpc';
 import { SiGooglemessages } from 'react-icons/si';
 import { MdAccessTimeFilled } from 'react-icons/md';
 import { CONVERSIONS } from '../utils/conversions';
-import RefreshButton from './common/RefreshButton';
 import { useRouter } from 'next/router';
 
 const Highlights = () => {
@@ -17,8 +16,6 @@ const Highlights = () => {
     isLoading,
     isError,
   } = trpc.guild.getHighlights.useQuery(guildID);
-
-  const utils = trpc.useContext();
 
   return (
     <Panel className="bg-rose-200">
@@ -31,10 +28,6 @@ const Highlights = () => {
         {isError ? (
           <div className="flex items-center gap-3">
             <p className="text-xl">Could not load highlights...</p>{' '}
-            <RefreshButton
-              isLoading={isLoading}
-              onClick={() => utils.guildMember.getAllInGuild.invalidate()}
-            />
           </div>
         ) : (
           <>

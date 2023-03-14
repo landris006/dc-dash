@@ -1,4 +1,4 @@
-import { HTMLAttributes, useEffect, useRef } from 'react';
+import { HTMLAttributes, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -7,8 +7,6 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   onClose: () => void;
 }
 const Modal = ({ children, isOpen, onClose, className }: Props) => {
-  const modal = useRef<HTMLDivElement>(null);
-
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       onClose();
@@ -28,16 +26,15 @@ const Modal = ({ children, isOpen, onClose, className }: Props) => {
   }
 
   return createPortal(
-    <div
-      ref={modal}
-      className="fixed top-1/2 left-1/2 z-50 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 backdrop-blur-[5px]"
-    >
+    <>
+      <div className="fixed top-1/2 left-1/2 z-40 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 backdrop-blur-[5px]"></div>
+
       <div
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${className}`}
+        className={`absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 ${className}`}
       >
         {children}
       </div>
-    </div>,
+    </>,
     document.body
   );
 };

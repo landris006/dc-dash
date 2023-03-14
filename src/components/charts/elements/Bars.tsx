@@ -1,8 +1,16 @@
 import { ScaleBand, ScaleLinear } from 'd3';
+import { useRouter } from 'next/router';
 import React, { useContext, useMemo, useState } from 'react';
+import { ImSpinner8 } from 'react-icons/im';
 import { CONVERSIONS } from '../../../utils/conversions';
+import { trpc } from '../../../utils/trpc';
+import ClickOutsideListener from '../../common/ClickOutsideListener';
+import ListItem from '../../common/ListItem';
+import Modal from '../../common/Modal';
+import Panel from '../../common/Panel';
 import { ChartContext } from './ChartContext';
 import Tooltip from './Tooltip';
+import Image from 'next/image';
 
 const Bars = ({
   data,
@@ -13,11 +21,20 @@ const Bars = ({
   xScale: ScaleBand<string>;
   yScale: ScaleLinear<number, number, never>;
 }) => {
-  const dimensions = useContext(ChartContext);
+  const { margin, innerHeight, setAllowInteractions } =
+    useContext(ChartContext);
   const [tooltipData, setTooltipData] = useState<{
     level: string;
     frequency: number;
   }>();
+  const [selectedLevel, setSelectedLevel] = useState<
+    keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP | null
+  >(null);
+
+  const onClose = () => {
+    setSelectedLevel(null);
+    setAllowInteractions(true);
+  };
 
   const frequencySum = useMemo(
     () => data.reduce((acc, curr) => acc + curr.frequency, 0),
@@ -39,6 +56,31 @@ const Bars = ({
         )}
       </Tooltip>
 
+      <Modal isOpen={!!selectedLevel} onClose={onClose}>
+        <ClickOutsideListener onClickOutside={onClose}>
+          <Panel className="w-[90vw] bg-white bg-opacity-100 text-xl md:w-fit md:min-w-[24rem]">
+            <div className="flex gap-3">
+              <h2 className="text-2xl">Members</h2>
+
+              <span
+                className="flex items-center rounded-full px-2 py-1 text-sm font-semibold text-black"
+                style={{
+                  backgroundColor:
+                    CONVERSIONS.LEVEL_TO_COLOR_MAP[selectedLevel ?? '0'],
+                  opacity: 0.8,
+                }}
+              >
+                Level {selectedLevel}
+              </span>
+            </div>
+
+            <hr className="my-1 h-[2px] rounded bg-black" />
+
+            <List level={parseInt(selectedLevel ?? '1')} />
+          </Panel>
+        </ClickOutsideListener>
+      </Modal>
+
       {data.map(({ level, frequency }) => (
         <g
           key={level}
@@ -49,6 +91,12 @@ const Bars = ({
             })
           }
           onMouseLeave={() => setTooltipData(undefined)}
+          onClick={() => {
+            setSelectedLevel(
+              level as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
+            );
+            setAllowInteractions(false);
+          }}
           className="cursor-pointer opacity-60 hover:opacity-80"
         >
           <rect
@@ -56,17 +104,17 @@ const Bars = ({
             x={
               (xScale(level) ?? 0) - (xScale.padding() * xScale.bandwidth()) / 2
             }
-            y={dimensions.innerHeight - yScale(frequency)}
+            y={innerHeight - yScale(frequency)}
             width={
               xScale.bandwidth() + xScale.padding() * xScale.bandwidth() + 2
             }
-            height={yScale(frequency) + dimensions.margin.bottom}
+            height={yScale(frequency) + margin.bottom}
             fill="transparent"
           ></rect>
 
           <rect
             x={xScale(level)}
-            y={dimensions.innerHeight - yScale(frequency)}
+            y={innerHeight - yScale(frequency)}
             width={xScale.bandwidth()}
             height={yScale(frequency)}
             fill={
@@ -82,3 +130,44 @@ const Bars = ({
 };
 
 export default Bars;
+
+const List = ({ level }: { level: number }) => {
+  const guildID = useRouter().query.guildID as string;
+
+  const {
+    data: members,
+    isLoading,
+    isError,
+  } = trpc.guildMember.getAllInGuildWithLevel.useQuery({
+    guildID,
+    level,
+  });
+
+  if (isError) {
+    return <p>Could not load members...</p>;
+  }
+
+  if (isLoading) {
+    return <ImSpinner8 className="animate-spin" />;
+  }
+
+  return (
+    <ul className="flex max-h-[80vh] flex-col gap-1 overflow-y-auto">
+      {members.map((member) => (
+        <ListItem key={member.id}>
+          <div className="flex items-center gap-3">
+            <Image
+              src={member.user.avatarURL ?? '/default-avatar.png'}
+              alt="profile picture"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+
+            {member.nickname ?? member.user.username}
+          </div>
+        </ListItem>
+      ))}
+    </ul>
+  );
+};

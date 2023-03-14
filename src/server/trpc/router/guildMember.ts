@@ -7,7 +7,7 @@ import {
   PrismaClient,
   User,
 } from '@prisma/client';
-import { getTotalTime } from '../../../utils/getTotalTime';
+import { getLevel, getTotalTime } from '../../../utils/getTotalTime';
 
 export const guildMemberRouter = router({
   get: publicProcedure
@@ -84,13 +84,46 @@ export const guildMemberRouter = router({
     };
   }),
 
-  getAllInGuild: publicProcedure.input(z.string()).query(({ input, ctx }) => {
-    return ctx.prisma.guildMember.findMany({
-      where: {
-        guildID: input,
-      },
-    });
-  }),
+  getAllInGuild: publicProcedure
+    .input(
+      z.object({
+        guildID: z.string(),
+      })
+    )
+    .query(({ input: { guildID }, ctx }) => {
+      return ctx.prisma.guildMember.findMany({
+        where: {
+          guildID,
+        },
+        include: {
+          user: true,
+        },
+      });
+    }),
+
+  getAllInGuildWithLevel: publicProcedure
+    .input(
+      z.object({
+        guildID: z.string(),
+        level: z.number().min(1),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const members = await ctx.prisma.guildMember.findMany({
+        where: {
+          guildID: input.guildID,
+        },
+        include: {
+          user: true,
+          connections: true,
+        },
+      });
+
+      return members.filter((member) => {
+        const level = getLevel(member.connections);
+        return level === input.level;
+      });
+    }),
 
   getPaginatedMembers: publicProcedure
     .input(

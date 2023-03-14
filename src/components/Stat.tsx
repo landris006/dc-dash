@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { BsTriangleFill } from 'react-icons/bs';
 import { ImSpinner8 } from 'react-icons/im';
 
@@ -15,17 +15,6 @@ const Stat = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const tooltipElement = useRef<HTMLParagraphElement>(null);
-
-  /* useEffect(() => {
-    calculatePosition(tooltipElement.current);
-
-    window.addEventListener('resize', () =>
-      calculatePosition(tooltipElement.current)
-    );
-    window.removeEventListener('resize', () =>
-      calculatePosition(tooltipElement.current)
-    );
-  }, []); */
 
   return (
     <div className="relative w-min">
@@ -59,28 +48,6 @@ const Stat = ({
       </p>
     </div>
   );
-};
-
-const calculatePosition = (element: HTMLParagraphElement | null) => {
-  if (!element) {
-    return;
-  }
-
-  const { left, right } = element.getBoundingClientRect();
-
-  element.style.left = '50%';
-  element.style.width = 'fit-content';
-  element.style.transform = 'translateX(-50%)';
-
-  if (left < 0) {
-    element.style.transform = 'translateX(0)';
-    element.style.left = '0px';
-  }
-
-  if (right > window.innerWidth) {
-    element.style.transform = 'translateX(0)';
-    element.style.right = '0px';
-  }
 };
 
 export default Stat;
