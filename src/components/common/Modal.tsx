@@ -31,9 +31,11 @@ const Modal = (
 
   return createPortal(
     <>
-      {blurBackground && (
-        <div className="fixed top-1/2 left-1/2 z-40 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 backdrop-blur-[5px]"></div>
-      )}
+      <div
+        className={`fixed top-1/2 left-1/2 z-40 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-slate-300 bg-opacity-5 ${
+          blurBackground && 'backdrop-blur-[5px]'
+        }`}
+      ></div>
 
       <div
         ref={ref}

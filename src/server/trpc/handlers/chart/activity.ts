@@ -26,6 +26,7 @@ export const activity = async (guildID: string, ctx: Context) => {
       startTime: 'asc',
     },
   });
+  // TODO: filter based on endtime
 
   return connections.map((connection) => {
     const connections = connection.guildMember.connections;

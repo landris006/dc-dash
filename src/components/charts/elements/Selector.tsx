@@ -40,6 +40,7 @@ const Selector = ({
     <>
       <Modal
         isOpen={!!(positions[0] && positions[1] && !isDragging)}
+        blurBackground={false}
         onClose={onClose}
       >
         <ClickOutsideListener onClickOutside={onClose}>
@@ -254,7 +255,7 @@ const TotalTimeList = ({
   return (
     <div className="grid grid-cols-2 gap-1">
       {[...members.values()].map((member) => (
-        <>
+        <React.Fragment key={member.id}>
           <span className="flex items-center gap-3">
             <Image
               src={member.user.avatarURL ?? '/default-avatar.png'}
@@ -271,7 +272,7 @@ const TotalTimeList = ({
               2
             ) + ' h'}
           </span>
-        </>
+        </React.Fragment>
       ))}{' '}
     </div>
   );
