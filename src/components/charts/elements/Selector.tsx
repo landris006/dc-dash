@@ -1,14 +1,14 @@
 import { GuildMember } from '@prisma/client';
 import { ScaleTime } from 'd3';
 import React, { useContext, useEffect } from 'react';
-import { confine } from '../../../utils/confine';
-import { CONVERSIONS } from '../../../utils/conversions';
+import { confine } from '../../../utils/helpers/confine';
 import { AppRouterTypes } from '../../../utils/trpc';
 import ClickOutsideListener from '../../common/ClickOutsideListener';
 import Modal from '../../common/Modal';
 import Panel from '../../common/Panel';
 import { ChartContext } from './ChartContext';
 import Image from 'next/image';
+import { formatMiliseconds } from '../../../utils/helpers/formatDate';
 
 const tooltipWidth = 170;
 const tooltipHeight = 30;
@@ -267,13 +267,9 @@ const TotalTimeList = ({
             {member.nickname ?? member.user.username}
           </span>
 
-          <span>
-            {(member.aggregatedTime * CONVERSIONS.MILISECONDS_TO_HOURS).toFixed(
-              2
-            ) + ' h'}
-          </span>
+          <span>{formatMiliseconds(member.aggregatedTime)}</span>
         </React.Fragment>
-      ))}{' '}
+      ))}
     </div>
   );
 };

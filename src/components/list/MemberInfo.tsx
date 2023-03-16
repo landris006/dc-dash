@@ -8,6 +8,7 @@ import Stat from '../Stat';
 import Panel from '../common/Panel';
 import Image from 'next/image';
 import { trpc } from '../../utils/trpc';
+import { formatMiliseconds } from '../../utils/helpers/formatDate';
 
 const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
   const { data: memberInfo, status } = trpc.guildMember.getMemberInfo.useQuery({
@@ -25,19 +26,18 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
   return (
     <Panel className="w-[90vw] bg-white bg-opacity-100 md:w-fit">
       <div className="flex gap-2 ">
-        {memberInfo?.user.avatarURL && (
-          <div className="hidden sm:block ">
-            <Image
-              src={memberInfo.user.avatarURL}
-              width={75}
-              height={75}
-              alt="profile picture"
-              className=" rounded-full "
-            />
-          </div>
-        )}
+        <div className="hidden sm:block ">
+          <Image
+            src={memberInfo?.user.avatarURL ?? '/default-avatar.png'}
+            width={75}
+            height={75}
+            alt="profile picture"
+            className=" rounded-full "
+          />
+        </div>
+
         <h2 className="flex content-center items-center text-3xl font-semibold">
-          {memberInfo?.nickname ?? memberInfo?.user.username}
+          {memberInfo?.nickname ?? memberInfo?.user.username ?? 'Loading...'}
         </h2>
       </div>
 
@@ -80,8 +80,12 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
         />
         <Stat
           prefix={<MdAccessTimeFilled />}
-          value={status === 'success' ? Math.round(hoursActive) : undefined}
-          tooltipText="Hours active"
+          value={
+            status === 'success'
+              ? formatMiliseconds(memberInfo.timeActive)
+              : undefined
+          }
+          tooltipText="Time active"
         />
       </div>
     </Panel>

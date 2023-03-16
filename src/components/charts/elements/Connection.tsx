@@ -8,6 +8,7 @@ import { createPortal } from 'react-dom';
 import ClickOutsideListener from '../../common/ClickOutsideListener';
 import Modal from '../../common/Modal';
 import Panel from '../../common/Panel';
+import { formatMiliseconds } from '../../../utils/helpers/formatDate';
 
 interface Props {
   connection: AppRouterTypes['chart']['activity']['output'][0];
@@ -65,13 +66,11 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
 
               <p>Duration:</p>
               <p>
-                {(
-                  CONVERSIONS.MILISECONDS_TO_HOURS *
-                  ((connection.endTime?.getTime() ??
+                {formatMiliseconds(
+                  (connection.endTime?.getTime() ??
                     xScale.domain()[1]?.getTime() ??
-                    Date.now()) -
-                    connection.startTime.getTime())
-                ).toFixed(2) + ' h'}
+                    Date.now()) - connection.startTime.getTime()
+                )}
               </p>
             </div>
           </Panel>
