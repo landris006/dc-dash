@@ -1,9 +1,14 @@
 import { getLevel } from '../../../../utils/getTotalTime';
 import { Context } from '../../context';
 
-export const activity = async (guildID: string, ctx: Context) => {
+export const activity = async (
+  { guildID, interval }: { guildID: string; interval: number },
+  ctx: Context
+) => {
   const now = new Date();
-  const startTime = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 1);
+  const startTime = new Date(
+    now.getTime() - 1000 * 60 * 60 * 24 * interval
+  );
 
   const connections = await ctx.prisma.connection.findMany({
     where: {

@@ -75,9 +75,11 @@ const BarChartController = ({ guildID }: { guildID: string }) => {
           minHeight={300}
         >
           <BarChart
-            levels={levels?.filter((level) =>
-              levelsToInclude.includes(level.level)
-            ) ?? []}
+            levels={
+              levels?.filter((level) =>
+                levelsToInclude.includes(level.level)
+              ) ?? []
+            }
           />
         </Chart>
       </div>

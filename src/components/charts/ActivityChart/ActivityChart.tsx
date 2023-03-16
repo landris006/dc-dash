@@ -2,24 +2,26 @@ import React, { useContext } from 'react';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { AppRouterTypes } from '../../../utils/trpc';
 import { ChartContext } from '../elements/ChartContext';
-import { axisBottom, axisLeft } from 'd3';
+import { axisBottom, axisLeft, range } from 'd3';
 import Axis from '../elements/Axis';
 import Connections from '../elements/Connections';
 import Ruler from '../elements/Ruler';
 import Selector from '../elements/Selector';
 
-const day = 1000 * 60 * 60 * 24 * 1;
-const minX = Date.now() - day;
-const maxX = Date.now();
-
-const minY = 0;
-const maxY = 10;
-
 const ActivityChart = ({
   connections,
+  interval,
 }: {
   connections: AppRouterTypes['chart']['activity']['output'];
+  interval: number;
 }) => {
+  const day = 1000 * 60 * 60 * 24 * interval;
+  const minX = Date.now() - day;
+  const maxX = Date.now();
+
+  const minY = 0;
+  const maxY = 10;
+
   const { innerWidth, innerHeight } = useContext(ChartContext);
 
   const xScale = scaleTime().domain([minX, maxX]).range([0, innerWidth]);
@@ -36,12 +38,19 @@ const ActivityChart = ({
 
       <Axis axis={axisLeft(yScale)} className="text-lg" />
 
-      <line
-        x1={xScale(new Date(maxX).setHours(0, 0, 0))}
-        x2={xScale(new Date(maxX).setHours(0, 0, 0))}
-        y2={innerHeight}
-        stroke="rgba(0, 0, 0, 0.3)"
-      />
+      {range(interval).map((tick) => (
+        <line
+          key={tick}
+          x1={xScale(
+            new Date(maxX - 1000 * 60 * 60 * 24 * tick).setHours(0, 0, 0)
+          )}
+          x2={xScale(
+            new Date(maxX - 1000 * 60 * 60 * 24 * tick).setHours(0, 0, 0)
+          )}
+          y2={innerHeight}
+          stroke="rgba(0, 0, 0, 0.3)"
+        />
+      ))}
 
       <Connections xScale={xScale} yScale={yScale} connections={connections} />
 
