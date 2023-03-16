@@ -10,9 +10,16 @@ export const activity = async (guildID: string, ctx: Context) => {
       voiceChannel: {
         guildID,
       },
-      startTime: {
-        gte: startTime,
-      },
+      OR: [
+        {
+          endTime: {
+            gte: startTime,
+          },
+        },
+        {
+          endTime: null,
+        },
+      ],
     },
     include: {
       guildMember: {
@@ -26,7 +33,6 @@ export const activity = async (guildID: string, ctx: Context) => {
       startTime: 'asc',
     },
   });
-  // TODO: filter based on endtime
 
   return connections.map((connection) => {
     const connections = connection.guildMember.connections;

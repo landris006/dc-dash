@@ -83,10 +83,24 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
         className={`relative cursor-pointer ${
           tooltipState.isHovered ? 'opacity-80' : 'opacity-60'
         }`}
-        x={xScale(connection.startTime)}
+        x={xScale(
+          new Date(
+            Math.max(
+              connection.startTime.getTime(),
+              xScale.domain()[0]?.getTime() ?? 0
+            )
+          )
+        )}
         width={
           xScale(connection.endTime ?? xScale.domain()[1] ?? new Date()) -
-          xScale(connection.startTime)
+          xScale(
+            new Date(
+              Math.max(
+                connection.startTime.getTime(),
+                xScale.domain()[0]?.getTime() ?? 0
+              )
+            )
+          )
         }
         height={height}
         y={yScale(position + 1)}
