@@ -39,7 +39,7 @@ const Modal = (
 
       <div
         ref={ref}
-        className={`absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 ${className}`}
+        className={`fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 ${className}`}
       >
         {children}
       </div>

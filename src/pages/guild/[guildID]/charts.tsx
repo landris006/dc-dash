@@ -7,6 +7,12 @@ import Panel from '../../../components/common/Panel';
 import Header from '../../../components/header/Header';
 import NavList from '../../../components/common/NavList';
 
+const routes = (guildID: string) => ({
+  Levels: <BarChartController guildID={guildID} />,
+  Activity: <ActivityChartController guildID={guildID} />,
+  Top: <div>coming soon</div>,
+});
+
 const Charts: NextPage = () => {
   const router = useRouter();
   const guildID = router.query.guildID as string | undefined;
@@ -44,9 +50,3 @@ const Charts: NextPage = () => {
 };
 
 export default Charts;
-
-const routes = (guildID: string) => ({
-  Levels: <BarChartController guildID={guildID} />,
-  Activity: <ActivityChartController guildID={guildID} />,
-  Time: <div>coming soon</div>,
-});
