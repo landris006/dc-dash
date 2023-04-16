@@ -254,22 +254,24 @@ const TotalTimeList = ({
 
   return (
     <div className="grid grid-cols-2 gap-1">
-      {[...members.values()].map((member) => (
-        <React.Fragment key={member.id}>
-          <span className="flex items-center gap-3">
-            <Image
-              src={member.user.avatarURL ?? '/default-avatar.png'}
-              alt="profile picture"
-              width={25}
-              height={25}
-              className="rounded-full"
-            />
-            {member.nickname ?? member.user.username}
-          </span>
+      {[...members.values()]
+        .sort((a, b) => b.aggregatedTime - a.aggregatedTime)
+        .map((member) => (
+          <React.Fragment key={member.id}>
+            <span className="flex items-center gap-3">
+              <Image
+                src={member.user.avatarURL ?? '/default-avatar.png'}
+                alt="profile picture"
+                width={25}
+                height={25}
+                className="rounded-full"
+              />
+              {member.nickname ?? member.user.username}
+            </span>
 
-          <span>{formatMiliseconds(member.aggregatedTime)}</span>
-        </React.Fragment>
-      ))}
+            <span>{formatMiliseconds(member.aggregatedTime)}</span>
+          </React.Fragment>
+        ))}
     </div>
   );
 };
