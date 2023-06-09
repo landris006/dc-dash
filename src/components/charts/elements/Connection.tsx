@@ -45,17 +45,13 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
               <p>Member: </p>
               <p className="flex items-center gap-3">
                 <Image
-                  src={
-                    connection.guildMember.user.avatarURL ??
-                    '/default-avatar.png'
-                  }
+                  src={connection.guildMember.user.avatarURL ?? '/default-avatar.png'}
                   alt="profile picture"
                   width={25}
                   height={25}
                   className="rounded-full"
                 />
-                {connection.guildMember.nickname ??
-                  connection.guildMember.user.username}
+                {connection.guildMember.nickname ?? connection.guildMember.user.username}
               </p>
 
               <p>From:</p>
@@ -67,9 +63,8 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
               <p>Duration:</p>
               <p>
                 {formatMiliseconds(
-                  (connection.endTime?.getTime() ??
-                    xScale.domain()[1]?.getTime() ??
-                    Date.now()) - connection.startTime.getTime()
+                  (connection.endTime?.getTime() ?? xScale.domain()[1]?.getTime() ?? Date.now()) -
+                    connection.startTime.getTime()
                 )}
               </p>
             </div>
@@ -83,32 +78,18 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
           tooltipState.isHovered ? 'opacity-80' : 'opacity-60'
         }`}
         x={xScale(
-          new Date(
-            Math.max(
-              connection.startTime.getTime(),
-              xScale.domain()[0]?.getTime() ?? 0
-            )
-          )
+          new Date(Math.max(connection.startTime.getTime(), xScale.domain()[0]?.getTime() ?? 0))
         )}
         width={
           xScale(connection.endTime ?? xScale.domain()[1] ?? new Date()) -
           xScale(
-            new Date(
-              Math.max(
-                connection.startTime.getTime(),
-                xScale.domain()[0]?.getTime() ?? 0
-              )
-            )
+            new Date(Math.max(connection.startTime.getTime(), xScale.domain()[0]?.getTime() ?? 0))
           )
         }
         height={height}
         y={yScale(position + 1)}
         transform={`translate(0, ${(yScale(0) - yScale(1)) / 0.8 / 2})`}
-        fill={
-          CONVERSIONS.LEVEL_TO_COLOR_MAP[
-            connection.guildMember.level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
-          ]
-        }
+        fill={CONVERSIONS.LEVEL_TO_COLOR(connection.guildMember.level)}
         onMouseDown={(e) => {
           setAllowInteractions(false);
           setIsOpen(true);
@@ -121,9 +102,7 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
           <foreignObject
             x={
               tooltipState.side === 'right'
-                ? xScale(
-                    connection.endTime ?? xScale.domain()[1] ?? new Date()
-                  ) + margin.left
+                ? xScale(connection.endTime ?? xScale.domain()[1] ?? new Date()) + margin.left
                 : xScale(connection.startTime) - tooltipWidth + margin.left
             }
             y={yScale(position) - tooltipHeight / 2 + margin.top}
@@ -142,10 +121,7 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
 
               <div className="flex h-full items-center gap-3 bg-violet-400 bg-opacity-80 px-3">
                 <Image
-                  src={
-                    connection.guildMember.user.avatarURL ??
-                    '/default-avatar.png'
-                  }
+                  src={connection.guildMember.user.avatarURL ?? '/default-avatar.png'}
                   alt="profile picture"
                   width={tooltipHeight - imagePadding}
                   height={tooltipHeight - imagePadding}
@@ -153,8 +129,7 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
                 />
 
                 <span className="text-xl">
-                  {connection.guildMember.nickname ??
-                    connection.guildMember.user.username}
+                  {connection.guildMember.nickname ?? connection.guildMember.user.username}
                 </span>
               </div>
 
@@ -176,14 +151,8 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
 export default Connection;
 
 const useIsHovered = () => {
-  const {
-    containerRef,
-    height,
-    innerWidth,
-    svgRef,
-    margin,
-    allowInteractions,
-  } = useContext(ChartContext);
+  const { containerRef, height, innerWidth, svgRef, margin, allowInteractions } =
+    useContext(ChartContext);
 
   const [tooltipState, setTooltipState] = React.useState({
     isHovered: false,
@@ -194,12 +163,7 @@ const useIsHovered = () => {
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (
-        !containerRef?.current ||
-        !rectRef.current ||
-        !svgRef?.current ||
-        !allowInteractions
-      ) {
+      if (!containerRef?.current || !rectRef.current || !svgRef?.current || !allowInteractions) {
         setTooltipState({ isHovered: false, side: 'left' });
         return;
       }
@@ -217,24 +181,12 @@ const useIsHovered = () => {
       return setTooltipState({
         isHovered: e.clientX > left && e.clientX < right,
         side:
-          left >
-          (svgRef.current.getBoundingClientRect().left +
-            margin.left +
-            innerWidth) /
-            2
+          left > (svgRef.current.getBoundingClientRect().left + margin.left + innerWidth) / 2
             ? 'left'
             : 'right',
       });
     },
-    [
-      containerRef,
-      height,
-      innerWidth,
-      margin,
-      rectRef,
-      svgRef,
-      allowInteractions,
-    ]
+    [containerRef, height, innerWidth, margin, rectRef, svgRef, allowInteractions]
   );
 
   useEffect(() => {

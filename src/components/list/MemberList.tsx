@@ -17,12 +17,7 @@ interface Props {
     limit: number;
   };
 }
-const MemberList = ({
-  guildMembers,
-  isLoading,
-  isError,
-  pagination,
-}: Props) => {
+const MemberList = ({ guildMembers, isLoading, isError, pagination }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<MemberWithUser>();
 
@@ -33,10 +28,7 @@ const MemberList = ({
     calculateHeight(container, ul);
     window.addEventListener('resize', () => calculateHeight(container, ul));
 
-    return () =>
-      window.removeEventListener('resize', () =>
-        calculateHeight(container, ul)
-      );
+    return () => window.removeEventListener('resize', () => calculateHeight(container, ul));
   }, [guildMembers]);
 
   return (
@@ -54,10 +46,7 @@ const MemberList = ({
       </Modal>
 
       <div className="flex-1" ref={container}>
-        <ul
-          ref={ul}
-          className="relative flex h-0 flex-col gap-1 overflow-auto text-black"
-        >
+        <ul ref={ul} className="relative flex h-0 flex-col gap-1 overflow-auto text-black">
           {isLoading ? (
             <ImSpinner8
               size={100}
@@ -94,12 +83,7 @@ const MemberList = ({
                   <span
                     className="rounded-full px-2 py-1 text-sm font-semibold text-black"
                     style={{
-                      backgroundColor:
-                        CONVERSIONS.LEVEL_TO_COLOR_MAP[
-                          getLevel(
-                            guildMember.totalTime
-                          ).toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
-                        ],
+                      backgroundColor: CONVERSIONS.LEVEL_TO_COLOR(getLevel(guildMember.totalTime)),
                       opacity: 0.8,
                     }}
                   >
@@ -116,10 +100,7 @@ const MemberList = ({
   );
 };
 
-const calculateHeight = (
-  panel: RefObject<HTMLDivElement>,
-  ul: RefObject<HTMLUListElement>
-) => {
+const calculateHeight = (panel: RefObject<HTMLDivElement>, ul: RefObject<HTMLUListElement>) => {
   if (!panel.current || !ul.current) {
     return '0px';
   }
@@ -138,8 +119,6 @@ interface MemberWithUser extends GuildMember {
 
 export default MemberList;
 
-const getLevel = (totalTime: number) => {
-  return CONVERSIONS.HOURS_TO_LEVEL(
-    CONVERSIONS.MILISECONDS_TO_HOURS * totalTime
-  );
+const getLevel = (totalTime: number): number => {
+  return CONVERSIONS.HOURS_TO_LEVEL(CONVERSIONS.MILISECONDS_TO_HOURS * totalTime);
 };

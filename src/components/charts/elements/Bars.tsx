@@ -22,26 +22,20 @@ const Bars = ({
   xScale: ScaleBand<string>;
   yScale: ScaleLinear<number, number, never>;
 }) => {
-  const { margin, innerHeight, setAllowInteractions } =
-    useContext(ChartContext);
+  const { margin, innerHeight, setAllowInteractions } = useContext(ChartContext);
 
   const [tooltipData, setTooltipData] = useState<{
     level: string;
     frequency: number;
   }>();
-  const [selectedLevel, setSelectedLevel] = useState<
-    keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP | null
-  >(null);
+  const [selectedLevel, setSelectedLevel] = useState<number | undefined>(undefined);
 
   const onClose = () => {
-    setSelectedLevel(null);
+    setSelectedLevel(undefined);
     setAllowInteractions(true);
   };
 
-  const frequencySum = useMemo(
-    () => data.reduce((acc, curr) => acc + curr.frequency, 0),
-    [data]
-  );
+  const frequencySum = useMemo(() => data.reduce((acc, curr) => acc + curr.frequency, 0), [data]);
 
   return (
     <>
@@ -50,10 +44,7 @@ const Bars = ({
           <div className="rounded-md bg-violet-400 bg-opacity-80 p-3 text-xl backdrop-blur-md">
             <p>Level: {tooltipData.level}</p>
             <p>Frequency: {tooltipData.frequency}</p>
-            <p>
-              Ratio: {Math.round((tooltipData.frequency / frequencySum) * 100)}{' '}
-              %
-            </p>
+            <p>Ratio: {Math.round((tooltipData.frequency / frequencySum) * 100)} %</p>
           </div>
         )}
       </Tooltip>
@@ -67,8 +58,7 @@ const Bars = ({
               <span
                 className="flex items-center rounded-full px-2 py-1 text-sm font-semibold text-black"
                 style={{
-                  backgroundColor:
-                    CONVERSIONS.LEVEL_TO_COLOR_MAP[selectedLevel ?? '0'],
+                  backgroundColor: CONVERSIONS.LEVEL_TO_COLOR(selectedLevel ?? 0),
                   opacity: 0.8,
                 }}
               >
@@ -78,7 +68,7 @@ const Bars = ({
 
             <hr className="my-1 h-[2px] rounded bg-black" />
 
-            <List level={parseInt(selectedLevel ?? '1')} />
+            <List level={selectedLevel ?? 1} />
           </Panel>
         </ClickOutsideListener>
       </Modal>
@@ -94,22 +84,16 @@ const Bars = ({
           }
           onMouseLeave={() => setTooltipData(undefined)}
           onClick={() => {
-            setSelectedLevel(
-              level as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
-            );
+            setSelectedLevel(+level);
             setAllowInteractions(false);
           }}
           className="cursor-pointer opacity-60 hover:opacity-80"
         >
           <rect
             key={level}
-            x={
-              (xScale(level) ?? 0) - (xScale.padding() * xScale.bandwidth()) / 2
-            }
+            x={(xScale(level) ?? 0) - (xScale.padding() * xScale.bandwidth()) / 2}
             y={innerHeight - yScale(frequency)}
-            width={
-              xScale.bandwidth() + xScale.padding() * xScale.bandwidth() + 2
-            }
+            width={xScale.bandwidth() + xScale.padding() * xScale.bandwidth() + 2}
             height={yScale(frequency) + margin.bottom}
             fill="transparent"
           ></rect>
@@ -119,11 +103,7 @@ const Bars = ({
             y={innerHeight - yScale(frequency)}
             width={xScale.bandwidth()}
             height={yScale(frequency)}
-            fill={
-              CONVERSIONS.LEVEL_TO_COLOR_MAP[
-                level as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
-              ]
-            }
+            fill={CONVERSIONS.LEVEL_TO_COLOR(+level)}
           ></rect>
         </g>
       ))}

@@ -2,31 +2,12 @@ export const CONVERSIONS = {
   MILISECONDS_TO_HOURS: 2.77777778e-7,
   MILISECONDS_TO_SECONDS: 1e-3,
 
-  // TODO: refactor LEVEL_TO_COLOR_MAP
-  LEVEL_TO_COLOR_MAP: {
-    '0': '#FFFFFF',
-    '1': '#3498DB',
-    '2': '#2ECC71',
-    '3': '#FFFF00',
-    '4': '#E67E22',
-    '5': '#E74C3C',
-    '6': '#9B59B6',
-    '7': '#AD1457',
-    '8': '#95A5A6',
-    '9': '#E91E63',
-  },
+  LEVEL_TO_COLOR(level: number, tailwind = false) {
+    const key = level % 10;
 
-  LEVEL_TO_COLOR_MAP_TAILWIND: {
-    '0': 'bg-[#FFFFFF]',
-    '1': 'bg-[#3498DB]',
-    '2': 'bg-[#2ECC71]',
-    '3': 'bg-[#FFFF00]',
-    '4': 'bg-[#E67E22]',
-    '5': 'bg-[#E74C3C]',
-    '6': 'bg-[#9B59B6]',
-    '7': 'bg-[#AD1457]',
-    '8': 'bg-[#95A5A6]',
-    '9': 'bg-[#E91E63]',
+    return (tailwind ? LEVEL_TO_COLOR_MAP_TAILWIND : LEVEL_TO_COLOR_MAP)[
+      key.toString() as keyof typeof LEVEL_TO_COLOR_MAP
+    ];
   },
 
   HOURS_TO_LEVEL: (hoursActive: number) => {
@@ -44,4 +25,30 @@ export const CONVERSIONS = {
 
     return 2 ** (level - 1);
   },
+};
+
+const LEVEL_TO_COLOR_MAP = {
+  '0': '#FFFFFF',
+  '1': '#3498DB',
+  '2': '#2ECC71',
+  '3': '#FFFF00',
+  '4': '#E67E22',
+  '5': '#E74C3C',
+  '6': '#9B59B6',
+  '7': '#AD1457',
+  '8': '#95A5A6',
+  '9': '#E91E63',
+};
+
+const LEVEL_TO_COLOR_MAP_TAILWIND = {
+  '0': 'bg-[#FFFFFF]',
+  '1': 'bg-[#3498DB]',
+  '2': 'bg-[#2ECC71]',
+  '3': 'bg-[#FFFF00]',
+  '4': 'bg-[#E67E22]',
+  '5': 'bg-[#E74C3C]',
+  '6': 'bg-[#9B59B6]',
+  '7': 'bg-[#AD1457]',
+  '8': 'bg-[#95A5A6]',
+  '9': 'bg-[#E91E63]',
 };

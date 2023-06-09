@@ -15,8 +15,7 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
     id,
   });
 
-  const hoursActive =
-    (memberInfo?.timeActive ?? 0) * CONVERSIONS.MILISECONDS_TO_HOURS;
+  const hoursActive = (memberInfo?.timeActive ?? 0) * CONVERSIONS.MILISECONDS_TO_HOURS;
   const level = CONVERSIONS.HOURS_TO_LEVEL(hoursActive);
   const hoursToCurrentLevel = CONVERSIONS.LEVEL_TO_HOURS(level);
   const progression =
@@ -48,10 +47,7 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
           <div
             className="absolute left-0 top-0 flex justify-center rounded-full"
             style={{
-              backgroundColor:
-                CONVERSIONS.LEVEL_TO_COLOR_MAP[
-                  level.toString() as keyof typeof CONVERSIONS.LEVEL_TO_COLOR_MAP
-                ],
+              backgroundColor: CONVERSIONS.LEVEL_TO_COLOR(level),
               width: `${progression * 100}%`,
             }}
           >
@@ -68,11 +64,7 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
           value={memberInfo?.joinedAt.toLocaleDateString()}
           tooltipText="Joined at"
         />
-        <Stat
-          prefix={<BiRename />}
-          value={memberInfo?.user.username}
-          tooltipText="Username"
-        />
+        <Stat prefix={<BiRename />} value={memberInfo?.user.username} tooltipText="Username" />
         <Stat
           prefix={<SiGooglemessages />}
           value={memberInfo?.totalMessages}
@@ -80,11 +72,7 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
         />
         <Stat
           prefix={<MdAccessTimeFilled />}
-          value={
-            status === 'success'
-              ? formatMiliseconds(memberInfo.timeActive)
-              : undefined
-          }
+          value={status === 'success' ? formatMiliseconds(memberInfo.timeActive) : undefined}
           tooltipText="Time active"
         />
       </div>
