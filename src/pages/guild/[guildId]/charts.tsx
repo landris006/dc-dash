@@ -7,19 +7,18 @@ import Panel from '../../../components/common/Panel';
 import Header from '../../../components/header/Header';
 import NavList from '../../../components/common/NavList';
 
-const routes = (guildID: string) => ({
-  Levels: <BarChartController guildID={guildID} />,
-  Activity: <ActivityChartController guildID={guildID} />,
+const routes = (guildId: string) => ({
+  Levels: <BarChartController guildId={guildId} />,
+  Activity: <ActivityChartController guildId={guildId} />,
   Top: <div>coming soon</div>,
 });
 
 const Charts: NextPage = () => {
   const router = useRouter();
-  const guildID = router.query.guildID as string | undefined;
-  const [selectedChart, setSelectedChart] =
-    useState<keyof ReturnType<typeof routes>>('Levels');
+  const guildId = router.query.guildId as string | undefined;
+  const [selectedChart, setSelectedChart] = useState<keyof ReturnType<typeof routes>>('Levels');
 
-  if (!guildID) {
+  if (!guildId) {
     return <>Loading...</>;
   }
 
@@ -32,17 +31,15 @@ const Charts: NextPage = () => {
           <Panel className="mx-auto h-min w-auto bg-slate-100">
             <nav className="text-2xl">
               <NavList
-                items={Object.keys(routes(guildID))}
+                items={Object.keys(routes(guildId))}
                 onSelect={(selectedChart) =>
-                  setSelectedChart(
-                    selectedChart as keyof ReturnType<typeof routes>
-                  )
+                  setSelectedChart(selectedChart as keyof ReturnType<typeof routes>)
                 }
               />
             </nav>
           </Panel>
 
-          {routes(guildID)[selectedChart]}
+          {routes(guildId)[selectedChart]}
         </Panel>
       </main>
     </div>

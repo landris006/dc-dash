@@ -27,7 +27,7 @@ const MemberInfo = ({ id }: { id: GuildMember['id'] }) => {
       <div className="flex gap-2 ">
         <div className="hidden sm:block ">
           <Image
-            src={memberInfo?.user.avatarURL ?? '/default-avatar.png'}
+            src={memberInfo?.user.avatarUrl ?? '/default-avatar.png'}
             width={75}
             height={75}
             alt="profile picture"

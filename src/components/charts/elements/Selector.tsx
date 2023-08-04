@@ -58,11 +58,7 @@ const Selector = ({
 
             <hr className="my-1 h-[2px] rounded bg-black" />
 
-            <TotalTimeList
-              startDate={startDate}
-              endDate={endDate}
-              connections={connections}
-            />
+            <TotalTimeList startDate={startDate} endDate={endDate} connections={connections} />
           </Panel>
         </ClickOutsideListener>
       </Modal>
@@ -86,19 +82,11 @@ const Selector = ({
 export default Selector;
 
 const useGetPositions = (xScale: ScaleTime<number, number, never>) => {
-  const {
-    svgRef,
-    margin,
-    innerWidth,
-    allowInteractions,
-    setAllowInteractions,
-  } = useContext(ChartContext);
+  const { svgRef, margin, innerWidth, allowInteractions, setAllowInteractions } =
+    useContext(ChartContext);
 
   const [isDragging, setIsDragging] = React.useState(false);
-  const [positions, setPositions] = React.useState<[number?, number?]>([
-    undefined,
-    undefined,
-  ]);
+  const [positions, setPositions] = React.useState<[number?, number?]>([undefined, undefined]);
 
   useEffect(() => {
     const svg = svgRef?.current;
@@ -109,10 +97,7 @@ const useGetPositions = (xScale: ScaleTime<number, number, never>) => {
         return;
       }
 
-      setPositions([
-        confine(e.clientX - svgLeft - margin.left, [0.1, innerWidth]),
-        undefined,
-      ]);
+      setPositions([confine(e.clientX - svgLeft - margin.left, [0.1, innerWidth]), undefined]);
       setIsDragging(true);
     };
 
@@ -216,10 +201,7 @@ const TotalTimeList = ({
   }
 
   const filteredConnections = connections.filter((connection) => {
-    if (
-      connection.startTime > endDate ||
-      (connection.endTime ?? new Date()) < startDate
-    ) {
+    if (connection.startTime > endDate || (connection.endTime ?? new Date()) < startDate) {
       return false;
     }
 
@@ -227,9 +209,7 @@ const TotalTimeList = ({
   });
 
   if (filteredConnections.length === 0) {
-    return (
-      <p className="font-semibold">No connections in selected interval!</p>
-    );
+    return <p className="font-semibold">No connections in selected interval!</p>;
   }
   const members = filteredConnections.reduce((acc, connection) => {
     let member = acc.get(connection.guildMember.id);
@@ -242,10 +222,10 @@ const TotalTimeList = ({
       startDate.getTime(),
       endDate.getTime(),
     ]);
-    const confinedEndTime = confine(
-      connection.endTime?.getTime() ?? Date.now(),
-      [startDate.getTime(), endDate.getTime()]
-    );
+    const confinedEndTime = confine(connection.endTime?.getTime() ?? Date.now(), [
+      startDate.getTime(),
+      endDate.getTime(),
+    ]);
 
     member.aggregatedTime += confinedEndTime - confinedStartTime;
 
@@ -260,7 +240,7 @@ const TotalTimeList = ({
           <React.Fragment key={member.id}>
             <span className="flex items-center gap-3">
               <Image
-                src={member.user.avatarURL ?? '/default-avatar.png'}
+                src={member.user.avatarUrl ?? '/default-avatar.png'}
                 alt="profile picture"
                 width={25}
                 height={25}

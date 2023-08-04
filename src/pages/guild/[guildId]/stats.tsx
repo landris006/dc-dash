@@ -9,9 +9,9 @@ import { useRouter } from 'next/router';
 
 const Server: NextPage = () => {
   const router = useRouter();
-  const guildID = router.query.guildID as string | undefined;
+  const guildId = router.query.guildId as string | undefined;
 
-  if (!guildID) {
+  if (!guildId) {
     return (
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-slate-300 p-3">
         <h2 className="mb-3 text-2xl">Loading...</h2>
@@ -25,7 +25,7 @@ const Server: NextPage = () => {
       <Header />
 
       <main className="container mx-auto my-3 flex flex-1 flex-col items-stretch gap-3 px-3 md:flex-row">
-        <ChannelStatus guildID={guildID} />
+        <ChannelStatus guildId={guildId} />
 
         <div className="flex flex-1 flex-col gap-3">
           <div className="flex flex-col items-stretch gap-3 xl:flex-row">

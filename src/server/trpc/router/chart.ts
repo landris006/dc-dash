@@ -5,12 +5,10 @@ import { publicProcedure, router } from '../trpc';
 
 export const chartRouter = router({
   levels: publicProcedure
-    .input(z.object({ guildID: z.string() }))
-    .query(async ({ input: { guildID }, ctx }) => levels(guildID, ctx)),
+    .input(z.object({ guildId: z.string() }))
+    .query(async ({ input: { guildId }, ctx }) => levels(guildId, ctx)),
 
   activity: publicProcedure
-    .input(
-      z.object({ guildID: z.string(), interval: z.number().min(1).max(7) })
-    )
+    .input(z.object({ guildId: z.string(), interval: z.number().min(1).max(7) }))
     .query(({ input, ctx }) => activity(input, ctx)),
 });

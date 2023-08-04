@@ -2,18 +2,16 @@ import { getLevel } from '../../../../utils/getTotalTime';
 import { Context } from '../../context';
 
 export const activity = async (
-  { guildID, interval }: { guildID: string; interval: number },
+  { guildId, interval }: { guildId: string; interval: number },
   ctx: Context
 ) => {
   const now = new Date();
-  const startTime = new Date(
-    now.getTime() - 1000 * 60 * 60 * 24 * interval
-  );
+  const startTime = new Date(now.getTime() - 1000 * 60 * 60 * 24 * interval);
 
   const connections = await ctx.prisma.connection.findMany({
     where: {
       voiceChannel: {
-        guildID,
+        guildId,
       },
       OR: [
         {
@@ -47,8 +45,8 @@ export const activity = async (
       ...connection,
       guildMember: {
         id: connection.guildMember.id,
-        guildID: connection.guildMember.guildID,
-        userID: connection.guildMember.userID,
+        guildID: connection.guildMember.guildId,
+        userID: connection.guildMember.userId,
         joinedAt: connection.guildMember.joinedAt,
         user: connection.guildMember.user,
         level,

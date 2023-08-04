@@ -2,10 +2,10 @@ import { CONVERSIONS } from '../../../../utils/conversions';
 import { getTotalTime } from '../../../../utils/getTotalTime';
 import { Context } from '../../context';
 
-export const levels = async (guildID: string, ctx: Context) => {
+export const levels = async (guildId: string, ctx: Context) => {
   const guildMembers = await ctx.prisma.guildMember.findMany({
     where: {
-      guildID,
+      guildId,
     },
     include: {
       connections: {
@@ -18,9 +18,7 @@ export const levels = async (guildID: string, ctx: Context) => {
 
   const levels = guildMembers.map((member) => {
     const totalTimeConnected = getTotalTime(member.connections);
-    return CONVERSIONS.HOURS_TO_LEVEL(
-      CONVERSIONS.MILISECONDS_TO_HOURS * totalTimeConnected
-    );
+    return CONVERSIONS.HOURS_TO_LEVEL(CONVERSIONS.MILISECONDS_TO_HOURS * totalTimeConnected);
   });
 
   const response = levels

@@ -45,7 +45,7 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
               <p>Member: </p>
               <p className="flex items-center gap-3">
                 <Image
-                  src={connection.guildMember.user.avatarURL ?? '/default-avatar.png'}
+                  src={connection.guildMember.user.avatarUrl ?? '/default-avatar.png'}
                   alt="profile picture"
                   width={25}
                   height={25}
@@ -121,7 +121,7 @@ const Connection = ({ connection, xScale, yScale, position }: Props) => {
 
               <div className="flex h-full items-center gap-3 bg-violet-400 bg-opacity-80 px-3">
                 <Image
-                  src={connection.guildMember.user.avatarURL ?? '/default-avatar.png'}
+                  src={connection.guildMember.user.avatarUrl ?? '/default-avatar.png'}
                   alt="profile picture"
                   width={tooltipHeight - imagePadding}
                   height={tooltipHeight - imagePadding}

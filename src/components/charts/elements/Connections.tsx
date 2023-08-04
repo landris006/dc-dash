@@ -11,6 +11,8 @@ interface Props {
 }
 
 const Connections = ({ xScale, yScale, connections }: Props) => {
+  console.log({ connections });
+
   const plottedConnections = new Map<number, Connection[]>();
 
   return (
@@ -23,12 +25,6 @@ const Connections = ({ xScale, yScale, connections }: Props) => {
             ((a.endTime?.getTime() ?? Date.now()) - a.startTime.getTime())
         )
         .map((connection) => {
-          const width =
-            xScale(connection.endTime ?? new Date()) -
-            xScale(connection.startTime);
-
-          if (width < 5) return;
-
           const position = decidePosition(connection, plottedConnections);
 
           return (
@@ -68,10 +64,7 @@ const decidePosition = (
   return decidePosition(connection, plottedConnections, levelToCheck + 1);
 };
 
-const checkIntersections = (
-  connection: Connection,
-  connections: Connection[]
-): number => {
+const checkIntersections = (connection: Connection, connections: Connection[]): number => {
   return connections.filter((c) => {
     if (connection.id === c.id) {
       return false;

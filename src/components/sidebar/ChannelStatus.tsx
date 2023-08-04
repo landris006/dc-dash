@@ -6,7 +6,7 @@ import Channel from './Channel';
 import { env } from '../../env/client.mjs';
 import { ImSpinner8 } from 'react-icons/im';
 
-const ChannelStatus = ({ guildID }: { guildID: string }) => {
+const ChannelStatus = ({ guildId }: { guildId: string }) => {
   const [channels, setChannels] = React.useState<{
     [key: string]: {
       id: string;
@@ -17,13 +17,13 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
   }>({});
 
   useEffect(() => {
-    if (!guildID) {
+    if (!guildId) {
       return;
     }
 
     const socket = io(env.NEXT_PUBLIC_BOT_URL, {
       query: {
-        guildID,
+        guildId,
       },
     });
 
@@ -34,7 +34,7 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
       socket.disconnect();
       socket.removeAllListeners();
     };
-  }, [guildID]);
+  }, [guildId]);
 
   return (
     <Panel className="bg-slate-300">
@@ -49,8 +49,8 @@ const ChannelStatus = ({ guildID }: { guildID: string }) => {
       <hr className="h-1 rounded bg-black" />
 
       <ul className="flex flex-col gap-2 pt-3">
-        {Object.entries(channels).map(([channelID, users]) => (
-          <Channel key={channelID} channelID={channelID} users={users} />
+        {Object.entries(channels).map(([channelId, users]) => (
+          <Channel key={channelId} channelId={channelId} users={users} />
         ))}
       </ul>
     </Panel>

@@ -9,7 +9,7 @@ import { GrClose } from 'react-icons/gr';
 import ClickOutsideListener from '../common/ClickOutsideListener';
 
 const Members = () => {
-  const guildID = useRouter().query.guildID as string;
+  const guildId = useRouter().query.guildId as string;
 
   const [nickname, setNickname] = useState('');
   const [pagination, setPagination] = useState({
@@ -24,24 +24,23 @@ const Members = () => {
     joinedAt: undefined,
   });
 
-  const { data, isLoading, isError } =
-    trpc.guildMember.getPaginatedMembers.useQuery(
-      {
-        guildID,
-        queryParams: {
-          nickname: nickameFilter,
-          orderBy,
-        },
-        ...pagination,
+  const { data, isLoading, isError } = trpc.guildMember.getPaginatedMembers.useQuery(
+    {
+      guildId,
+      queryParams: {
+        nickname: nickameFilter,
+        orderBy,
       },
-      {
-        onSuccess: (data) => {
-          if (!data.guildMembers.length) {
-            setPagination((prev) => ({ ...prev, page: 1 }));
-          }
-        },
-      }
-    );
+      ...pagination,
+    },
+    {
+      onSuccess: (data) => {
+        if (!data.guildMembers.length) {
+          setPagination((prev) => ({ ...prev, page: 1 }));
+        }
+      },
+    }
+  );
 
   const initSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -109,9 +108,7 @@ const Members = () => {
                 </button>
 
                 {filtersOpen && (
-                  <ClickOutsideListener
-                    onClickOutside={() => setFiltersOpen(false)}
-                  >
+                  <ClickOutsideListener onClickOutside={() => setFiltersOpen(false)}>
                     <div
                       className={`
                       absolute left-1/2 top-full z-10 flex h-auto -translate-x-1/2
@@ -136,11 +133,7 @@ const Members = () => {
           </form>
         </div>
 
-        <Pagination
-          hasMore={data?.hasMore}
-          page={pagination.page}
-          setPagination={setPagination}
-        />
+        <Pagination hasMore={data?.hasMore} page={pagination.page} setPagination={setPagination} />
 
         <MemberList
           guildMembers={data?.guildMembers}

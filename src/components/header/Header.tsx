@@ -6,8 +6,8 @@ import Link from 'next/link';
 
 const Header = () => {
   const router = useRouter();
-  const guildID = router.query.guildID as string;
-  const { data: guild, isLoading, isError } = trpc.guild.get.useQuery(guildID);
+  const guildId = router.query.guildId as string;
+  const { data: guild, isLoading, isError } = trpc.guild.get.useQuery(guildId);
 
   if (isError) {
     return (
@@ -27,10 +27,10 @@ const Header = () => {
           </h2>
 
           <div className="hidden items-center justify-center sm:flex">
-            {guild?.iconURL && (
+            {guild?.iconUrl && (
               <Image
                 // TODO: default image
-                src={guild.iconURL}
+                src={guild.iconUrl}
                 width={50}
                 height={50}
                 alt="guild icon"
@@ -40,9 +40,9 @@ const Header = () => {
 
           <p className="ml-3 text-2xl text-slate-600 hover:text-slate-800">
             {router.route.includes('charts') ? (
-              <Link href={`/guild/${guildID}/stats`}>Stats</Link>
+              <Link href={`/guild/${guildId}/stats`}>Stats</Link>
             ) : (
-              <Link href={`/guild/${guildID}/charts`}>Charts</Link>
+              <Link href={`/guild/${guildId}/charts`}>Charts</Link>
             )}
           </p>
         </div>

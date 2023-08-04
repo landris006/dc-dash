@@ -6,7 +6,7 @@ import RefreshButton from '../common/RefreshButton';
 import Member from './Member';
 
 interface Props {
-  channelID: string;
+  channelId: string;
   users: {
     id: string;
     muted: boolean;
@@ -14,12 +14,8 @@ interface Props {
     streaming: boolean;
   }[];
 }
-const Channel = ({ channelID, users }: Props) => {
-  const {
-    data: voiceChannel,
-    isLoading,
-    isError,
-  } = trpc.voiceChannel.get.useQuery(channelID);
+const Channel = ({ channelId, users }: Props) => {
+  const { data: voiceChannel, isLoading, isError } = trpc.voiceChannel.get.useQuery(channelId);
   const utils = trpc.useContext();
 
   if (isLoading) {

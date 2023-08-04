@@ -12,7 +12,7 @@ const Member = ({
 }: {
   user: { id: string; muted: boolean; deafened: boolean; streaming: boolean };
 }) => {
-  const guildID = useRouter().query.guildID as string;
+  const guildId = useRouter().query.guildId as string;
 
   const {
     data: guildMember,
@@ -20,8 +20,8 @@ const Member = ({
     isError,
   } = trpc.guildMember.getConnectedMember.useQuery(
     {
-      guildID,
-      userID: user.id,
+      guildId,
+      userId: user.id,
     },
     {
       refetchOnMount: 'always',
@@ -48,7 +48,7 @@ const Member = ({
           height={25}
           alt="avatar"
           className="rounded-full"
-          src={guildMember.user.avatarURL ?? '/default-avatar.png'}
+          src={guildMember.user.avatarUrl ?? '/default-avatar.png'}
         />
 
         <span>{guildMember.nickname ?? guildMember.user.username}</span>

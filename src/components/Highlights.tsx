@@ -9,13 +9,9 @@ import { CONVERSIONS } from '../utils/conversions';
 import { useRouter } from 'next/router';
 
 const Highlights = () => {
-  const guildID = useRouter().query.guildID as string;
+  const guildId = useRouter().query.guildId as string;
 
-  const {
-    data: highlights,
-    isLoading,
-    isError,
-  } = trpc.guild.getHighlights.useQuery(guildID);
+  const { data: highlights, isLoading, isError } = trpc.guild.getHighlights.useQuery(guildId);
 
   return (
     <Panel className="bg-rose-200">
@@ -36,8 +32,7 @@ const Highlights = () => {
               value={
                 highlights?.mostTimeConnected?.miliseconds &&
                 CONVERSIONS.HOURS_TO_LEVEL(
-                  highlights?.mostTimeConnected?.miliseconds *
-                    CONVERSIONS.MILISECONDS_TO_HOURS
+                  highlights?.mostTimeConnected?.miliseconds * CONVERSIONS.MILISECONDS_TO_HOURS
                 )
               }
               suffix={`(${highlights?.mostTimeConnected?.nickname})`}
@@ -51,11 +46,7 @@ const Highlights = () => {
             />
             <Stat
               prefix={<MdAccessTimeFilled />}
-              value={
-                isLoading
-                  ? undefined
-                  : highlights?.oldestMember?.date.toLocaleDateString()
-              }
+              value={isLoading ? undefined : highlights?.oldestMember?.date.toLocaleDateString()}
               suffix={`(${highlights?.oldestMember?.nickname})`}
               tooltipText="Oldest member"
             />

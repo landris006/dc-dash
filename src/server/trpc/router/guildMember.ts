@@ -1,12 +1,6 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
-import {
-  Connection,
-  GuildMember,
-  Prisma,
-  PrismaClient,
-  User,
-} from '@prisma/client';
+import { Connection, GuildMember, Prisma, PrismaClient, User } from '@prisma/client';
 import { getLevel, getTotalTime } from '../../../utils/getTotalTime';
 
 export const guildMemberRouter = router({
@@ -20,7 +14,7 @@ export const guildMemberRouter = router({
     .query(({ input, ctx }) => {
       return ctx.prisma.guildMember.findUnique({
         where: {
-          guildID_userID: { guildID: input.guildId, userID: input.userId },
+          guildId_userId: { guildId: input.guildId, userId: input.userId },
         },
       });
     }),
@@ -28,14 +22,14 @@ export const guildMemberRouter = router({
   getWithUser: publicProcedure
     .input(
       z.object({
-        guildID: z.string(),
-        userID: z.string(),
+        guildId: z.string(),
+        userId: z.string(),
       })
     )
     .query(({ input, ctx }) => {
       return ctx.prisma.guildMember.findUniqueOrThrow({
         where: {
-          guildID_userID: { guildID: input.guildID, userID: input.userID },
+          guildId_userId: { guildId: input.guildId, userId: input.userId },
         },
         include: {
           user: true,
@@ -46,14 +40,14 @@ export const guildMemberRouter = router({
   getConnectedMember: publicProcedure
     .input(
       z.object({
-        guildID: z.string(),
-        userID: z.string(),
+        guildId: z.string(),
+        userId: z.string(),
       })
     )
     .query(({ input, ctx }) => {
       return ctx.prisma.guildMember.findUniqueOrThrow({
         where: {
-          guildID_userID: { guildID: input.guildID, userID: input.userID },
+          guildId_userId: { guildId: input.guildId, userId: input.userId },
         },
         include: {
           user: true,
@@ -96,13 +90,13 @@ export const guildMemberRouter = router({
   getAllInGuild: publicProcedure
     .input(
       z.object({
-        guildID: z.string(),
+        guildId: z.string(),
       })
     )
-    .query(({ input: { guildID }, ctx }) => {
+    .query(({ input: { guildId }, ctx }) => {
       return ctx.prisma.guildMember.findMany({
         where: {
-          guildID,
+          guildId,
         },
         include: {
           user: true,
@@ -113,14 +107,14 @@ export const guildMemberRouter = router({
   getAllInGuildWithLevel: publicProcedure
     .input(
       z.object({
-        guildID: z.string(),
+        guildId: z.string(),
         level: z.number().min(1),
       })
     )
     .query(async ({ input, ctx }) => {
       const members = await ctx.prisma.guildMember.findMany({
         where: {
-          guildID: input.guildID,
+          guildId: input.guildId,
         },
         include: {
           user: true,
@@ -151,11 +145,11 @@ export const guildMemberRouter = router({
               .nullish(),
           })
           .nullish(),
-        guildID: z.string(),
+        guildId: z.string(),
       })
     )
     .query(async ({ input, ctx }) => {
-      const { page, limit, guildID, queryParams } = input;
+      const { page, limit, guildId, queryParams } = input;
 
       const isSortingByHoursActive = queryParams?.orderBy?.hoursActive;
       const orderBy =
@@ -170,13 +164,13 @@ export const guildMemberRouter = router({
         const rawMembers =
           isSortingByHoursActive === 'asc'
             ? await ascendingHoursSpentQuery(ctx.prisma, {
-                guildID,
+                guildId,
                 nickname: input.queryParams?.nickname ?? '',
                 skip: (page - 1) * limit,
                 take: limit + 1,
               })
             : await descendingHoursSpentQuery(ctx.prisma, {
-                guildID,
+                guildId,
                 nickname: input.queryParams?.nickname ?? '',
                 skip: (page - 1) * limit,
                 take: limit + 1,
@@ -185,10 +179,10 @@ export const guildMemberRouter = router({
         guildMembers = rawMembers.map((guildMember) => {
           const newGuildmember = {
             ...guildMember,
-            id: guildMember.guildMemberID,
+            id: guildMember.guildMemberId,
             user: {
-              id: guildMember.userID,
-              avatarURL: guildMember.avatarURL,
+              id: guildMember.userId,
+              avatarUrl: guildMember.avatarUrl,
               username: guildMember.username,
             },
           };
@@ -200,7 +194,7 @@ export const guildMemberRouter = router({
           skip: (page - 1) * limit,
           take: limit + 1,
           where: {
-            guildID,
+            guildId,
             nickname: {
               contains: input.queryParams?.nickname,
             },
@@ -247,9 +241,9 @@ export const guildMemberRouter = router({
 });
 
 interface GuildMemberWithUser extends GuildMember {
-  avatarURL: string;
+  avatarUrl: string;
   username: string;
-  guildMemberID: string;
+  guildMemberId: string;
   totalTime: number;
 }
 
@@ -257,62 +251,85 @@ interface GuildMemberWithUser extends GuildMember {
 const ascendingHoursSpentQuery = async (
   prisma: PrismaClient,
   {
-    guildID,
+    guildId,
     nickname,
     skip,
     take,
-  }: { guildID: string; nickname: string; skip: number; take: number }
+  }: { guildId: string; nickname: string; skip: number; take: number }
 ) => {
-  return prisma.$queryRaw<GuildMemberWithUser[]>`
-  SELECT "GuildMember"."id" AS "guildMemberID",
+  const result = await prisma.$queryRaw`
+  SELECT "guild_member"."id" AS "guild_member_id",
     COALESCE(
       (
-        SELECT SUM(EXTRACT(EPOCH FROM "endTime") - EXTRACT(EPOCH FROM "startTime")) * 1000
-        FROM "Connection"
-        WHERE "guildMemberID" = "GuildMember"."id"
+        SELECT SUM(EXTRACT(EPOCH FROM "end_time") - EXTRACT(EPOCH FROM "start_time")) * 1000
+        FROM "connection"
+        WHERE "guild_member_id" = "guild_member"."id"
       ), 0
     )
-   AS "totalTime", *
-  FROM "GuildMember"
-  JOIN "User" ON "User"."id" = "GuildMember"."userID"
+   AS "total_time", *
+  FROM "guild_member"
+  JOIN "user" ON "user"."id" = "guild_member"."user_id"
 
-  WHERE "guildID" = ${guildID} AND
+  WHERE "guild_id" = ${guildId} AND
   "nickname" LIKE ${'%' + nickname + '%'}
 
-  ORDER BY "totalTime" DESC
+  ORDER BY "total_time" DESC
 
   OFFSET ${skip}
   LIMIT ${take}
   `;
+
+  // @ts-ignore
+  return result.map((guildMember) => ({
+    ...guildMember,
+    guildMemberId: guildMember.guild_member_id,
+    avatarUrl: guildMember.avatar_url,
+    guildId: guildMember.guild_id,
+    joinedAt: guildMember.joined_at,
+    userId: guildMember.user_id,
+    totalTime: guildMember.total_time,
+  }));
 };
+
 const descendingHoursSpentQuery = async (
   prisma: PrismaClient,
   {
-    guildID,
+    guildId,
     nickname,
     skip,
     take,
-  }: { guildID: string; nickname: string; skip: number; take: number }
+  }: { guildId: string; nickname: string; skip: number; take: number }
 ) => {
-  return prisma.$queryRaw<GuildMemberWithUser[]>`
-  SELECT "GuildMember"."id" AS "guildMemberID",
+  const result = await prisma.$queryRaw`
+  SELECT "guild_member"."id" AS "guild_member_id",
     COALESCE(
       (
-        SELECT SUM(EXTRACT(EPOCH FROM "endTime") - EXTRACT(EPOCH FROM "startTime")) * 1000
-        FROM "Connection"
-        WHERE "guildMemberID" = "GuildMember"."id"
+        SELECT SUM(EXTRACT(EPOCH FROM "end_time") - EXTRACT(EPOCH FROM "start_time")) * 1000
+        FROM "connection"
+        WHERE "guild_member_id" = "guild_member"."id"
       ), 0
     )
-   AS "totalTime", *
-  FROM "GuildMember"
-  JOIN "User" ON "User"."id" = "GuildMember"."userID"
+   AS "total_time", *
+  FROM "guild_member"
+  JOIN "user" ON "user"."id" = "guild_member"."user_id"
 
-  WHERE "guildID" = ${guildID} AND
+  WHERE "guild_id" = ${guildId} AND
   "nickname" LIKE ${'%' + nickname + '%'}
 
-  ORDER BY "totalTime" ASC
+  ORDER BY "total_time" ASC
 
   OFFSET ${skip}
   LIMIT ${take}
   `;
+
+  // @ts-ignore
+  return result.map((guildMember) => ({
+    ...guildMember,
+    guildMemberId: guildMember.guild_member_id,
+    avatarUrl: guildMember.avatar_url,
+    guildId: guildMember.guild_id,
+    joinedAt: guildMember.joined_at,
+    userId: guildMember.user_id,
+    totalTime: guildMember.total_time,
+  }));
 };

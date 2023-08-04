@@ -114,7 +114,7 @@ const Bars = ({
 export default Bars;
 
 const List = ({ level }: { level: number }) => {
-  const guildID = useRouter().query.guildID as string;
+  const guildId = useRouter().query.guildId as string;
   const [selectedID, setSelectedID] = useState<string | null>(null);
 
   const onClose = () => {
@@ -126,7 +126,7 @@ const List = ({ level }: { level: number }) => {
     isLoading,
     isError,
   } = trpc.guildMember.getAllInGuildWithLevel.useQuery({
-    guildID,
+    guildId,
     level,
   });
 
@@ -158,7 +158,7 @@ const List = ({ level }: { level: number }) => {
           <ListItem key={member.id} onClick={() => setSelectedID(member.id)}>
             <div className="flex items-center gap-3">
               <Image
-                src={member.user.avatarURL ?? '/default-avatar.png'}
+                src={member.user.avatarUrl ?? '/default-avatar.png'}
                 alt="profile picture"
                 width={40}
                 height={40}

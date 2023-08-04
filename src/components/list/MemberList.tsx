@@ -63,7 +63,7 @@ const MemberList = ({ guildMembers, isLoading, isError, pagination }: Props) => 
                   setIsOpen(true);
                   setSelectedMember(guildMember);
                 }}
-                key={guildMember.userID}
+                key={guildMember.userId}
               >
                 <div className="flex items-center gap-3">
                   <p className="text-3xl text-slate-900 opacity-60">
@@ -71,7 +71,7 @@ const MemberList = ({ guildMembers, isLoading, isError, pagination }: Props) => 
                   </p>
 
                   <Image
-                    src={guildMember.user.avatarURL ?? '/default-avatar.png'}
+                    src={guildMember.user.avatarUrl ?? '/default-avatar.png'}
                     width={40}
                     height={40}
                     alt="profile picture"

@@ -27,12 +27,7 @@ const Home: NextPage = () => {
           <ListItem key={guild.id}>
             <div className="flex flex-wrap gap-3">
               <Link href={`/guild/${guild.id}/stats`}>{guild.name}</Link>
-              <Image
-                src={guild.iconURL ?? ''}
-                width={50}
-                height={50}
-                alt="guild icon"
-              />
+              <Image src={guild.iconUrl ?? ''} width={50} height={50} alt="guild icon" />
             </div>
           </ListItem>
         ))}

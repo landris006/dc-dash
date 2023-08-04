@@ -11,12 +11,8 @@ import { useRouter } from 'next/router';
 import { CONVERSIONS } from '../utils/conversions';
 
 const Statistics = () => {
-  const guildID = useRouter().query.guildID as string;
-  const {
-    data: stats,
-    isError,
-    isLoading,
-  } = trpc.guild.getStats.useQuery(guildID as string);
+  const guildId = useRouter().query.guildId as string;
+  const { data: stats, isError, isLoading } = trpc.guild.getStats.useQuery(guildId as string);
   const utils = trpc.useContext();
 
   return (
@@ -46,9 +42,7 @@ const Statistics = () => {
               prefix={<MdAccessTimeFilled />}
               value={
                 stats?.totalTimeConnected &&
-                Math.round(
-                  stats.totalTimeConnected * CONVERSIONS.MILISECONDS_TO_HOURS
-                )
+                Math.round(stats.totalTimeConnected * CONVERSIONS.MILISECONDS_TO_HOURS)
               }
               suffix="hrs"
               tooltipText="Total time connected"
