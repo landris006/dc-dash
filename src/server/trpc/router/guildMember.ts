@@ -161,7 +161,7 @@ export const guildMemberRouter = router({
       })[];
 
       if (isSortingByHoursActive) {
-        const rawMembers =
+        const rawMembers: GuildMemberWithUser[] =
           isSortingByHoursActive === 'asc'
             ? await ascendingHoursSpentQuery(ctx.prisma, {
                 guildId,
