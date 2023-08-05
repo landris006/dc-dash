@@ -25,6 +25,8 @@ const ChannelStatus = ({ guildId }: { guildId: string }) => {
       query: {
         guildId,
       },
+      transports: ['websocket'],
+      secure: true,
     });
 
     socket.on('update', (data) => setChannels(data));
